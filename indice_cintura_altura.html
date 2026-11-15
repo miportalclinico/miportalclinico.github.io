@@ -79,8 +79,7 @@ function render(){
  $('validation').textContent='Cintura / altura, ambas expresadas en centímetros.';
  $('score').textContent=formatted;$('resultTitle').textContent=info.name;$('resultDetail').textContent=info.detail;$('result').className='result'+(info.level?' '+info.level:'');
  const waistStr=waist.toLocaleString('es-ES'),heightStr=height.toLocaleString('es-ES');
- $('report').value='Índice cintura-altura: '+formatted+' (cintura '+waistStr+' cm / altura '+heightStr+' cm). Interpretación NICE: '+info.name+'.';
- $('copy').disabled=false;$('print').disabled=false;
+ $('report').value='Índice cintura-altura: '+formatted+'.'; $('copy').disabled=false;$('print').disabled=false;
 }
 async function copyReport(){const value=$('report').value;if(!value)return;try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(value);else{$('report').focus();$('report').select();if(!document.execCommand('copy'))throw Error('No copy');}$('notice').textContent='Resultado copiado.';}catch(e){$('report').focus();$('report').select();$('notice').textContent='Selecciona y copia el texto manualmente.';}}
 $('copy').addEventListener('click',copyReport);$('print').addEventListener('click',()=>{if(!$('print').disabled)window.print()});$('reset').addEventListener('click',()=>{$('form').reset();render();$('waist').focus();});$('form').addEventListener('submit',e=>e.preventDefault());['waist','height'].forEach(id=>$(id).addEventListener('input',render));render();

@@ -1,0 +1,32 @@
+PORTAL CLÍNICO — VERSIÓN 47 — NOVIEMBRE DE 2026
+ACTUALIZACIÓN ACUMULADA DESDE V46
+
+1. EQUIVALENCIAS FARMACOLÓGICAS
+- Nueva organización de la página y rediseño visual de las siete familias.
+- Iconos acordados: opioides (jeringa), IECA/ARA-II (tensiómetro), betabloqueantes (corazón y pulso), calcioantagonistas (Ca2+ y canal), benzodiazepinas (luna), corticoides (suprarrenal) e hipolipemiantes (gota y descenso).
+- Opioides: conversión libre de origen a destino y sumador de dosis diarias; intervalos orientativos de conversión cuando hay discrepancias; selector de fentanilo transdérmico 12,5/25/50/75/100 microgramos/h + Otra dosis. Tabla separada con referencia de fentanilo IV para dosis IV aisladas (100 microgramos IV ≈ morfina IV 10 mg, morfina oral 30 mg, hidromorfona IV 1-1,5 mg, hidromorfona oral 7,5 mg, oxicodona oral 20 mg) y nota de precaución discreta. La dosis IV aislada NO se extrapola automáticamente a 24 h ni se incorpora al sumador.
+- Benzodiazepinas: conversor libre entre benzodiazepinas orales, no solo a diazepam; sumador de dosis totales de 24 h; tabla farmacológica y referencias de diferentes fuentes, con intervalos cuando hay variabilidad.
+- Corticoides: conversión de potencia antiinflamatoria aproximada y tabla comparativa de propiedades.
+- IECA/ARA-II: una sola tabla, separando ambos subgrupos mediante encabezados y selector por indicación clínica; evita asumir intercambiabilidad miligramo a miligramo.
+- Betabloqueantes: tabla comparativa de dosis según indicación; fuente complementaria manual IC 2024 y documentos de Farmacia Hospitalaria, sin calculadora falsa de equivalencia directa.
+- Calcioantagonistas: diferenciación por dihidropiridínicos/no dihidropiridínicos, formulación e indicación.
+- Hipolipemiantes: matriz de reducción estimada de LDL por dosis, con monoterapia y combinaciones con ezetimiba, agrupaciones y resaltado interactivo de fila/columna; bandas de intensidad según Estándares SEA 2026; evolocumab, alirocumab e inclisirán con datos por combinación de SEA 2026; dos vistas (Tabla comparativa y Consulta, con selección por reducción o por fármaco) disponibles en ordenador y móvil.
+- Referencias clínicas agrupadas en desplegables Fuentes.
+
+2. EDITOR DE ANALÍTICAS
+- Déficit de bicarbonato inicialmente plegado.
+- Cálculo automático de sodio corregido de Hillier cuando glucemia >=200 mg/dl, sin duplicar el sodio medido; ocultada la herramienta independiente redundante.
+- FIB-4: soporte de alias GOT/GPT además de AST/ALT, campo de edad propio editable y precarga desde Datos del paciente.
+- RNL: reconocimiento de recuentos absolutos o porcentajes neutrófilos/linfocitos, e interpretación gráfica orientativa por tramos con colores acordados, en Índices.
+- Mantiene el resto de funcionalidades y preferencias del editor de la v46.
+
+3. IDENTIDAD / ACCESO
+- Ajustes de iconos del inicio (cápsula, IA) y secciones (Cronicidad, Infecciosas).
+- Actualización de las entradas del buscador en inicio para las nuevas equivalencias e hipolipemiantes.
+
+VALIDACIONES
+- Pruebas de cálculos (origen→destino, suma, benzodiazepinas, fentanilo TD personalizado, índices del editor, FIB-4, sodio Hillier).
+- Validación sintáctica de los scripts JS modificados y referencias relativas de recursos del portal.
+
+NOTA CLÍNICA
+Las equivalencias farmacológicas son orientativas, heterogéneas entre fuentes y no constituyen órdenes de prescripción ni pautas automáticas de rotación. Las dosis de tablas históricas de intercambio terapéutico se muestran como comparación clínica, no equivalencias universales; revisar fichas técnicas, indicación, formulación y situación clínica antes de usar para decisiones asistenciales.

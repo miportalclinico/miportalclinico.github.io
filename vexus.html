@@ -48,7 +48,7 @@ header{background:linear-gradient(115deg,#101f37,#1b3963 65%,#284d7c);color:#fff
 <body>
 <header><div class="wrap"><nav class="nav"><span class="brand">MEDICINA INTERNA · ECOGRAFÍA CLÍNICA</span><a class="back back-to-category" href="calculadoras.html#/categoria/ecografia">← Volver a Ecografía Clínica</a></nav>
 <h1>VExUS · Congestión venosa</h1><p>Clasificación ecográfica de la congestión venosa sistémica mediante VCI y Doppler venoso suprahepático, portal e intrarrenal.</p>
-<div class="chips"><span>Grados 0–3</span><span>Patrones Doppler ilustrados</span><span>Sin conexión</span></div></div></header>
+<div class="chips"><span>Grados 0–3</span><span>Patrones Doppler ilustrados</span></div></div></header>
 <main class="wrap main">
   <div class="left">
     <p class="callout"><strong>Guía visual:</strong> los dibujos reproducen de forma esquemática la morfología de los trazados. Seleccione el patrón observado en el Doppler real, no por su parecido exacto con el dibujo.</p>
@@ -139,16 +139,7 @@ function getState(){const v=Object.fromEntries(Object.keys(model).map(k=>[k,sele
  return {v,all,severe,grade,gradeLabel,msg,cls,done}
 }
 function optionLabel(k,v){if(!v)return 'Pendiente';if(v==='unassessable')return 'No evaluable';return model[k].find(x=>x.v===v)?.t||'—'}
-function reportText(s){const v=s.v;const lines=['VExUS · Valoración ecográfica de congestión venosa sistémica.',
- 'VCI: '+optionLabel('ivc',v.ivc)+'.',
- 'Venas suprahepáticas: '+optionLabel('hepatic',v.hepatic)+'.',
- 'Vena porta: '+optionLabel('portal',v.portal)+'.',
- 'Venas intrarrenales: '+optionLabel('renal',v.renal)+'.',
- `Resultado: VExUS grado ${s.grade}/3 (${s.gradeLabel.toLowerCase()}).`];
- if(v.ivc==='dilated')lines.push(`Patrones Doppler gravemente alterados: ${s.severe} de 3.`);
- if(v.ivc==='normal'&&['hepatic','portal','renal'].some(k=>v[k]==='severe'))lines.push('Advertencia: existen patrones Doppler graves pese a VCI <2 cm. Correlacionar y revisar la medición y el contexto clínico.');
- lines.push('Interpretación orientativa. Integrar con exploración clínica, hemodinámica y posibles factores de confusión.');return lines.join('\n')
-}
+function reportText(s){return 'VExUS: grado '+s.grade+' ('+s.gradeLabel.toLowerCase()+').';}
 function render(){const s=getState();$('grade').textContent=s.done?String(s.grade):'—';$('gradeSub').textContent=s.done?'grado / 3':'sin resultado';$('progress').style.width=(s.all/4*100)+'%';$('status').className='status '+s.cls;$('statusTitle').textContent=s.gradeLabel;$('statusBody').textContent=s.msg;
  [['ivc','rowIvc'],['hepatic','rowHepatic'],['portal','rowPortal'],['renal','rowRenal']].forEach(([k,id])=>{$(id).textContent=optionLabel(k,s.v[k])});
  $('completion').textContent=`${s.all} de 4 territorios con patrón interpretable.${s.v.ivc==='normal'&&s.all<4?' VExUS 0 se establece por el diámetro de la VCI.':''}`;

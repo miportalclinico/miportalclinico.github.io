@@ -1,0 +1,11 @@
+CAMBIOS DE VERSIÓN V43 · 14/11/2026
+Base: v42 íntegra; no se han cambiado fórmulas clínicas, datos farmacológicos ni JavaScript clínico.
+- Calculadoras clínicas: encabezado homogéneo con Vademécum y Equivalencias: sin logo superior ni «Portal Clínico» duplicado, sin «Biblioteca de calculadoras»; enlace «Volver al índice general» en la parte superior y buscador conservado.
+- Portada: isotipo principal ampliado; icono de cápsula del Vademécum redibujado y herramientas de IA con icono de destellos más claro.
+- Enfermedades infecciosas: verde bosque más oscuro que Diabetes (#237548) tanto en tarjeta e índice como en Duke-ISCVID 2023. Nuevo icono de bacteria para el índice.
+- Digestivo y hepatología: nuevo icono SVG de hígado en índice.
+- Cronicidad: Pfeiffer, Rankin modificada, GDS Reisberg, Charlson y Barthel armonizados visualmente con Sarcopenia y fragilidad (degradado turquesa, paneles y controles).
+- Diabetes, obesidad y nutrición: factor de sensibilidad a la insulina armonizado con FIB-4 (degradado verde, encabezado y paneles).
+- Editor de analíticas: cabecera con degradado gris azulado y acentos adaptados a Herramientas de consulta, preservando colores semánticos independientes.
+- Vademécum de hospitalización: icono de bolsa de suero IV.
+- Todos los HTML originales y elementos de la v42 siguen presentes.

@@ -1,0 +1,12 @@
+CAMBIOS DE VERSIÓN V42 · 14/11/2026
+Fuente: v41 y correcciones acumuladas previas de la copia de trabajo.
+- Portada: título «Medicina Interna: Portal Clínico» sin duplicado, subtítulo acordado, logo sin MI, borde ni banda negra; iconos calculadora/cápsula/lápiz; Vademécum verde esmeralda #27876B, Consulta gris azulado #64748B, Calculadoras e IA mantienen los colores originales.
+- Escalas previas CHA₂DS₂-VA, CHA₂DS₂-VASc, HAS-BLED, H₂FPEF y copia de resultados: correcciones procedentes de staging v41.
+- 4AT: encabezado con turquesa de Cronicidad; retirada de chips «Sin conexión» de calculadoras existentes.
+- Nuevas en Cronicidad: Pfeiffer, Rankin modificada, GDS Reisberg (NO Yesavage), Charlson y Barthel.
+- Digestivo y hepatología: CIWA-Ar, AUDIT-C y Ranson (biliar/no biliar; ingreso/48 h).
+- Diabetes, obesidad y nutrición: factor de sensibilidad insulínica (1800/1500).
+- Nueva sección Enfermedades infecciosas: criterios Duke-ISCVID 2023 para endocarditis con un criterio por dominio.
+- Nueva sección Miscelánea (gris oscuro): Na corregido por glucemia (1,6 / 2,4), déficit teórico bicarbonato, déficit de agua libre, PAM.
+- Resultados a derecha y texto corto para historia clínica. Interpretación en caja independiente. Referencias dentro de las propias herramientas.
+- Todas son herramientas orientativas sin sustitución de valoración clínica ni protocolos locales.

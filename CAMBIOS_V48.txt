@@ -1,0 +1,14 @@
+Portal Clínico v48 — Correcciones de Equivalencias farmacológicas
+
+Base: v47 completa. Todos los archivos siguen dentro de portal_medicina; index.html permanece en la raíz de esa carpeta.
+
+1. Iconos de Equivalencias: jeringa mejor definida; benzodiazepinas semiluna; corticoides sol; IECA/ARA-II velocímetro con aguja en zona alta; calcioantagonistas Ca²⁺; hipolipemiantes gota con flecha descendente centrada. Icono de betabloqueantes sin cambios.
+2. Opioides: por defecto morfina oral -> morfina IV. Tabla de equivalencias de fentanilo IV en desplegable cerrado por defecto, con su aviso clínico dentro.
+3. Resultados de conversión y suma (opioides y benzodiazepinas): cajas verdes con display:block y anchura completa, sin desbordamiento o cortes.
+4. Benzodiazepinas: separación entre los desplegables de equivalencias y duración.
+5. IECA/ARA-II: encabezados de grupo reforzados y nombres de fármacos destacados.
+6. Betabloqueantes: eliminada fila superflua «Betabloqueantes», nombres resaltados y mayor margen de «Titulación y monitorización». Nuevo desplegable «Actividad sobre receptores α y β · Cardioselectividad» para todos los fármacos de la tabla, con documentación en Fuentes.
+7. Calcioantagonistas: eliminada selección separada dihidropiridínicos/no dihidropiridínicos. Ambas clases se muestran en una sola tabla con rótulos de grupo (excepto en control de frecuencia, donde solo figuran no dihidropiridínicos). Eliminado encabezado repetido «Dosis por formulación». Nombres de fármacos resaltados.
+8. Además, incorporado icono previamente aprobado para Cronicidad y Pluripatología en calculadoras, con monigote y bastón sin elementos adicionales.
+
+Fuentes farmacológicas: CPIC 2024, tabla S1; revisión de selectividad de betabloqueantes 2022 (en Fuentes). La cardioselectividad es relativa y dependiente de dosis. Esta aplicación es un recurso de apoyo y no sustituye valoración médica ni fichas técnicas.

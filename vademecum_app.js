@@ -54,7 +54,7 @@ function createLevosimendan(d){
  const area=element('div','infusionTableArea');host.append(area);
  function totalMg(w){return w*load/1000+w*rate*60*24/1000}
  function makeOrder(){const w=Number(weight.value);if(!(w>=20&&w<=250))return '';const t=totalMg(w),mg=t>12.5?25:12.5,vol=t>12.5?500:250;if(t>25)return ''; 
-  return `Levosimendán: ${es(mg)} mg en ${es(vol)} ml finales de SG 5 % (50 µg/ml). ${load>0?'Carga '+es(load)+' µg/kg ('+es(load*w/1000)+' mg) durante 10 min a '+es(load*w*6/50)+' ml/h; ':'Sin dosis de carga; '}mantenimiento ${es(rate)} µg/kg/min a ${es(rate*w*60/50)} ml/h durante 24 h para ${es(w)} kg. Requiere ${es(t)} mg en total (${es(t*20)} ml). Reevaluar a los 30–60 min, ajustar según PA/FC. ${t>25?'La cantidad supera 25 mg; preparar una bolsa adicional y verificar estabilidad.':''}`;
+  return `Levosimendán: ${es(mg)} mg en ${es(vol)} ml finales de SG 5 % (50 µg/ml). ${load>0?'Carga '+es(load)+' µg/kg ('+es(load*w/1000)+' mg) durante 10 min a '+es(load*w*6/50)+' ml/h; ':'Sin dosis de carga; '}mantenimiento ${es(rate)} µg/kg/min a ${es(rate*w*60/50)} ml/h durante 24 h para ${es(w)} kg. Requiere ${es(t)} mg en total (${es(t*20)} ml). ${t>25?'La cantidad supera 25 mg; preparar una bolsa adicional y verificar estabilidad.':''}`;
  }
  function render(){const w=Number(weight.value),valid=w>=20&&w<=250;copy.disabled=!valid;
   [...loadChoose.children].forEach(b=>{const on=Number(b.dataset.value)===load;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on))});
@@ -73,32 +73,36 @@ function createLevosimendan(d){
  return host;
 }
 function createEsmolol(d){
- const host=element('section','specialInfusion esmololProgram');host.append(element('h3','specialTitle','Administración y tablas de velocidades'));
+ const host=element('section','specialInfusion esmololProgram');host.append(element('h3','specialTitle','Administración y velocidades de perfusión'));
  const prep=element('div','selectedPreparation');prep.append(element('strong','','Brevibloc, solución lista para perfusión · 2.500 mg/250 ml'),element('span','selectedConcentration','10 mg/ml'),element('p','small','No confundir con el concentrado de 2.500 mg que debe diluirse.'));host.append(prep);
- const controls=element('div','weightControls'),lab=element('label','','Peso (kg)'),input=element('input','control');input.type='number';input.min='20';input.max='250';input.value='70';input.step='0.1';lab.append(input);controls.append(lab);host.append(controls);
- let dose=50,selectedLoad=false;const result=element('div','selectedPreparation'),copy=copyButton('Copiar',()=>{const w=Number(input.value);if(!(w>=20&&w<=250))return '';return selectedLoad?`Esmolol carga ${es(w*.5)} mg (500 µg/kg) IV en 1 minuto, volumen ${es(w*.05)} ml de Brevibloc 10 mg/ml, para ${es(w)} kg. Vigilancia ECG y PA.`:`Esmolol 2.500 mg/250 ml listo para perfusión (10 mg/ml). Infundir a ${es(dose*w*.006)} ml/h (${es(dose)} µg/kg/min) para ${es(w)} kg. Titular según FC/PA y tolerancia.`});host.append(result,copy);
- const area=element('div','infusionTableArea');host.append(area);
- function render(){const w=Number(input.value);copy.disabled=!(w>=20&&w<=250);if(copy.disabled){result.textContent='Introduce peso válido (20–250 kg).';return}result.textContent=selectedLoad?`Carga opcional: ${es(w*.5)} mg (${es(w*.05)} ml) IV en 1 min`:`Mantenimiento ${es(dose)} µg/kg/min → ${es(dose*w*.006)} ml/h`;area.replaceChildren();
-  const ws=[...new Set([60,70,80,90,100,w])].sort((a,b)=>a-b);
-  area.append(element('h4','','Carga opcional de 500 µg/kg en 1 minuto'),element('p','small','Puede omitirse si existe riesgo de hipotensión. Selecciona una fila para copiar la carga.'));
-  const t=makeTable(['Peso','Dosis (mg)','Volumen (ml)']);for(const wt of ws){const tr=document.createElement('tr'),th=document.createElement('th');th.textContent=es(wt)+' kg';tr.append(th);const mg=document.createElement('td'),ml=document.createElement('td');addTableChoice(mg,es(wt*.5),()=>{selectedLoad=true;input.value=String(wt);render()},`Carga ${es(wt*.5)} mg para ${wt} kg`);ml.textContent=es(wt*.05);tr.append(mg,ml);t.body.append(tr)}area.append(t.wrap);
-  area.append(element('h4','','Perfusión de mantenimiento'),element('p','small','Dosis seleccionables 50–200 µg/kg/min · velocidades en ml/h'));
-  const q=makeTable(['Peso','50','100','150','200']);for(const wt of ws){const tr=document.createElement('tr'),th=document.createElement('th');th.textContent=es(wt)+' kg';tr.append(th);for(const n of [50,100,150,200]){const td=document.createElement('td');addTableChoice(td,es(n*wt*.006),()=>{selectedLoad=false;dose=n;input.value=String(wt);render()},`${n} µg/kg/min para ${wt} kg`);tr.append(td)}q.body.append(tr)}area.append(q.wrap);
+ const controls=element('div','weightControls'),lab=element('label','','Peso del paciente (kg)'),input=element('input','control');input.type='number';input.min='20';input.max='250';input.value='70';input.step='0.1';lab.append(input);controls.append(lab);host.append(controls);
+ const load=element('div','esmololBlock'),maint=element('div','esmololBlock');host.append(load,maint);
+ load.append(element('h4','','Carga opcional · 500 µg/kg durante 1 minuto'));
+ const loadResult=element('div','selectedPreparation esmololResult'),loadCopy=copyButton('Copiar carga',()=>{const w=Number(input.value);return w>=20&&w<=250?`Esmolol: carga opcional de ${es(w*.5)} mg IV (${es(w*.05)} ml a 10 mg/ml), durante 1 minuto. Peso: ${es(w)} kg.`:''});
+ load.append(loadResult,loadCopy);
+ maint.append(element('h4','','Perfusión de mantenimiento'),element('p','specialUnitLabel','Dosis en µg/kg/min · Velocidad en ml/h · Concentración 10 mg/ml'));
+ const table=makeTable(['Peso','50','100','150','200']);maint.append(table.wrap);
+ const maintResult=element('div','selectedPreparation esmololResult'),maintCopy=copyButton('Copiar mantenimiento',()=>{const w=Number(input.value);return w>=20&&w<=250?`Esmolol: Brevibloc 2.500 mg en 250 ml (10 mg/ml), perfusión IV a ${es(selectedDose*w*.006)} ml/h (${es(selectedDose)} µg/kg/min para ${es(w)} kg).`:''});maint.append(maintResult,maintCopy);
+ let selectedDose=50;
+ function render(){const w=Number(input.value),ok=input.value.trim()!==''&&w>=20&&w<=250;loadCopy.disabled=maintCopy.disabled=!ok;
+  loadResult.textContent=ok?`Dosis: ${es(w*.5)} mg · Volumen: ${es(w*.05)} ml (10 mg/ml)`:'Introduce un peso entre 20 y 250 kg.';
+  table.body.replaceChildren();maintResult.textContent=ok?`Mantenimiento: ${es(selectedDose)} µg/kg/min → ${es(selectedDose*w*.006)} ml/h`:'Introduce un peso válido.';
+  if(!ok)return;
+  const tr=table.body.insertRow(),th=document.createElement('th');th.scope='row';th.textContent=es(w)+' kg';tr.append(th);
+  for(const n of [50,100,150,200]){const td=tr.insertCell(),b=addTableChoice(td,es(n*w*.006),()=>{selectedDose=n;render()},`${n} µg/kg/min para ${es(w)} kg`);if(n===selectedDose)b.classList.add('chosen')}
  }
- input.oninput=render;render();return host;
+ input.addEventListener('input',render);render();return host;
 }
 function createFurosemide(d){
- const host=element('section','specialInfusion furosemideProgram');host.append(element('h3','specialTitle','Bolos IV y perfusión continua'));
- const doses=element('div','amioStage');doses.append(element('b','','Inicio IV · si no tomaba diurético'));
- const choices=element('div','v38DoseChoices');for(const mg of [20,40])choices.append(element('span','bolusPill',mg+' mg IV lento'));doses.append(choices);host.append(doses);
- v38Info(host,'Si tomaba diurético de asa en domicilio, individualizar la dosis IV inicial considerando 1–2,5 veces la dosis oral diaria previa y biodisponibilidad. Reevaluar a las 2–6 horas: diuresis, congestión, Na urinario a las 2 h (orientativo ≥50–70 mEq/l) y diuresis de referencia ≥100–150 ml/h.');
- const panel=element('div','selectedPreparation');panel.append(element('strong','','Perfusión continua: 250 mg en 250 ml finales de SF 0,9 %'),element('span','selectedConcentration','1 mg/ml'),element('p','small','Solución para perfusión con bomba; no administrar el vial de 250 mg/25 ml en bolo IV.'));host.append(panel);
- const choice=selectedOrderBox(),tbl=makeTable(['Dosis (mg/h)','Velocidad (ml/h)']);for(const mg of [5,10,15,20,30,40]){const tr=document.createElement('tr'),th=document.createElement('th');th.textContent=mg+' mg/h';tr.append(th);const td=document.createElement('td');addTableChoice(td,mg.toString(),b=>{selectCell(tbl.table,b);choice.setOrder(`Furosemida 250 mg en 250 ml finales de SF 0,9 % (1 mg/ml), perfusión IV a ${mg} ml/h (${mg} mg/h). Reevaluar diuresis, PA, función renal y electrolitos.`)});tr.append(td);tbl.body.append(tr)}host.append(tbl.wrap,choice);
+ const host=element('section','specialInfusion furosemideProgram');host.append(element('h3','specialTitle','Perfusión continua'));
+ const panel=element('div','selectedPreparation');panel.append(element('strong','','Furosemida 250 mg en 250 ml finales de SF 0,9 %'),element('span','selectedConcentration','1 mg/ml'),element('p','small','Perfusión mediante bomba; la presentación 250 mg/25 ml no se administra en bolo IV.'));host.append(panel);
+ const choice=selectedOrderBox(),tbl=makeTable(['Dosis (mg/h)','Velocidad (ml/h)']);for(const mg of [5,10,15,20,30,40]){const tr=document.createElement('tr'),th=document.createElement('th');th.textContent=mg+' mg/h';tr.append(th);const td=document.createElement('td');addTableChoice(td,mg.toString(),b=>{selectCell(tbl.table,b);choice.setOrder(`Furosemida 250 mg en 250 ml finales de SF 0,9 % (1 mg/ml), perfusión IV a ${mg} ml/h (${mg} mg/h).`)});tr.append(td);tbl.body.append(tr)}host.append(tbl.wrap,choice);
  const h=element('details','specialDisclosure');h.append(element('summary','','Suero salino hipertónico · congestión resistente'));
- const body=element('div','specialDisclosureBody');body.append(element('p','','Propuesta acordada: cada dosis 150 ml finales en 60 minutos (150 ml/h), cada 12 h si está indicado. Composición según sodio plasmático:'));
- const t=makeTable(['Na plasmático','NaCl 20 % (10 ml/amp.)','Añadir SF 0,9 % hasta 150 ml','NaCl resultante']);for(const [range,amps,vol,percent] of [['<125 mEq/l','3 amp. · 30 ml','120 ml','4,72 %'],['126–135 mEq/l','2 amp. · 20 ml','130 ml','3,45 %'],['136–145 mEq/l','1 amp. · 10 ml','140 ml','2,17 %'],['>145 mEq/l','½ amp. · 5 ml','145 ml','1,54 %']]){const tr=document.createElement('tr');for(const v of [range,amps,vol,percent])tr.append(element('td','',v));t.body.append(tr)}body.append(t.wrap);
- body.append(element('div','warn','Preparaciones modificadas respecto a un protocolo clínico de referencia: pendientes de validación farmacotécnica local. Na = 125 mEq/l no tiene banda asignada en el esquema aportado; resolver antes de seleccionar. No copiar automáticamente estas órdenes hasta su validación. La furosemida se administra por separado y no debe mezclarse con la solución hipertónica.'));
- body.append(element('p','small','Monitorización: PA, diuresis y balance, Na/K/Cl/Mg, función renal; añadir gasometría venosa (pH, pCO₂, HCO₃⁻) según evolución. Reposición de K individualizada, no pautar Boi-K de forma automática.'));
+ const body=element('div','specialDisclosureBody');body.append(element('p','','Preparación local propuesta: 150 ml de volumen FINAL, administrados en 60 minutos (150 ml/h), cada 12 h si está indicado. Ajustar ampollas de NaCl al 20 % según sodio plasmático:'));
+ const t=makeTable(['Na plasmático','NaCl 20 % (10 ml/amp.)','Añadir SF 0,9 % hasta 150 ml finales','NaCl resultante']);
+ for(const [range,amps,vol,percent] of [['<125 mEq/l','3 amp. · 30 ml','120 ml','4,72 %'],['125–135 mEq/l','2 amp. · 20 ml','130 ml','3,45 %'],['136–145 mEq/l','1 amp. · 10 ml','140 ml','2,17 %'],['>145 mEq/l','½ amp. · 5 ml','145 ml','1,54 %']]){const tr=document.createElement('tr');for(const v of [range,amps,vol,percent])tr.append(element('td','',v));t.body.append(tr)}body.append(t.wrap);
+ body.append(element('p','small','Protocolo local MODIFICADO: composición pendiente de validación farmacotécnica antes de prescribir. Los tramos 125–135 y 136–145 mEq/l se expresan para valores de sodio en números enteros; si el resultado tiene decimales limítrofes, validar su asignación. Furosemida y suero hipertónico deben administrarse por separado.'));
+ body.append(element('p','small','Monitorización: PA, diuresis y balance, Na/K/Cl/Mg, función renal; valorar gasometría venosa (pH, pCO₂, HCO₃⁻) según evolución. Reposición de K individualizada.'));
  h.append(body);host.append(h);return host;
 }
 function createNoradrenalineInfusion(d){
@@ -109,7 +113,7 @@ function createNoradrenalineInfusion(d){
  const order=selectedOrderBox();host.append(order);for(const [n,p] of preps.entries()){const b=element('button','preparationButton',p.label);b.type='button';b.onclick=()=>{i=n;order.setOrder('');render()};buttons.append(b)};
  function render(){const w=Number(weight.value),p=preps[i],ok=w>=20&&w<=250;for(const [n,b] of [...buttons.children].entries()){b.classList.toggle('active',n===i);b.setAttribute('aria-pressed',String(n===i))}area.replaceChildren();area.append(element('p','selectedConcentration',p.conc+' µg/ml BASE · SG 5 % preferente según producto'));
  if(!ok){area.append(element('p','weightWarning','Introduce peso entre 20–250 kg.'));order.setOrder('');return}
- const table=makeTable(['Peso','0,02','0,05','0,1','0,2','0,3','0,5','0,75','1']);const doses=[.02,.05,.1,.2,.3,.5,.75,1];const tr=document.createElement('tr'),th=document.createElement('th');th.textContent=es(w)+' kg';tr.append(th);for(const dose of doses){const td=document.createElement('td'),rate=dose*w*60/p.conc;addTableChoice(td,es(rate),b=>{selectCell(table.table,b);order.setOrder(`Noradrenalina BASE ${p.amountMg} mg en 100 ml finales de SG 5 % (${p.conc} µg/ml BASE), perfusión IV a ${es(rate)} ml/h (${es(dose)} µg/kg/min de BASE para ${es(w)} kg). Titular según objetivo hemodinámico.`)});tr.append(td)}table.body.append(tr);area.append(table.wrap)}weight.oninput=()=>{order.setOrder('');render()};render();
+ const table=makeTable(['Peso','0,02','0,05','0,1','0,2','0,3','0,5','0,75','1']);const doses=[.02,.05,.1,.2,.3,.5,.75,1];const tr=document.createElement('tr'),th=document.createElement('th');th.textContent=es(w)+' kg';tr.append(th);for(const dose of doses){const td=document.createElement('td'),rate=dose*w*60/p.conc;addTableChoice(td,es(rate),b=>{selectCell(table.table,b);order.setOrder(`Noradrenalina BASE ${p.amountMg} mg en 100 ml finales de SG 5 % (${p.conc} µg/ml BASE), perfusión IV a ${es(rate)} ml/h (${es(dose)} µg/kg/min de BASE para ${es(w)} kg).`)});tr.append(td)}table.body.append(tr);area.append(table.wrap)}weight.oninput=()=>{order.setOrder('');render()};render();
  const note=element('p','small','Cambio de etiquetado (2022): la expresión de cantidad pasó de bitartrato a BASE, sin modificar la cantidad real de noradrenalina.');host.append(note);
  return host;
 }
@@ -120,12 +124,16 @@ function createSpecialInfusion(d){
  if(d.special.kind==='esmolol')return createEsmolol(d);
  if(d.special.kind==='furosemide')return createFurosemide(d);
  if(d.id==='noradrenalina')return createNoradrenalineInfusion(d);
- if(d.special.kind==='amiodarone')return element('div','amioNoDuplicate');
+ if(d.special.kind==='amiodarone')return null;
  const conf=d.special,host=element('section','specialInfusion');host.append(element('h3','specialTitle','Preparación de la perfusión'));
  const buttons=element('div','preparationOptions'),chosen=element('div','selectedPreparation'),area=element('div','infusionTableArea'),order=selectedOrderBox();
- let prepIndex=0,full=false,weight=null,selection=null;
+ let prepIndex=0,full=false,weight=null,selection=null;let solvent='SG 5 %';
  conf.preparations.forEach((p,i)=>{const b=element('button','preparationButton',p.label);b.type='button';b.onclick=()=>{prepIndex=i;selection=null;render()};buttons.append(b)});
- if(conf.preparations.length>1)host.append(buttons);host.append(chosen);
+ if(conf.preparations.length>1)host.append(buttons);
+ const allowedDiluents=d.id==='adrenalina'?['SG 5 %','SF 0,9 %']:[];
+ if(allowedDiluents.length>1){const bar=element('div','infusionDiluent'),label=element('b','','Diluyente de perfusión'),options=element('div','preparationOptions');bar.append(label,options);
+  for(const value of allowedDiluents){const b=element('button','preparationButton',value);b.type='button';b.dataset.solvent=value;b.onclick=()=>{solvent=value;selection=null;render()};options.append(b)}host.append(bar)}
+ host.append(chosen);
  if(conf.kind==='weight'){
    const controls=element('div','weightControls'),wrap=element('div','weightInputGroup'),label=element('label','','Peso del paciente (kg)');
    weight=element('input','control');weight.type='number';weight.min='20';weight.max='250';weight.step='0.1';weight.value='70';weight.id='doseWeight_'+d.id;
@@ -139,19 +147,19 @@ function createSpecialInfusion(d){
  }
  host.append(area,order);
  if(conf.equivalent)host.append(element('p','small equivalentPreparation',conf.equivalent));
- if(d.id==='dopamina')host.append(element('div','dopamineKidneyWarning','La dosis dopaminérgica baja NO debe usarse para prevenir ni tratar la lesión renal aguda.'));
  host.append(element('p','small infusionCaution','Velocidades calculadas matemáticamente para la concentración seleccionada. Verificar prescripción, volumen final, bomba y condiciones del centro.'));
  function effect(n){return n<=2?'dopaminergic':n<=10?'beta':'alpha'}
  function orderText(p,w,dose,rate){const mg=es(p.amountMg),vol=es(p.volumeMl),r=es(rate);
    if(conf.kind==='fixed')return `${d.name}: ${mg} mg en ${vol} ml finales de SG 5 %. Perfusión IV continua a ${r} ml/h (${es(dose)} mg/h).`;
-   if(conf.kind==='fixed_micro')return `${d.name}: ${mg} mg en ${vol} ml finales de SF 0,9 %. Perfusión IV continua a ${r} ml/h (${es(dose)} µg/min). Titular según FC y respuesta hemodinámica.`;
-   const solvent=d.id==='adrenalina'?'SG 5 % o SF 0,9 %':d.id==='dobutamina'?'SG 5 %':d.id==='dopamina'?'SG 5 %':'diluyente indicado';
-   return `${d.name}: ${mg} mg en ${vol} ml finales de ${solvent}. Perfusión IV continua a ${r} ml/h (${es(dose)} µg/kg/min para ${es(w)} kg). Verificar objetivo y ajuste hemodinámico.`
+   if(conf.kind==='fixed_micro')return `${d.name}: ${mg} mg en ${vol} ml finales de SF 0,9 %. Perfusión IV continua a ${r} ml/h (${es(dose)} µg/min).`;
+   const dil=d.id==='adrenalina'?solvent:d.id==='dobutamina'?'SG 5 %':d.id==='dopamina'?'SG 5 %':'diluyente indicado';
+   return `${d.name}: ${mg} mg en ${vol} ml finales de ${dil}. Perfusión IV continua a ${r} ml/h (${es(dose)} µg/kg/min para ${es(w)} kg).`
  }
  function render(){const p=conf.preparations[prepIndex],micro=conf.kind==='fixed_micro',fixed=conf.kind==='fixed'||micro;
    for(const [i,btn] of [...buttons.children].entries()){btn.classList.toggle('active',i===prepIndex);btn.setAttribute('aria-pressed',String(i===prepIndex))}
+   host.querySelectorAll('[data-solvent]').forEach(b=>{const on=b.dataset.solvent===solvent;b.classList.toggle('active',on);b.setAttribute('aria-pressed',String(on))});
    const views=host.querySelectorAll('.viewButton');views.forEach((b,i)=>{b.classList.toggle('active',Boolean(i)===full);b.setAttribute('aria-pressed',String(Boolean(i)===full))});
-   chosen.replaceChildren();chosen.append(element('strong','',p.name),element('span','selectedConcentration',es(1000*p.amountMg/p.volumeMl)+' µg/ml · '+es(p.amountMg/p.volumeMl)+' mg/ml'),element('p','small',p.detail+' Volumen final incluido el medicamento.'));
+   chosen.replaceChildren();chosen.append(element('strong','',d.id==='adrenalina'?p.name.replace('SG 5 % o SF 0,9 %',solvent):p.name),element('span','selectedConcentration',es(1000*p.amountMg/p.volumeMl)+' µg/ml · '+es(p.amountMg/p.volumeMl)+' mg/ml'),element('p','small',p.detail+' Volumen final incluido el medicamento.'+(d.id==='adrenalina'?' Diluyente seleccionado: '+solvent+'.':'')));
    area.replaceChildren();area.append(element('h4','',fixed?'Tabla de perfusión':'Calculadora de perfusión por peso'));
    area.append(element('p','specialUnitLabel',fixed?(micro?'Dosis: µg/min · Velocidad: ml/h':'Dosis: mg/h · Velocidad: ml/h'):'Cabeceras: µg/kg/min · Resultados: ml/h'));
    const scroll=element('div','specialTableScroll'),table=element('table','specialTable'),head=document.createElement('thead'),hr=document.createElement('tr');
@@ -200,17 +208,19 @@ function createPautaCopies(d){
  for(const item of d.copyPautas){const row=element('div','copyPautaRow');row.append(element('span','',item.title),copyButton('Copiar',()=>item.text));host.append(row)}
  return host;
 }
-function clinicalField(title,value,extra=''){
- const e=element('section','field'+(extra?' '+extra:''));
- e.append(element('b','',title),element('p','',value||'Pendiente de comprobar en ficha técnica.'));
- return e;
+function clinicalField(title,value,extra='',fold=false){
+  if(fold)return specialDisclosure(title,value,'clinicalFold');
+  const e=element('section','field'+(extra?' '+extra:''));
+  e.append(element('b','',title),element('p','',value||'Pendiente de comprobar en ficha técnica.'));
+  return e;
 }
 function renderIndications(d){
- const e=element('div','clinicalEssentials');
- e.append(clinicalField('Indicaciones',d.indication));
- e.append(clinicalField('Precauciones',d.precautions));
- e.append(clinicalField('Contraindicaciones',d.contraindication));
- return e;
+  const fold=d.id==='cloruro_calcico';
+  const e=element('div','clinicalEssentials'+(fold?' folded':''));
+  e.append(clinicalField('Indicaciones',d.indication,'',fold));
+  e.append(clinicalField('Precauciones',d.precautions,'',fold));
+  e.append(clinicalField('Contraindicaciones',d.contraindication,'',fold));
+  return e;
 }
 function showDoseRows(d,panel){
  if(!d.doseRows?.length)return;
@@ -234,37 +244,52 @@ function relatedPhosphateLink(id){
  return b;
 }
 function createPhosphateCalculator(){
- const host=element('section','specialInfusion phosphateCalc');host.append(element('h3','specialTitle','Calculadora de reposición de fosfato IV'));
+ const host=element('section','specialInfusion phosphateCalc');host.append(element('h3','specialTitle','Calculadora de fosfatos IV · dosis por peso'));
  const controls=element('div','phosphateControls');
- const chooser=(title,opts,value)=>{let wrap=element('label','phosLabel'),s=element('select','control');wrap.append(element('span','',title));for(const [v,t] of opts){const o=element('option','',t);o.value=v;s.append(o)}s.value=value;wrap.append(s);controls.append(wrap);return s};
- const salt=chooser('Sal',[['na','Fosfato monosódico 1 M'],['k','Fosfato dipotásico 1 M']],'k');
+ const chooser=(title,opts,value)=>{const wrap=element('label','phosLabel'),select=element('select','control');wrap.append(element('span','',title));for(const [v,t] of opts){const o=element('option','',t);o.value=v;select.append(o)}select.value=value;wrap.append(select);controls.append(wrap);return select};
  const weightWrap=element('label','phosLabel');weightWrap.append(element('span','','Peso (kg)'));const weight=element('input','control');weight.type='number';weight.min='20';weight.max='250';weight.step='0.1';weight.value='70';weightWrap.append(weight);controls.append(weightWrap);
- const dose=chooser('Dosis',[['0.08','Inicio: 0,08 mmol/kg'],['0.16','0,16 mmol/kg · prolongada'],['0.25','0,25 mmol/kg · pauta alternativa'],['0.5','0,50 mmol/kg · pauta alternativa'],['fixed15','15 mmol · pauta fija'],['fixed30','30 mmol · pauta fija']],'0.08');
- const route=chooser('Vía',[['per','Periférica'],['cen','Central monitorizada']],'per');
- const diluent=chooser('Diluyente',[['sf','SF 0,9 %'],['sg','SG 5 %']],'sf');
- const volume=chooser('Volumen FINAL',[['100','100 ml'],['250','250 ml'],['500','500 ml'],['750','750 ml'],['1000','1.000 ml'],['1500','1.500 ml']],'500');
- const hours=chooser('Tiempo de perfusión',[['2','2 h'],['4','4 h'],['6','6 h'],['8','8 h'],['12','12 h'],['16','16 h'],['24','24 h']],'6');
- const dkaLabel=element('label','phosCheck');const dka=element('input');dka.type='checkbox';dkaLabel.append(dka,element('span','','Cetoacidosis diabética (límite específico para dipotásico: 5 mEq K/h)'));
- host.append(controls,dkaLabel);
- const result=element('div','phosResult'),alerts=element('div','phosAlerts'),note=element('p','small','Los volúmenes son opciones para calcular, NO preparaciones verificadas para cualquier vía. Validar dilución y estabilidad con Farmacia. La alerta de concentración usa referencias generales de potasio IV, no máximos universales de fosfato potásico.');
- host.append(result,alerts,note);
+ const dose=chooser('Dosis',[['0.08','0,08 mmol/kg · inicial'],['0.16','0,16 mmol/kg'],['0.25','0,25 mmol/kg'],['0.5','0,50 mmol/kg']],'0.08');
+ const route=chooser('Vía venosa',[['per','Periférica'],['cen','Central monitorizada']],'per');
+ const prep=chooser('Preparación',[['15','1,5 ampollas · 15 mmol'],['30','3 ampollas · 30 mmol']],'15');
+ const diluent=chooser('Diluyente compatible',[['SF 0,9 %','SF 0,9 %'],['SG 5 %','SG 5 %']],'SF 0,9 %');
+ const hours=chooser('Duración de la perfusión',[['6','6 horas']],'6');
+ host.append(controls);
+ const prepInfo=element('div','selectedPreparation phosPreparation'),result=element('div','phosResult'),alerts=element('div','phosAlerts');host.append(prepInfo,result,alerts);
+ const note=element('p','small','Las dos preparaciones periféricas contienen 0,06 mmol de fósforo/ml. Los ejemplos centrales son más concentrados y solo son utilizables si el servicio de Farmacia valida la formulación y vía. NO asumir que las diluciones de fosfato dipotásico son aptas para vía periférica: 15 mmol/250 ml o 30 mmol/500 ml implican 120 mEq/l de potasio.');host.append(note);
  const f=x=>Number(x).toLocaleString('es-ES',{maximumFractionDigits:2});
- const cell=(title,value,bad=false)=>{const e=element('div','phosMetric'+(bad?' isOver':''));e.append(element('span','',title),element('strong','',value));return e};
- function calc(){const kg=Number(weight.value),valid=Number.isFinite(kg)&&kg>=20&&kg<=250;result.replaceChildren();alerts.replaceChildren();if(!valid){result.append(element('p','weightWarning','Introduce un peso entre 20 y 250 kg.'));return}
- const mmol=dose.value==='fixed15'?15:dose.value==='fixed30'?30:Number(dose.value)*kg,v=Number(volume.value),h=Number(hours.value),potassium=salt.value==='k';
- const total=mmol*(potassium?2:1),pRate=mmol/h,kRate=potassium?total/h:0,kConc=potassium?total*1000/v:0;
- const pBad=pRate>7.5+1e-9,kLimit=dka.checked?5:(route.value==='per'?10:20),kBad=potassium&&kRate>kLimit+1e-9,concLimit=route.value==='per'?40:100,concBad=potassium&&kConc>concLimit+1e-9;
- const grid=element('div','phosMetrics');grid.append(cell('Fósforo total',f(mmol)+' mmol'),cell('Concentrado 1 M',f(mmol)+' ml'),cell(potassium?'Potasio total':'Sodio total',f(total)+' mEq'),cell('Ritmo de bomba',f(v/h)+' ml/h'),cell('Ritmo de fósforo',f(pRate)+' mmol/h',pBad));
- if(potassium){grid.append(cell('Ritmo de potasio',f(kRate)+' mEq/h',kBad),cell('Concentración de potasio',f(kConc)+' mEq/l',concBad))}result.append(grid);
- const showError=(title,desc)=>{const w=element('div','phosAlert');w.append(element('strong','',title),element('p','',desc));alerts.append(w)};
- if(pBad)showError('Exceso de velocidad de fósforo',`${f(pRate)} mmol/h supera la referencia conservadora de 7,5 mmol/h. Revisar duración o dosis.`);
- if(kBad)showError('Exceso de velocidad de potasio',`${f(kRate)} mEq/h supera ${f(kLimit)} mEq/h para la vía o situación elegida. Prolongar perfusión o replantear pauta.`);
- if(concBad)showError('Concentración de potasio elevada',`${f(kConc)} mEq/l supera la referencia general de ${f(concLimit)} mEq/l para esta vía; comprobar la dilución con Farmacia.`);
- if(dose.value!=='0.08')alerts.append(element('p','phosInfo','La pauta inicial de 0,08 mmol/kg durante 6 h NO fija el tiempo de las pautas superiores: individualizar según ficha técnica, función renal y aporte de K.'));
- if(!alerts.childElementCount)alerts.append(element('p','phosOk','Sin excesos respecto a los umbrales orientativos seleccionados; esto NO valida la preparación o la vía.'));
+ const cell=(title,value,cls='')=>{const e=element('div','phosMetric '+cls);e.append(element('span','',title),element('strong','',value));return e};
+ const warning=(title,desc)=>{const a=element('div','phosAlert');a.append(element('strong','',title),element('p','',desc));alerts.append(a);return a};
+ function minHours(){return route.value==='per'?(prep.value==='15'?4:6):(prep.value==='15'?2:4)}
+ function updateHours(){const min=minHours(),old=Number(hours.value)||6;hours.replaceChildren();for(const n of [2,3,4,5,6,7,8,10,12,16,24])if(n>=min){const o=element('option','',n+' horas');o.value=String(n);hours.append(o)}hours.value=String(old>=min?[...hours.options].some(o=>o.value===String(old))?old:min:min)}
+ function calc(){updateHours();const kg=Number(weight.value),ok=weight.value.trim()!==''&&Number.isFinite(kg)&&kg>=20&&kg<=250;
+  result.replaceChildren();alerts.replaceChildren();prepInfo.replaceChildren();
+  const bagDose=Number(prep.value),bagVolume=route.value==='per'?(bagDose===15?250:500):100,concentration=bagDose/bagVolume;
+  prepInfo.append(element('strong','',`${bagDose===15?'1,5':'3'} ampollas (${bagDose} mmol de fósforo) en ${bagVolume} ml de volumen FINAL de ${diluent.value}`),element('span','selectedConcentration',`${f(concentration)} mmol/ml de fósforo`));
+  if(!ok){result.append(element('p','weightWarning','Introduce un peso válido entre 20 y 250 kg.'));return}
+  const mmol=kg*Number(dose.value),duration=Number(hours.value),vtbi=mmol/concentration,pump=vtbi/duration,phosRate=mmol/duration,potRate=2*phosRate;
+  const pFast=phosRate>7.5+1e-9,tooLarge=mmol>bagDose+1e-9,tooLargeBoth=mmol>30+1e-9;
+  const grid=element('div','phosMetrics');grid.append(cell('Dosis calculada',f(mmol)+' mmol'),cell('Duración seleccionada',f(duration)+' h'));
+  grid.append(cell('VOLUMEN A ADMINISTRAR · VTBI',f(vtbi)+' ml','phosPrimary'),cell('VELOCIDAD DE BOMBA',f(pump)+' ml/h','phosPrimary'));
+  grid.append(cell('Velocidad de fósforo',f(phosRate)+' mmol/h',pFast?'isOver':''));
+  result.append(grid);
+  if(tooLarge){const row=warning('Preparación insuficiente',tooLargeBoth?`La dosis calculada (${f(mmol)} mmol) supera incluso los 30 mmol de la preparación mayor: se requiere revisión de pauta y otra preparación validada.`:`La dosis calculada (${f(mmol)} mmol) supera los 15 mmol (1,5 ampollas) disponibles. Cambia a 3 ampollas.`);
+   if(!tooLargeBoth&&bagDose===15){const b=element('button','action phosUpgrade',route.value==='per'?'Cambiar a 3 ampollas en 500 ml':'Cambiar a 3 ampollas en 100 ml · vía central');b.type='button';b.onclick=()=>{prep.value='30';const min=minHours();if(Number(hours.value)<min)hours.value=String(min);calc()};row.append(b)}
+  }
+  if(pFast)warning('Velocidad de fósforo superior al límite conservador',`${f(phosRate)} mmol/h supera 7,5 mmol/h. Revisa la duración (mínimo matemático ${f(mmol/7.5)} h) o la dosis.`);
+  // Potassium safety remains explicit despite no salt selector: the same pump rate delivers 2 mEq K/mmol P with dipotassium.
+  const kLimit=route.value==='per'?10:20;
+  if(potRate>kLimit+1e-9)warning('Posible exceso de potasio si se utiliza dipotásico',`Esta dosis aportaría ${f(potRate)} mEq/h de K con fosfato dipotásico, por encima de la referencia general de ${kLimit} mEq/h para la vía seleccionada. Verificar también concentración y otros aportes.`);
+  if(route.value==='cen')warning('Preparación central concentrada pendiente de validación',`Con fosfato dipotásico español, esta preparación tendría ${f(2*bagDose*1000/bagVolume)} mEq/l de K. No administrar sin protocolo central validado y monitorización.`);
+  const vtbiNotice=element('div','phosVTBINotice');
+  vtbiNotice.append(element('strong','',tooLarge?'NO programar esta pauta con la preparación seleccionada':`PROGRAMAR EN LA BOMBA: ${f(vtbi)} ml de volumen a infundir (VTBI)`));
+  vtbiNotice.append(element('p','',tooLarge?'La dosis calculada supera el contenido de la bolsa elegida. Selecciona otra preparación y verifica de nuevo todos los datos.':mmol<bagDose-1e-9?`NO ADMINISTRAR LA BOLSA COMPLETA: pasar solo ${f(vtbi)} ml a ${f(pump)} ml/h durante ${f(duration)} horas; detener al alcanzar ese volumen.`:`La dosis calculada coincide con el contenido total de la bolsa. Programar ${f(vtbi)} ml como volumen a infundir y confirmar la pauta.`));
+  if(!tooLarge)result.append(vtbiNotice);else alerts.prepend(vtbiNotice);
+  if(dose.value!=='0.08')alerts.append(element('p','phosInfo','La duración inicial de 6 h recogida en AEMPS corresponde a 0,08 mmol/kg en hipofosfatemia reciente no complicada; las dosis mayores requieren individualización.'));
+  if(dose.value==='0.08'&&duration<6)warning('Duración inferior a la pauta inicial de ficha técnica','La pauta inicial de 0,08 mmol/kg se administra durante 6 horas en hipofosfatemia reciente no complicada. Si eliges menos tiempo, debe existir justificación clínica y un protocolo validado.');
+  if(!tooLarge)alerts.append(element('p','phosInfo','Antes de administrar, comprobar P, Ca, Na, K, Mg, creatinina/FGe, diuresis y acceso venoso. En cetoacidosis diabética, el fosfato dipotásico tiene un límite específico de 5 mEq/h. Las preparaciones están pendientes de validación local.'));
  }
- for(const node of [salt,weight,dose,route,diluent,volume,hours,dka])node.addEventListener('change',calc);
- weight.addEventListener('input',calc);salt.onchange=()=>{volume.value=salt.value==='k'?'500':'250';calc()};dka.onchange=calc;
+ for(const node of [weight,dose,route,prep,hours,diluent])node.addEventListener('change',calc);
+ weight.addEventListener('input',calc);
  calc();return host;
 }
 function createPresentations(d, mainDose){
@@ -277,16 +302,40 @@ function createAmiodarone(d){
   card.append(detail,copyButton('Copiar',()=>`Amiodarona ${it.mg} mg IV en SG 5 % hasta ${it.vol} ml finales, durante ${it.minutes===60?'60 minutos':it.minutes/60+' horas'}, a ${es(it.vol*60/it.minutes)} ml/h.`));host.append(card)}
  host.append(element('p','small','No confundir pauta de perfusión con 300 mg IV/IO tras tercera descarga (y 150 mg tras quinta) en FV/TV sin pulso. La continuación oral no es obligatoria.'));return host;
 }
+// v49 · Pautas por pasos/indicaciones mediante viñetas; aclaraciones de la misma pauta, como adenosina, en párrafo separado.
+function posologyText(value,id,quick=false){
+ const lines=String(value||'').split(/\n+/).map(x=>x.trim()).filter(Boolean),host=element('div','posologyText');
+ if(!lines.length)return host;
+ if(id==='adenosina'&&quick){for(const line of lines)host.append(element('p','posologyParagraph',line));return host}
+ if(lines.length>1){const ul=element('ul','posologyList');for(const line of lines)ul.append(element('li','',line));host.append(ul)}
+ else host.append(element('p','posologyParagraph',lines[0]));return host;
+}
+function sectionGroup(d,selector){return (d.special?.sections||[]).filter(s=>selector(s.title.toLocaleLowerCase('es')))}
+function infoItems(items){const host=element('div','infoItems');for(const item of items){const p=element('div','infoItem');p.append(element('b','',item.title),element('p','',item.text));host.append(p)}return host}
+function addDisclosure(parent,title,content){const h=specialDisclosure(title,content,'clinicalFold v49Fold');parent.append(h);return h}
 function show(id,scroll){const d=D.find(x=>x.id===id);if(!d)return;if(current!==id)$('genericAccordion').open=false;current=id;if(location.hash!=='#'+id)history.replaceState(null,'','#'+id);const e=$('drugDetail');const stored=$('lyticBox');if(stored&&stored.parentNode!==$('lyticHome'))$('lyticHome').append(stored);e.replaceChildren();
 const status=element('span','status'+(d.reviewed?' ready':''),d.reviewed?'Ficha clínica':'Pendiente de validación');const hd=element('div','drugHead');const hwrap=element('div','');hwrap.append(status,element('h2','',d.name),element('div','subdrug',d.brand+' · '+d.routes));if(d.mechanism)hwrap.append(element('div','mechanismBrief',d.mechanism));const star=makeStar(id);star.id='detailStar';hd.append(hwrap,star);e.append(hd);
-if(d.presentation&&!d.presentation.startsWith('Pendiente')){const present=element('div','v38PresentationHeader');present.append(element('b','','Presentación'),element('p','',d.presentation));e.append(present)}showDiluent(d,e);
-const doseCard=element('section','dosePanel'+(d.reviewed?'':' pending'));doseCard.append(element('h3','','Dosis y pautas de referencia'),element('p','',d.dosingBrief||d.dosing));showDoseRows(d,doseCard);e.append(doseCard);
+// Referencia rápida: presentación + diluyentes en un solo recuadro, dosis y tres recuadros clínicos.
+if((d.presentation&&!d.presentation.startsWith('Pendiente'))||d.diluent){const present=element('div','v38PresentationHeader');present.append(element('b','','Presentación'));if(d.presentation)present.append(element('p','',d.presentation));if(d.diluent){const dl=element('p','v49PresentationDiluent');dl.append(element('strong','','Diluyentes / administración: '),document.createTextNode(d.diluent));present.append(dl)}e.append(present)}
+const doseCard=element('section','dosePanel'+(d.reviewed?'':' pending'));doseCard.append(element('h3','','Dosis y pautas de referencia'));
+if(d.doseRows?.length)showDoseRows(d,doseCard);else doseCard.append(posologyText(d.dosingBrief||d.dosing,d.id,true));e.append(doseCard);
 const copyPautas=(d.id==='atropina'||d.id==='furosemida'||d.doseRows?.length)?null:createPautaCopies(d);if(copyPautas)doseCard.append(copyPautas);
 e.append(renderIndications(d));
-if(d.dosingBrief&&d.dosingBrief!==d.dosing){const det=element('details','detailDose');const sum=element('summary','','Detalle posológico y consideraciones');det.append(sum,element('div','doseBody',d.dosing));e.append(det)}
+// Ajustes inmediatamente antes del detalle posológico.
+const adjustments=sectionGroup(d,t=>/^ajustes?/.test(t));if(adjustments.length)addDisclosure(e,'Ajustes posológicos',infoItems(adjustments));
+// Consolidar información sobre vía y condiciones en detalle posológico, sin bloques redundantes.
+const details=sectionGroup(d,t=>!/^ajustes?/.test(t)&&!/(^monitorizaci[oó]n|^interacciones|farmacocin[eé]tica)/.test(t)&&!/precauciones y contraindicaciones|contraindicaciones y precauciones/.test(t)&&!(d.id==='adenosina'&&t==='precauciones'));
+const detailNeeded=(d.dosingBrief&&d.dosingBrief!==d.dosing)||details.length||(!d.special&&d.administration);
+if(detailNeeded){const det=element('details','detailDose');det.append(element('summary','','Detalle posológico y consideraciones'));
+ const body=element('div','doseBody');if(d.dosingBrief&&d.dosingBrief!==d.dosing)body.append(posologyText(d.dosing,d.id,false));
+ if(details.length)body.append(infoItems(details));
+ if(!d.special&&d.administration)body.append(infoItems([{title:'Vía y administración',text:d.administration}]));
+ det.append(body);e.append(det)}
+// Preparaciones, cálculo por peso y bolos únicamente si existen; adenosina sin ficha redundante.
 if(d.id==='fosfato_iv'){e.append(createPhosphateCalculator(),relatedPhosphateLink(id))}else if(d.id==='fosfatos_orales'){e.append(relatedPhosphateLink(id))}
-if(d.special){if(d.special.kind!=='none')e.append(createSpecialInfusion(d));e.append(createSpecialInfo(d));if(d.notes)e.append(element('div','notes',d.notes))}
-else{if(d.clinicalKinetics)e.append(specialDisclosure('Farmacocinética clínica',d.clinicalKinetics));const fields=element('div','fields');for(const [title,key] of [['Complicaciones y reacciones adversas','adverse'],['Vía, dilución y administración','administration']]){fields.append(clinicalField(title,d[key],key==='administration'?'full':''))}e.append(fields);if(d.notes)e.append(element('div','notes'+(/ALERTA|NO |Vía periférica/.test(d.notes)?' emph':''),d.notes));if(id==='ferinject'||id==='venofer')e.append(createIronCalc(id));e.append(specialSources(d));}
+if(d.special?.kind&&d.special.kind!=='none'&&d.special.kind!=='amiodarone'&&d.id!=='adenosina'){const inf=createSpecialInfusion(d);if(inf)e.append(inf)}
+if(!d.special&&(id==='ferinject'||id==='venofer'))e.append(createIronCalc(id));
+// Calculadora de trombólisis, como preparación, antes de los apartados clínicos complementarios.
 const lyticBox=$('lyticBox'),lyticHome=$('lyticHome');
 if(id==='alteplasa'||id==='tenecteplasa'){
 const opt=($('lyticType')); opt.replaceChildren();
@@ -294,6 +343,13 @@ const types=id==='alteplasa'?[['alteplase_stroke','Alteplasa · ictus isquémico
 for(const [value,label] of types){const o=document.createElement('option');o.value=value;o.textContent=label;opt.append(o)}
 $('lyticWeight').value='';$('lyticAccordion').open=false;e.append(lyticBox);calcLytic();
 }else{lyticHome.append(lyticBox);$('lyticAccordion').open=false}
+// Información complementaria siempre tras el bloque posológico y las perfusiones.
+const monitor=sectionGroup(d,t=>/^monitorizaci[oó]n/.test(t));if(monitor.length)addDisclosure(e,'Monitorización',infoItems(monitor));
+if(d.adverse)addDisclosure(e,'Reacciones adversas relevantes',d.adverse);
+const interactions=sectionGroup(d,t=>/^interacciones/.test(t));if(interactions.length)addDisclosure(e,'Interacciones farmacológicas',infoItems(interactions));
+const kinetics=sectionGroup(d,t=>/farmacocin[eé]tica/.test(t));if(kinetics.length)addDisclosure(e,'Farmacocinética clínica',infoItems(kinetics));else if(d.clinicalKinetics)addDisclosure(e,'Farmacocinética clínica',d.clinicalKinetics);
+if(d.notes)e.append(d.id==='cloruro_calcico'?specialDisclosure('Nota de seguridad',d.notes,'clinicalFold'):element('div','notes'+(/ALERTA|NO |Vía periférica/.test(d.notes)?' emph':''),d.notes));
+e.append(specialSources(d));
 renderList();if(scroll&&window.innerWidth<801)e.scrollIntoView({behavior:'smooth',block:'start'})}
 function val(id){const s=$(id).value.trim().replace(',','.');return s===''?NaN:Number(s)}
 function createIronCalc(drug){const host=element('section','ironCalc');const details=element('details','calcAccordion');const summary=document.createElement('summary');const text=element('span','');text.append(element('span','accordionName',drug==='ferinject'?'Calculadora de necesidad de hierro · Ferinject':'Calculadora de hierro · Ganzoni / Venofer'),element('span','accordionSub','Peso + Hb → necesidad acumulada y límites de administración'));summary.append(text,element('span','accordionSide'));details.append(summary);const body=element('div','calcAccordionBody');const grid=element('div','calcgrid');const weightBox=element('div','inputgroup'),hbBox=element('div','inputgroup');weightBox.innerHTML='<label for="ironWeight">Peso (kg)</label><input id="ironWeight" class="control" type="number" min="15" max="350" step="0.1" inputmode="decimal" placeholder="Peso">';hbBox.innerHTML='<label for="ironHb">Hemoglobina (g/dL)</label><input id="ironHb" class="control" type="number" min="1" max="25" step="0.1" inputmode="decimal" placeholder="Hb">';grid.append(weightBox,hbBox);if(drug==='ferinject'){const route=element('div','inputgroup');route.innerHTML='<label for="ironRoute">Administración</label><select class="control" id="ironRoute"><option value="infusion">Perfusión IV</option><option value="injection">Inyección IV</option></select>';grid.append(route)}body.append(grid);if(drug==='ferinject'){const label=element('label','checkline');label.innerHTML='<input id="ironDialysis" type="checkbox"> Paciente en hemodiálisis (máximo 200 mg/día)';body.append(label)}const result=element('div','calcresult','Introduce peso y Hb para calcular.');result.id='ironResult';result.setAttribute('aria-live','polite');body.append(result,element('div','warn',drug==='ferinject'?'Solo ≥14 años; aplicar tabla y límites de ficha técnica. No elegir automáticamente indicación ni pauta.':'Cálculo de Ganzoni según FT. No es una orden de administración ni determina de forma automática número o frecuencia de perfusiones.'));details.append(body);host.append(details);
@@ -304,7 +360,7 @@ body.querySelectorAll('input,select').forEach(x=>x.addEventListener('input',upda
 function calculate(){const dose=val('orderedDose'),amount=val('drugAmount'),vol=val('finalVolume'),kg=val('patientWeight'),kind=$('doseKind').value,unit=$('drugAmountUnit').value,out=$('genericResult');out.className='calcresult';lastCopy='';if(![dose,amount,vol].every(x=>Number.isFinite(x)&&x>0)){out.textContent='Introduce dosis prescrita, cantidad del medicamento y volumen final positivos.';return}if(kind.includes('kg')&&!(kg>=1&&kg<=350)){out.textContent='Introduce el peso en kg para esta pauta.';return}
 const mg=kind.startsWith('mg')||kind.startsWith('mcg');if((mg&&unit!=='mg')||(kind.startsWith('UI')&&unit!=='UI')||(kind.startsWith('mmol')&&unit!=='mmol')||(kind.startsWith('mEq')&&unit!=='mEq')){out.classList.add('error');out.textContent='Dosis y preparado usan unidades incompatibles.';return}
 let rate=0,text='',bolus=kind==='mgkgdose';switch(kind){case'mcgkgmin':rate=dose*kg*60/1000;text=fmt(dose*kg)+' µg/min';break;case'mgkgh':rate=dose*kg;text=fmt(rate)+' mg/h';break;case'mgkgdose':rate=dose*kg;text=fmt(rate)+' mg/dosis';break;case'mgh':rate=dose;text=fmt(rate)+' mg/h';break;case'mcgmin':rate=dose*60/1000;text=fmt(dose)+' µg/min';break;case'mgmin':rate=dose*60;text=fmt(dose)+' mg/min';break;case'UIh':rate=dose;text=fmt(rate)+' UI/h';break;case'UIkgh':rate=dose*kg;text=fmt(rate)+' UI/h';break;case'mmolh':rate=dose;text=fmt(rate)+' mmol/h';break;case'mEqh':rate=dose;text=fmt(rate)+' mEq/h';break;default:out.textContent='Unidad no válida';return}
-const conc=amount/vol,ml=rate/conc;if(!Number.isFinite(ml)||ml<=0||ml>1e6){out.classList.add('error');out.textContent='Resultado matemático no válido.';return}const label=bolus?'ml por dosis':'ml/h',final=fmt(ml)+' '+label;out.replaceChildren();out.append(element('strong','',final),element('div','small','Equivalente a '+text+' · concentración '+fmt(conc)+' '+unit+'/ml.'));lastCopy=`Cálculo aritmético: ${text}; preparado ${fmt(amount)} ${unit} en ${fmt(vol)} ml finales; resultado ${final}. Verificar concentración y orden.`}
+const conc=amount/vol,ml=rate/conc;if(!Number.isFinite(ml)||ml<=0||ml>1e6){out.classList.add('error');out.textContent='Resultado matemático no válido.';return}const label=bolus?'ml por dosis':'ml/h',final=fmt(ml)+' '+label;out.replaceChildren();out.append(element('strong','',final),element('div','small','Equivalente a '+text+' · concentración '+fmt(conc)+' '+unit+'/ml.'));lastCopy=`Cálculo aritmético: ${text}; preparado ${fmt(amount)} ${unit} en ${fmt(vol)} ml finales; resultado ${final}.`}
 function calcLytic(){const kg=val('lyticWeight'),type=$('lyticType').value,out=$('lyticResult');out.replaceChildren();if(!(kg>=20&&kg<=250)){out.textContent='Introduce peso entre 20 y 250 kg.';return}let text='';if(type==='alteplase_stroke'){const tot=Math.min(90,kg*.9),bolus=tot*.1;text=`Alteplasa ICTUS · total ${fmt(tot)} mg; bolo 10% ${fmt(bolus)} mg; perfusión 60 min ${fmt(tot-bolus)} mg (máx. 90 mg).`}else{let i=kg<60?0:kg<70?1:kg<80?2:kg<90?3:4;const stroke=type==='tenecteplase_stroke',mg=(stroke?[15,17.5,20,22.5,25]:[30,35,40,45,50])[i];text=`Tenecteplasa ${stroke?'ICTUS (vial 25 mg)':'IAM (presentación IAM)'} · ${fmt(mg)} mg = ${fmt(mg*200)} unidades; bolo IV único. Banda ${['<60','60–<70','70–<80','80–<90','≥90'][i]} kg.`;if(stroke&&kg<=50)text+=' Precaución: datos limitados con peso ≤50 kg.'}out.append(element('strong','',text),element('div','small','No verifica elegibilidad, tiempo, anticoagulación ni contraindicaciones.'))}
 for(const id of ['patientWeight','doseKind','orderedDose','drugAmount','drugAmountUnit','finalVolume'])$(id).addEventListener('input',calculate);for(const id of ['lyticWeight','lyticType'])$(id).addEventListener('input',calcLytic);for(const id of ['drugSearch','drugGroup','drugStatus'])$(id).addEventListener(id==='drugSearch'?'input':'change',renderList);
 $('resetCalc').onclick=()=>{for(const id of ['patientWeight','orderedDose','drugAmount','finalVolume'])$(id).value='';$('doseKind').value='mcgkgmin';$('drugAmountUnit').value='mg';calculate()};$('copyCalc').onclick=async()=>{if(!lastCopy)return;try{await navigator.clipboard.writeText(lastCopy);$('copyCalc').textContent='Copiado'}catch(e){const t=document.createElement('textarea');t.value=lastCopy;document.body.append(t);t.select();document.execCommand('copy');t.remove();$('copyCalc').textContent='Copiado'}};

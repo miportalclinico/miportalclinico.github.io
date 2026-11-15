@@ -1,0 +1,42 @@
+PORTAL CLÍNICO · VERSIÓN 49 · 15/11/2026
+Base: v48 (Correcciones de Equivalencias)
+
+CAMBIOS DESDE V48
+
+1. IDENTIDAD VISUAL
+- Cronicidad y Pluripatología: nuevo icono SVG nativo, minimalista, persona encorvada con bastón, heredando tamaño y tono del resto de los iconos de la biblioteca.
+- Vademécum y Equivalencias: icono homogéneo de cápsula en las dos tarjetas del subíndice.
+
+2. EQUIVALENCIAS FARMACOLÓGICAS
+- Tabla de benzodiazepinas unificada: equivalencia oral a 5 mg de diazepam, semivida y características de acción. Se conservan literalmente los valores de la tabla previa; las características no documentadas se muestran con «—». Midazolam figura con características y sin conversión oral automática.
+- Botón «Intercambiar» con dos flechas verticales en los conversores de opioides, benzodiazepinas y corticoides. Si al intercambiar opioides cambia la unidad de dosis (mg/24 h frente a µg/h), se vacía la dosis para evitar una conversión errónea.
+- Se mantienen todos los demás conversores, sumadores y tablas de v48.
+
+3. EDITOR DE ANALÍTICAS
+- Eliminado de la interfaz visible el botón «Modo IA experimental» y retirado del índice/buscador general.
+- La página editor_ia_local.html y sus recursos se conservan completos para pruebas futuras o acceso directo.
+
+4. VADEMÉCUM · PLANTILLA GENERAL
+- Diluyentes compatibles incorporados al recuadro «Presentación»; se elimina el recuadro independiente de diluyente.
+- Orden de consulta: Presentación → Dosis y pautas de referencia → Indicaciones (verde) → Precauciones (amarillo) → Contraindicaciones (rojo) → Ajustes posológicos (si existen) → Detalle posológico y consideraciones → Preparaciones y perfusiones → Monitorización → Reacciones adversas relevantes → Interacciones → Farmacocinética clínica → Fuentes.
+- Se omiten los apartados innecesarios y se mantienen observaciones específicas de cada fármaco.
+- En dosis y detalles, indicaciones o pasos diferentes pasan a líneas con viñetas. Las aclaraciones pertenecientes a una misma pauta se muestran en un párrafo independiente sin nueva viñeta.
+
+5. CAMBIOS POR MEDICAMENTO
+- Adenosina: desaparece el bloque duplicado «Pautas de administración». La vía y las condiciones se consolidan en el detalle posológico. Se elimina el desplegable independiente redundante «Precauciones», conservando el recuadro amarillo de seguridad. El lavado con SF 0,9 % va en párrafo propio dentro de la referencia rápida.
+- Amiodarona: se mantiene explícitamente la frase de que pasar a VO NO es estrictamente necesario tras la perfusión. Se amplía el esquema orientativo cuando se opta por continuación oral; sin solapamiento fijo obligatorio.
+- Digoxina, dobutamina y resto: viñetas por pasos o indicaciones diferenciadas en dosis y en detalle.
+- Esmolol: carga opcional sin tabla, calculada solo a partir del peso, con dosis (mg), volumen (ml) y botón propio «Copiar carga». La perfusión de mantenimiento conserva la tabla de una fila para el peso introducido, con resultado situado DESPUÉS de la tabla y botón propio «Copiar mantenimiento». Son independientes.
+- Adrenalina: selector de SG 5 % / SF 0,9 % cuando se elige preparación de perfusión; el diluyente elegido aparece en la preparación y en la orden copiable.
+- Fosfato IV: indicaciones ampliadas para incluir fósforo sérico <1 mg/dl (<0,32 mmol/l). Selector de diluyente compatible SF 0,9 % / SG 5 % en su calculadora, preservando las alertas sobre sales potásicas y las validaciones locales pendientes.
+- Seguril/furosemida: filas más compactas en la tabla de perfusión continua, sin reducir el tamaño de fuente ni alterar cálculos.
+- Copias de órdenes de perfusión: se eliminan coletillas de consejo general («verificar objetivo hemodinámico», «reevaluar diuresis...», etc.) de los textos generados para copiar; las precauciones clínicas permanecen visibles en la ficha. No se eliminan alertas operativas imprescindibles para preparaciones no validadas.
+
+CONTROL DE CALIDAD
+- Sintaxis JavaScript verificada con node --check.
+- Estructura de HTML, script importados, presencia de la página IA local y datos farmacológicos verificados con comprobaciones estáticas.
+- No se han podido realizar pruebas visuales con navegador automatizado en este entorno (bloqueo de navegación local). Conviene comprobar el diseño de las páginas en el navegador antes de publicarlo.
+- La guía clínica y todas las preparaciones deben contrastarse con la ficha técnica de la presentación, procedimientos locales y protocolo vigente antes de la administración. Los cálculos NO son una orden médica validada.
+
+INSTALACIÓN
+Descomprimir y copiar el contenido de portal_medicina/ a la raíz del repositorio, sobrescribiendo la versión anterior. Mantener index.html en la raíz.

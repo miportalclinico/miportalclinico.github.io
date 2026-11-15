@@ -40,7 +40,7 @@
 <meta name="apple-mobile-web-app-title" content="Portal Clínico">
 </head>
 <body>
-<header class="mast"><div class="wrap"><nav class="nav"><span class="brand">MEDICINA INTERNA · HERRAMIENTAS CLÍNICAS</span><a class="back back-to-category" href="calculadoras.html#/categoria/cronicidad">← Volver a Cronicidad y Pluripatología</a></nav><h1>Valoración de sarcopenia y fragilidad</h1><p>Herramienta de cribado y apoyo a la valoración clínica a partir del documento SEMI y los criterios EWGSOP2. Los apartados pueden completarse de manera independiente.</p><div class="chips"><span>Fuerza y masa muscular</span><span>Escala FRAIL</span><span>Velocidad de la marcha</span><span>Sin conexión</span></div></div></header>
+<header class="mast"><div class="wrap"><nav class="nav"><span class="brand">MEDICINA INTERNA · HERRAMIENTAS CLÍNICAS</span><a class="back back-to-category" href="calculadoras.html#/categoria/cronicidad">← Volver a Cronicidad y Pluripatología</a></nav><h1>Valoración de sarcopenia y fragilidad</h1><p>Herramienta de cribado y apoyo a la valoración clínica a partir del documento SEMI y los criterios EWGSOP2. Los apartados pueden completarse de manera independiente.</p><div class="chips"><span>Fuerza y masa muscular</span><span>Escala FRAIL</span><span>Velocidad de la marcha</span></div></div></header>
 <main class="wrap layout"><div class="formcol"><form id="assessment" autocomplete="off" novalidate>
 <section class="panel" id="sarcopenia"><div class="sectionhead"><span class="step">01</span><div><h2>SARCOPENIA · FUERZA Y MASA MUSCULAR</h2><p>La fuerza baja indica sarcopenia probable; para confirmar se necesita masa muscular reducida.</p></div></div>
 <div class="subhead">1. Fuerza muscular</div>
@@ -110,26 +110,11 @@ function classify(s){
  return {sarco,frail,gait};
 }
 function report(s,i){
- const lines=['VALORACIÓN DE SARCOPENIA Y FRAGILIDAD'];
- const pieces=[];
- if(s.grip!==null)pieces.push('dinamometría '+(s.grip==='low'?'inferior':'igual o superior')+' al punto de corte ('+(s.sex==='male'?'hombres: 27 kg':s.sex==='female'?'mujeres: 16 kg':'<27 kg hombres / <16 kg mujeres')+')');
- if(s.chair!==null)pieces.push('chair stand (5 repeticiones): '+({low:'>15 s',normal:'≤15 s',unable:'no completa por debilidad'}[s.chair]));
- if(pieces.length)lines.push('Fuerza muscular: '+pieces.join('; ')+'.');
- if(s.calf!==null)lines.push('Perímetro de pantorrilla: '+(s.calf==='low'?'<31 cm (indicador orientativo de masa reducida)':'≥31 cm')+'.');
- if(s.mass!==null)lines.push('Masa muscular: '+(s.mass==='low'?'reducida':'no reducida')+(s.method?' ('+methodLabels[s.method]+')':' (método no indicado)')+'.');
- if(s.aponeurosis!==null||s.rectus!==null){
-  let msg='Ecografía orientativa: '+(s.aponeurosis==='yes'?'aponeurosis central visible':s.aponeurosis==='no'?'aponeurosis central no visible':'aponeurosis no evaluada');
-  if(s.rectus!==null)msg+='; grosor de recto femoral '+(s.rectus==='low'?'inferior':'igual o superior')+' al punto de corte ('+(s.sex==='male'?'9 mm en hombres':s.sex==='female'?'7 mm en mujeres':'<9 mm hombres / <7 mm mujeres')+')';
-  if(s.ecoLow===true)msg+=' (bajo umbral orientativo)';
-  if(s.aponeurosis==='no')msg+=' (grosor no fiable)';
-  lines.push(msg+'.');
- }
- if(s.strengthLow!==null||s.mass!==null)lines.push('Clasificación de sarcopenia: '+i.sarco.title+'. '+i.sarco.desc);
- if(s.frailDone)lines.push('FRAIL: '+s.frailScore+'/5 ('+frailNames.filter(n=>selected(n)==='1').map(n=>frailLabels[frailNames.indexOf(n)]).join(', ').replace(/^$/,'sin ítems positivos')+'). '+i.frail.title+'.');
- else if(s.answered>0)lines.push('FRAIL parcial: '+s.answered+'/5 ítems, '+s.frailScore+' positivos. Sin clasificación definitiva.');
- if(s.gait!==null)lines.push('Marcha de 4 m: '+({low:'≤0,8 m/s (≥5 s)',normal:'>0,8 m/s (<5 s)',unable:'no realizable'}[s.gait])+'. '+i.gait.title+'.');
- lines.push('Interpretar según situación clínica y funcional basal.');
- return lines.join('\n');
+ const results=[];
+ if(s.strengthLow!==null)results.push('Sarcopenia: '+i.sarco.title+'.');
+ if(s.frailDone)results.push('FRAIL: '+s.frailScore+' puntos ('+i.frail.title+').');
+ if(s.gait!==null)results.push('Marcha de 4 m: '+i.gait.title+'.');
+ return results.join('\n');
 }
 function render(){
  const s=getState(),i=classify(s);
@@ -141,8 +126,8 @@ function render(){
  if(s.aponeurosis==='no')msg='La aponeurosis central no es visible: no interpretar aisladamente el grosor.';
  else if(s.aponeurosis==='yes'&&s.rectus!==null)msg=s.ecoLow?'Grosor bajo el umbral orientativo; no confirma por sí solo sarcopenia.':'Grosor no inferior al umbral orientativo.';
  $('ecoMsg').textContent=msg;
- const done=[s.grip,s.chair,s.calf,s.mass,s.aponeurosis,s.rectus,s.gait].some(x=>x!==null)||s.answered>0;
- $('report').value=done?report(s,i):'Complete algún apartado para generar el resumen.';$('copy').disabled=!done;$('print').disabled=!done;
+ const text=report(s,i);const done=Boolean(text);
+ $('report').value=done?text:'';$('report').placeholder=done?'':'Complete una evaluación con resultado final para generar el resumen.';$('copy').disabled=!done;$('print').disabled=!done;
 }
 async function copy(){
  const value=$('report').value;

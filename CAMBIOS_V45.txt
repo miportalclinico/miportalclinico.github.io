@@ -1,0 +1,12 @@
+MEDICINA INTERNA: PORTAL CLÍNICO — v45 — 14/11/2026
+Base: v44 íntegra.
+
+Editor de analíticas
+- 3. Resultados y herramientas con tres pestañas: Revisión, Índices, Calculadoras.
+- Revisión compacta centrada en alertas clínicas; datos dudosos, edición de valores e incidencias de procesamiento en Otras comprobaciones. Sin el antiguo bloque separado «Todos los resultados detectados».
+- Índices automáticos activados en Mis preferencias separados en pestaña propia con interpretación y rangos en pantalla (no en el informe).
+- Calculadoras a demanda: déficit de bicarbonato, Na corregido por glucemia, déficit agua libre y ahora FIB-4; la calculadora FIB-4 independiente se mantiene en el portal.
+- Datos del paciente opcionales y desplegables al inicio de Calculadoras: edad, peso, sexo; peso compartido entre bicarbonato y agua libre, sexo y edad ayudan a la configuración del déficit de agua; edad se utiliza en FIB-4. No se guardan ni añaden automáticamente al informe. Los datos se borran al introducir una analítica nueva.
+- Preferencias: botón único «Desplegar todo / Replegar todo» situado antes de Guardar preferencias. Eliminada nota redundante sobre almacenamiento. «Hemograma resumido» es la primera opción en Hemograma.
+- Preservados los controles «Añadir al informe» y «Copiar resultado» en índices y calculadoras, solo nombre, resultado y unidad; sin interpretaciones ni avisos.
+- Se mantienen todas las demás secciones y contenidos de v44, sin subir a GitHub.

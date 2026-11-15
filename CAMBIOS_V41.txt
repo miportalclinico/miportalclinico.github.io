@@ -1,0 +1,46 @@
+PORTAL CLÍNICO — Versión 41 — Revisión de Vademécum (13-11-2026)
+
+BASE: Portal Clínico v40.1 con el parche funcional de logotipo y PDF.js.
+
+CAMBIOS DE PRESENTACIÓN
+- Logotipo nuevo con verde más brillante y encabezado de portada en el mismo verde (#016d14).
+- Jerarquía tipográfica reforzada de «Detalle posológico».
+- Orden alfabético de los 58 medicamentos; calcio visible como «Cálcico, cloruro» y «Cálcico, gluconato».
+- Amiodarona: pautas claramente separadas; retiradas expresiones internas y bloques redundantes. La continuación oral se valora individualmente, no es sistemática.
+- Adrenalina: indicaciones en filas separadas y Copiar solamente para perfusión compleja.
+- Atropina: retirada la expresión «Presentación seleccionada».
+- Clevidipino: retirado recuadro de advertencia regulatoria prominente; texto sencillo de descarte tras 12 h desde la apertura; apartados de administración y complicaciones plegados.
+- Cloruro cálcico: apartados posteriores al detalle posológico plegados por defecto.
+- Digoxina: resumen directo de carga IV y mantenimiento VO sin sección de pautas redundante.
+- Dobutamina y dopamina: diluyente SG 5 % en las preparaciones seleccionadas, objetivo inicial y mantenimiento separados; eliminada una nota repetida en dopamina.
+- Esmolol: carga opcional en renglón independiente.
+- Furosemida: dosis de referencia divididas por indicación; perfusión en sección propia; información de bolos trasladada a detalle posológico. Retirado recuadro amarillo del hipertónico.
+
+SUERO SALINO HIPERTÓNICO (preparación local de 150 ml finales)
+- Na <125 mEq/l: 3 ampollas NaCl 20 % (30 ml).
+- Na 125–135 mEq/l: 2 ampollas (20 ml).
+- Na 136–145 mEq/l: 1 ampolla (10 ml).
+- Na >145 mEq/l: 0,5 ampolla (5 ml).
+Añadir SF 0,9 % hasta 150 ml finales, no 150 ml adicionales.
+IMPORTANTE: los tramos están redactados tal como pidió el usuario, para cifras enteras; la asignación de resultados con decimales en los límites debe validarse. El protocolo está MODIFICADO respecto a la fuente original y pendiente de validación de Farmacia; no se ofrecen órdenes automáticas.
+
+FOSFATOS IV
+- Dos dosis fijas separadas con copiar como BORRADOR no validado: P <1,5 mg/dl -> 30 mmol en 500 ml finales durante 6–8 h; P >=1,5 mg/dl si se ha indicado IV -> 15 mmol en 250 ml finales durante 4–6 h.
+- La alternativa de inicio 0,08 mmol/kg IV durante 6 h figura aparte.
+- El detalle posológico incluye alternativas centrales 15 mmol/100 ml en 2–3 h y 30 mmol/100 ml en >=4 h, con advertencias de que la formulación potásica española tendría altas concentraciones de K y requiere validación.
+- Calculadora simplificada con peso, dosis mmol/kg, vía periférica/central, preparación y duración. Mínimos orientativos: periférica 15/250>=4h y 30/500>=6h; central 15/100>=2h y 30/100>=4h.
+- Resultado principal: volumen PARCIAL A INFUNDIR (VTBI) y velocidad de bomba. Se destaca NO ADMINISTRAR LA BOLSA COMPLETA si solo se requiere una parte.
+- Avisos rojos cuando >7,5 mmol P/h, si falta contenido en la bolsa de 15 mmol (con botón de cambio a 30 mmol) o si la perfusión de dipotásico pudiera superar referencias de aporte K. No se presenta el cálculo como autorización de vía o concentración.
+- Debe verificarse sal, concentración, potasio, calcio, función renal, vía, monitorización, compatibilidad y protocolo local.
+
+VALIDACIÓN TÉCNICA
+- 58 fichas navegadas en navegador headless con scripts cargados localmente, sin errores JS.
+- Comprobados resultados de calculadora de fosfatos en escenario de 70kg y 0,08mmol/kg, cambio automático a 30mmol, avisos de P y mínimos de vía central.
+- El logo y las dependencias PDF.js permanecen en los mismos nombres y rutas de la v40.1; el lector no ha sido reescrito.
+- El navegador del entorno bloquea abrir una URL local HTTP; no se ha verificado GitHub Pages directamente. La aplicación deberá probarse tras publicar.
+
+PUBLICAR EN GITHUB
+- Para repositorio ya actualizado a v40.1/v40.2, usar PARCHE_V41, seleccionando SOLO el contenido de ARCHIVOS_PARA_SUBIR_A_RAIZ; no arrastrar la carpeta contenedora.
+- Todos esos archivos deben quedar al mismo nivel que index.html. Confirmar «Commit changes».
+- Reabrir GitHub Pages, recargar sin caché (Ctrl+F5), verificar favicon, portada, extractor PDF, furosemida y fosfatos.
+- Esta edición no sustituye validación farmacéutica, guías vigentes o protocolo hospitalario.

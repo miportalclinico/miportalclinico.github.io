@@ -1,0 +1,28 @@
+MEDICINA INTERNA: PORTAL CLÍNICO — v44 — 14/11/2026
+Base: v43. Conserva biblioteca de calculadoras, vademécum, equivalencias, IA y recursos previos.
+
+Editor de analíticas
+- 3. Resultados y herramientas se organiza en dos pestañas: Revisión (resumen compacto de críticos, alterados y dudosos, índices e interpretación y auditoría de valores) y Calculadoras (déficit de bicarbonato, sodio corregido por glucemia, déficit de agua libre).
+- Revisión: presenta solo incidencias relevantes de entrada, detalles plegables, umbrales e incidencias de reconocimiento; corrección manual. Alertas e interpretaciones no pasan automáticamente al informe.
+- Índices opcionales: FeNa, FeUrea, cocientes orina/suero, IFR, RNL, anion gap, delta ratio, TIBC, IPR y tres cocientes lipídicos seleccionables independientemente. Interpretación breve y rangos orientativos solo en la web. Los cocientes lipídicos no tienen objetivos terapéuticos universales.
+- Cada índice y calculadora ofrece Añadir al informe (con opción de retirar) o Copiar resultado; únicamente nombre, valor y unidad. No se incluyen comentarios, interpretación, advertencias, puntos de corte ni desgloses. Añadidos se actualizan cuando cambian los datos de la herramienta y se evitan duplicados.
+- Hemograma resumido como primera preferencia del grupo, solo Hb, VCM, HCM, leucocitos (neutrófilos y linfocitos), plaquetas.
+- Preferencias lipídicas separadas CT/HDL, TG/HDL y LDL/HDL; resultados con dos decimales.
+- Gasometría: Completa, Resumida y Compacta /// (predeterminada); casilla Valores estándar para HCO3 estándar en todos los formatos y EB estándar en Completa, si la fuente lo proporciona.
+- Cultivos: Formato del antibiograma Por sensibilidad o Por antibiótico, CMI independiente.
+- Perfil urinario renombrado a Renal; TIBC (capacidad total de fijación del hierro); no aparece la coletilla anterior. Separación visual entre preferencias generales y hemograma.
+- Aviso de privacidad breve, apartados detectados junto a Regenerar, Deshacer cambios manuales visible solo si se modifica el texto; eliminado texto redundante sobre recuentos y hematíes.
+- Corregido reconocimiento de analitos urinarios procedentes del catálogo para que FeNa/FeUrea puedan calcularse.
+- Sodio corregido por glucemia: Katz (1,6) y Hillier (2,4) sin selector de factor.
+- Déficit de bicarbonato: objetivo inicial 21 mmol/L.
+- Déficit de agua libre: objetivo inicial 145 mmol/L, sexo y edad (Niño, Adulto, Anciano) sustituyen selector manual del factor de agua corporal total. Fórmula estimativa sin pérdidas continuadas.
+
+Calculadoras independientes de Miscelánea
+- Déficit bicarbonato objetivo 21 mmol/L predeterminado.
+- Déficit agua libre objetivo 145 mmol/L predeterminado y selección Sexo/Edad en lugar de fracción manual.
+- Sodio corregido muestra y permite copiar tanto Katz como Hillier.
+
+Seguridad y validación
+- No se han incorporado servicios de IA remotos ni llamadas externas para procesar analíticas.
+- Pruebas locales con datos ficticios: parser, alertas, FeNa/FeUrea, índices lipídicos/IPR, gasometría, pestañas y botones de informe. Revisar siempre resultados contra fuente original; umbrales orientativos.
+- No se ha publicado nada en GitHub. Para actualizar GitHub Pages, sustituir los archivos por los del directorio portal_medicina.
