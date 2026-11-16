@@ -97,13 +97,7 @@ function createFurosemide(d){
  const host=element('section','specialInfusion furosemideProgram');host.append(element('h3','specialTitle','Perfusión continua'));
  const panel=element('div','selectedPreparation');panel.append(element('strong','','Furosemida 250 mg en 250 ml finales de SF 0,9 %'),element('span','selectedConcentration','1 mg/ml'),element('p','small','Perfusión mediante bomba; la presentación 250 mg/25 ml no se administra en bolo IV.'));host.append(panel);
  const choice=selectedOrderBox(),tbl=makeTable(['Dosis (mg/h)','Velocidad (ml/h)']);for(const mg of [5,10,15,20,30,40]){const tr=document.createElement('tr'),th=document.createElement('th');th.textContent=mg+' mg/h';tr.append(th);const td=document.createElement('td');addTableChoice(td,mg.toString(),b=>{selectCell(tbl.table,b);choice.setOrder(`Furosemida 250 mg en 250 ml finales de SF 0,9 % (1 mg/ml), perfusión IV a ${mg} ml/h (${mg} mg/h).`)});tr.append(td);tbl.body.append(tr)}host.append(tbl.wrap,choice);
- const h=element('details','specialDisclosure');h.append(element('summary','','Suero salino hipertónico · congestión resistente'));
- const body=element('div','specialDisclosureBody');body.append(element('p','','Preparación local propuesta: 150 ml de volumen FINAL, administrados en 60 minutos (150 ml/h), cada 12 h si está indicado. Ajustar ampollas de NaCl al 20 % según sodio plasmático:'));
- const t=makeTable(['Na plasmático','NaCl 20 % (10 ml/amp.)','Añadir SF 0,9 % hasta 150 ml finales','NaCl resultante']);
- for(const [range,amps,vol,percent] of [['<125 mEq/l','3 amp. · 30 ml','120 ml','4,72 %'],['125–135 mEq/l','2 amp. · 20 ml','130 ml','3,45 %'],['136–145 mEq/l','1 amp. · 10 ml','140 ml','2,17 %'],['>145 mEq/l','½ amp. · 5 ml','145 ml','1,54 %']]){const tr=document.createElement('tr');for(const v of [range,amps,vol,percent])tr.append(element('td','',v));t.body.append(tr)}body.append(t.wrap);
- body.append(element('p','small','Protocolo local MODIFICADO: composición pendiente de validación farmacotécnica antes de prescribir. Los tramos 125–135 y 136–145 mEq/l se expresan para valores de sodio en números enteros; si el resultado tiene decimales limítrofes, validar su asignación. Furosemida y suero hipertónico deben administrarse por separado.'));
- body.append(element('p','small','Monitorización: PA, diuresis y balance, Na/K/Cl/Mg, función renal; valorar gasometría venosa (pH, pCO₂, HCO₃⁻) según evolución. Reposición de K individualizada.'));
- h.append(body);host.append(h);return host;
+ return host;
 }
 function createNoradrenalineInfusion(d){
  const host=element('section','specialInfusion noradInfusion');host.append(element('h3','specialTitle','Preparación de la perfusión'));
@@ -118,11 +112,81 @@ function createNoradrenalineInfusion(d){
  return host;
 }
 
+// v51: SSH as its own validated-warning workflow, separate from furosemide.
+function createSSHProgram(d){
+ const host=element('section','specialInfusion sshProgram');host.append(element('h3','specialTitle','Preparación local de SSH · volumen final 150 ml'));
+ const rows=[{id:'low',range:'<125 mEq/l',amp:'3 ampollas',volume:30,percent:'4,72 %'},{id:'mid',range:'125–135 mEq/l',amp:'2 ampollas',volume:20,percent:'3,45 %'},{id:'norm',range:'136–145 mEq/l',amp:'1 ampolla',volume:10,percent:'2,17 %'},{id:'high',range:'>145 mEq/l',amp:'½ ampolla',volume:5,percent:'1,54 %'}];
+ let row=rows[1],furo=250,time=60;
+ const table=makeTable(['Na plasmático','Concentración de SSH · seleccionar','NaCl 20 %']);
+ const buttons=[];
+ for(const item of rows){const tr=document.createElement('tr'),th=document.createElement('th');th.scope='row';th.textContent=item.range;tr.append(th);const td=document.createElement('td'),b=addTableChoice(td,item.percent,()=>{row=item;render();},'Elegir SSH '+item.percent+' para Na '+item.range);buttons.push([item,b]);tr.append(td);const ex=document.createElement('td');ex.textContent=item.amp+' ('+item.volume+' ml)';tr.append(ex);table.body.append(tr)}
+ host.append(table.wrap);
+ const controls=element('div','sshControls');const furoBox=element('div','sshSelector'),timeBox=element('div','sshSelector');furoBox.append(element('b','','Furosemida IV por administración'));timeBox.append(element('b','','Duración de la perfusión de SSH'));
+ const fuButtons=[],tButtons=[];const fuPanel=element('div','preparationOptions'),tPanel=element('div','preparationOptions');
+ for(const amount of [250,500]){const b=element('button','preparationButton',amount+' mg');b.type='button';b.onclick=()=>{furo=amount;render()};fuPanel.append(b);fuButtons.push([amount,b])}
+ for(const n of [30,60]){const b=element('button','preparationButton',n+' min');b.type='button';b.onclick=()=>{time=n;render()};tPanel.append(b);tButtons.push([n,b])}
+ furoBox.append(fuPanel);timeBox.append(tPanel);controls.append(furoBox,timeBox);host.append(controls);
+ const chosen=element('div','selectedPreparation'),alert=element('p','v51SafetyWarning'),order=element('div','v51Order'),btn=copyButton('Copiar pauta',()=>order.dataset.copy||'');chosen.append(element('strong','','Preparación seleccionada'),order,alert,btn);host.append(chosen);
+ host.append(element('p','small','El tiempo seleccionado corresponde al SSH. La furosemida requiere una perfusión separada y más lenta, acorde con la ficha técnica; no se ha confirmado compatibilidad de conexión en Y.'));
+ const extra=specialDisclosure('Monitorización y límites del protocolo', 'Valorar natremia de forma seriada según riesgo, K/Cl/Mg, función renal, diuresis y balance, PA y congestión. Las concentraciones son las definidas para el protocolo local; verificar con Farmacia la preparación y cualquier posibilidad de administración en Y.','clinicalFold');host.append(extra);
+ function render(){
+  for(const [item,b] of buttons){b.classList.toggle('chosen',item===row);b.setAttribute('aria-pressed',String(item===row))}
+  for(const [n,b] of fuButtons){b.classList.toggle('active',n===furo);b.setAttribute('aria-pressed',String(n===furo))}
+  for(const [n,b] of tButtons){b.classList.toggle('active',n===time);b.setAttribute('aria-pressed',String(n===time))}
+  const furoMin=Math.ceil(furo/4); // AEMPS limit: <= 4 mg/min
+  const v=row.volume,remain=150-v;
+  const a=`SSH ${row.percent}: a partir de 150 ml de SF 0,9 %, retirar ${v} ml y sustituir por ${v} ml de NaCl al 20 % (${row.amp}), para un volumen final de 150 ml. Administrar el SSH IV mediante bomba en ${time} minutos (${150*60/time} ml/h), cada 12 horas según pauta individualizada.`;
+  const b=`Furosemida ${furo} mg IV, preparada por separado en SF 0,9 % hasta 150 ml finales; administrar mediante bomba por vía independiente en no menos de ${furoMin} minutos (${Number(150*60/furoMin).toLocaleString('es-ES',{maximumFractionDigits:1})} ml/h), cada 12 horas según indicación.`;
+  order.textContent=a+'\n\n'+b;order.dataset.copy=a+'\n'+b;btn.disabled=false;
+  alert.textContent=`SEGURIDAD: el manual histórico plantea perfusión conjunta en Y y tiempos de 30 minutos, pero la ficha técnica de furosemida limita a 4 mg/min (2,5 mg/min en insuficiencia renal grave) y desaconseja infundir junto a otros medicamentos. Con ${furo} mg, ${time} minutos supondrían ${(furo/time).toLocaleString('es-ES',{maximumFractionDigits:2})} mg/min. No usar Y sin validación farmacéutica.`;
+ }
+ render();return host;
+}
+
+// v51: official Ferinject table + selectable infusion + optional Ganzoni formula.
+function createFerinjectPanel(){
+ const host=element('section','specialInfusion ferinjectProgram');host.append(element('h3','specialTitle','Necesidad total de hierro · tabla simplificada'));
+ const ref=[['35–<70 kg','<10',1500,1000,500],['35–<70 kg','10–<14',1000,1000,null],['35–<70 kg','≥14',500,500,null],['≥70 kg','<10',2000,1000,1000],['≥70 kg','10–<14',1500,1000,500],['≥70 kg','≥14',500,500,null]];
+ const tbl=makeTable(['Peso','Hb (g/dl)','Hierro total','1.ª semana','2.ª semana']);
+ const tableRows=[];
+ for(const r of ref){const tr=document.createElement('tr');for(let i=0;i<5;i++){const td=document.createElement(i<2?'th':'td');td.textContent=r[i]==null?'—':(i>=2?r[i]+' mg':r[i]);tr.append(td)}tbl.body.append(tr);tableRows.push(tr)}host.append(tbl.wrap);
+ host.append(element('p','small','Tabla de necesidades según AEMPS. No administrar automáticamente 1.000 mg si el peso no permite 20 mg/kg por perfusión. Para <35 kg se aplica cálculo por peso.'));
+ const inputs=element('div','v51InputGrid'),wLab=element('label','','Peso (kg)'),hbLab=element('label','','Hb (g/dl)');const weight=element('input','control'),hb=element('input','control');weight.type=hb.type='number';weight.min='15';weight.max='350';weight.step='0.1';weight.placeholder='Peso';hb.min='1';hb.max='25';hb.step='0.1';hb.placeholder='Hemoglobina';wLab.append(weight);hbLab.append(hb);inputs.append(wLab,hbLab);host.append(inputs);
+ const dialysisLabel=element('label','checkline v51Dialysis'),dialysis=element('input','');dialysis.type='checkbox';dialysisLabel.append(dialysis,document.createTextNode(' Paciente en hemodiálisis (máximo 200 mg de hierro/día)'));host.append(dialysisLabel);
+ const totals=element('div','selectedPreparation');host.append(totals);
+ const prepTitle=element('h3','specialTitle','Diluciones para perfusión intravenosa');host.append(prepTitle);
+ const dt=makeTable(['Dosis','Cantidad de Ferinject','SF 0,9 % · máximo','Tiempo mínimo']);
+ for(const [range,volume,saline,minutes] of [['100–200 mg','2–4 ml','50 ml','Sin mínimo establecido'],['>200–500 mg','>4–10 ml','100 ml','6 min'],['>500–1.000 mg','>10–20 ml','250 ml','15 min']]){const tr=document.createElement('tr');for(const v of [range,volume,saline,minutes])tr.append(element('td','',v));dt.body.append(tr)}host.append(dt.wrap);
+ host.append(element('p','small','El volumen de SF indica diluyente máximo, NO volumen final. Diluir exclusivamente en SF 0,9 %; concentración de hierro ≥2 mg/ml.'));
+ const doseBar=element('div','preparationOptions');host.append(doseBar);
+ const opts=[100,200,500,750,1000];let chosenDose=500;const doseButtons=[];for(const n of opts){const b=element('button','preparationButton',n+' mg');b.type='button';b.onclick=()=>{chosenDose=n;render()};doseBar.append(b);doseButtons.push([n,b])}
+ const result=element('div','v51OrderResult'),copier=copyButton('Copiar preparación',()=>result.dataset.copy||'');host.append(result,copier);
+ const caution=element('p','v51SafetyWarning');host.append(caution);
+ const g=element('details','specialDisclosure');g.append(element('summary','','Cálculo individualizado del déficit de hierro · Ganzoni'));const gb=element('div','specialDisclosureBody'),gNote=element('p','small','Estimación complementaria; no sustituye la tabla oficial ni determina una dosis por administración.');const gOut=element('div','calcresult');gb.append(gNote,gOut);g.append(gb);host.append(g);
+ function render(){const w=weight.value.trim()===''?NaN:Number(weight.value),h=hb.value.trim()===''?NaN:Number(hb.value),valid=w>=15&&w<=350&&h>0&&h<=25;
+  for(const [n,b] of doseButtons){b.classList.toggle('active',chosenDose===n);b.setAttribute('aria-pressed',String(chosenDose===n))}
+  for(let i=0;i<tableRows.length;i++)tableRows[i].classList.remove('v51Highlight');
+  let need=NaN,limit=NaN;
+  if(valid){const row=h<10?0:h<14?1:2;const col=w<35?-1:w<70?0:1;if(col<0)need=w*(h<10?30:15);else{const ix=col*3+row;need=ref[ix][2];tableRows[ix].classList.add('v51Highlight')};limit=Math.min(1000,20*w,dialysis.checked?200:Infinity);totals.textContent='Necesidad total estimada por tabla: '+fmt(need)+' mg. Máximo por perfusión individual para '+fmt(w)+' kg: '+fmt(limit)+' mg; máximo acumulado 1.000 mg/semana. Si se precisa otra sesión, separar ≥7 días. Para inyección IV (sin diluir), límite 15 mg/kg.';
+   const target=w<35?13:15,stores=w<35?15*w:500;if(h<target){const formula=w*(target-h)*2.4+stores;gOut.textContent='Ganzoni: '+fmt(formula)+' mg = '+fmt(w)+' × ('+target+' − '+fmt(h)+') × 2,4 + '+fmt(stores)+' mg de depósitos. Resultado estimado, no pauta.'}else{gOut.textContent='Hb ≥ objetivo convencional ('+target+' g/dl). Ganzoni no proporciona una pauta válida automática en este contexto.'}
+  }else{totals.textContent='Introduce peso y Hb para aplicar la tabla y comprobar el límite de la dosis seleccionada.';gOut.textContent='Introduce peso y Hb para calcular.'}
+  const volume=chosenDose/50,saline=chosenDose<=200?50:chosenDose<=500?100:250,min=chosenDose<=200?'sin tiempo mínimo prescrito':chosenDose<=500?'al menos 6 minutos':'al menos 15 minutos';
+  const preparation=`Carboximaltosa férrica (Ferinject) ${chosenDose} mg IV (${fmt(volume)} ml de 50 mg/ml) diluida en ${saline} ml de SF 0,9 %, administrar en perfusión ${min}.`;
+  result.textContent=preparation;
+  const safe=valid&&chosenDose<=limit&&chosenDose<=need&&chosenDose>=100;
+  result.dataset.copy=safe?preparation:'';copier.disabled=!safe;
+  caution.textContent=!valid?'Para habilitar la copia, introducir peso y Hb y comprobar límites.':!safe?'La dosis seleccionada supera el límite individual o la necesidad estimada: no se permite copiarla.':'Observar al menos 30 minutos tras administración. En hemodiálisis, respetar límite 200 mg/día; esta calculadora de perfusión no debe utilizarse para esa situación sin revisar el ajuste.';
+ }
+ weight.addEventListener('input',render);hb.addEventListener('input',render);dialysis.addEventListener('change',render);render();return host;
+}
+
 function createSpecialInfusion(d){
  if(d.special.kind==='dose_cards')return createDoseCards(d);
  if(d.special.kind==='levosimendan')return createLevosimendan(d);
  if(d.special.kind==='esmolol')return createEsmolol(d);
  if(d.special.kind==='furosemide')return createFurosemide(d);
+ if(d.special.kind==='ssh_heart_failure')return createSSHProgram(d);
+ if(d.special.kind==='ferinject')return createFerinjectPanel();
  if(d.id==='noradrenalina')return createNoradrenalineInfusion(d);
  if(d.special.kind==='amiodarone')return null;
  const conf=d.special,host=element('section','specialInfusion');host.append(element('h3','specialTitle','Preparación de la perfusión'));

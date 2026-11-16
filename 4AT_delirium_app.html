@@ -68,8 +68,8 @@
 <main class="wrap"><div class="layout"><div class="left">
 <section aria-labelledby="identityTitle" class="card" id="patientCard">
 <div class="cardhead"><div aria-hidden="true" class="numb">+</div><div><h2 id="identityTitle">Datos de la evaluación</h2><p>Opcionales; se usan únicamente al copiar o imprimir el informe.</p></div></div>
-<div class="optional-grid"><div><label class="fieldlabel" for="patient">Identificador del paciente (opcional)</label><input autocomplete="off" class="field" id="patient" maxlength="80" placeholder="Ej. n.º de historia / código" type="text"/></div><div><label class="fieldlabel" for="reviewer">Profesional evaluador (opcional)</label><input autocomplete="off" class="field" id="reviewer" maxlength="80" placeholder="Nombre o iniciales" type="text"/></div></div>
-<p class="privacy-note">Privacidad: el cálculo rápido no guarda datos. Si elige guardar en expediente de prueba, únicamente se conservan las respuestas y el resultado, no estos campos de identificación. No introduzca datos reales en la demo.</p>
+
+<p class="privacy-note">Privacidad: esta calculadora no registra identificadores de pacientes ni guarda evaluaciones.</p>
 </section>
 <section aria-labelledby="item1Title" class="card"><div class="cardhead"><span class="numb">01</span><div><h2 id="item1Title">Nivel de conciencia</h2><p>Observe el nivel de alerta y la actividad del paciente.</p></div></div>
 <div class="callout">Si está dormido, intente despertarlo hablándole o tocándole suavemente el hombro. Puede pedirle que diga su nombre y dirección para facilitar la valoración.</div>
@@ -123,7 +123,7 @@
 <div class="actions"><button class="btn primary" disabled="" id="copy" type="button">Copiar para historia clínica</button><button class="btn" disabled="" id="print" type="button">Imprimir / Guardar PDF</button><button class="btn" id="reset" type="button">Nueva evaluación</button><p aria-live="polite" class="notice" id="notice" role="status"></p></div>
 </div><div class="reference"><strong>Importante:</strong> La escala 4AT es una herramienta de cribado, no un diagnóstico automático. Si existe sospecha clínica, evalúe al paciente independientemente de la puntuación.</div></aside>
 </div></main>
-<footer class="footer"><div class="wrap">Aplicación HTML local · 4AT-ES v1.2 · No transmite información; solo guarda resultados si pulsas «Guardar en expediente de prueba». Fuente: <a href="https://www.the4at.com" rel="noopener noreferrer" target="_blank">the4at.com</a> · CC BY 4.0.</div></footer>
+<footer class="footer"><div class="wrap">Aplicación HTML local · 4AT-ES v1.2 · No transmite información ni guarda los resultados de la evaluación. Fuente: <a href="https://www.the4at.com" rel="noopener noreferrer" target="_blank">the4at.com</a> · CC BY 4.0.</div></footer>
 <script>
   'use strict';
   const names = ['Nivel de conciencia', 'AMT4', 'Atención', 'Cambio agudo o curso fluctuante'];
@@ -156,13 +156,12 @@
     }catch(e){notify('No se pudo copiar automáticamente: seleccione el texto del informe y cópielo manualmente.');esc('report').focus()}
   }
   document.querySelectorAll('input[type="radio"]').forEach(input=>input.addEventListener('change',()=>{notify('');render()}));
-  ['patient','reviewer'].forEach(id=>esc(id).addEventListener('input',()=>{notify('');render()}));
   esc('copy').addEventListener('click',copyReport);
   esc('print').addEventListener('click',()=>{if(state().done)window.print()});
   esc('reset').addEventListener('click',()=>{
-    if(state().completed>0 && !window.confirm('¿Iniciar una nueva evaluación? Se borrarán las respuestas y los datos introducidos.'))return;
+    if(state().completed>0 && !window.confirm('¿Iniciar una nueva evaluación? Se borrarán las respuestas introducidas.'))return;
     document.querySelectorAll('input[type="radio"]').forEach(input=>input.checked=false);
-    esc('patient').value='';esc('reviewer').value='';notify('Nueva evaluación iniciada.');render();window.scrollTo({top:0,behavior:'smooth'});
+    notify('Nueva evaluación iniciada.');render();window.scrollTo({top:0,behavior:'smooth'});
   });
   render();
 </script>

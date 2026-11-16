@@ -34,6 +34,16 @@ header{background:linear-gradient(115deg,#101f37,#1b3963 65%,#284d7c);color:#fff
   @media(max-width:600px){header a.back-to-category{font-size:13.5px!important;padding:9px 11px!important}}
   @media print{header a.back-to-category{display:none!important}}
 
+
+/* v50 · VExUS: esquemas vectoriales de referencia aportada por usuario */
+.pattern svg.doppler-vector{background:#080a0c;border:0;min-height:88px;object-fit:contain}
+.pattern svg .doppler-curve{fill:none;stroke:#f4f5f7;stroke-width:2.35;stroke-linecap:round;stroke-linejoin:round}
+.pattern svg .doppler-fill{fill:#8b8d90;fill-opacity:.63;stroke:none}
+.pattern svg .baseline{stroke:#dfe415;stroke-width:2.1}
+.pattern svg .lab{font-size:12px;fill:#f8f8f8;font-weight:850}
+.pattern svg .peaklabel{font-size:9px;fill:#f8f8f8;font-weight:650}
+#opts-ivc .pattern{min-height:86px;justify-content:center}
+@media(max-width:650px){.opts:not(.two) .pattern svg.doppler-vector{height:86px;min-height:74px}}
 </style>
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
@@ -48,7 +58,7 @@ header{background:linear-gradient(115deg,#101f37,#1b3963 65%,#284d7c);color:#fff
 <body>
 <header><div class="wrap"><nav class="nav"><span class="brand">MEDICINA INTERNA · ECOGRAFÍA CLÍNICA</span><a class="back back-to-category" href="calculadoras.html#/categoria/ecografia">← Volver a Ecografía Clínica</a></nav>
 <h1>VExUS · Congestión venosa</h1><p>Clasificación ecográfica de la congestión venosa sistémica mediante VCI y Doppler venoso suprahepático, portal e intrarrenal.</p>
-<div class="chips"><span>Grados 0–3</span><span>Patrones Doppler ilustrados</span></div></div></header>
+<div class="chips"><span>Grados 0–3</span><span>Curvas Doppler orientativas</span></div></div></header>
 <main class="wrap main">
   <div class="left">
     <p class="callout"><strong>Guía visual:</strong> los dibujos reproducen de forma esquemática la morfología de los trazados. Seleccione el patrón observado en el Doppler real, no por su parecido exacto con el dibujo.</p>
@@ -105,23 +115,37 @@ const model={
     {v:'severe',t:'Grave · Solo D',hint:'Monofásico discontinuo',type:'ren-severe'}]
 };
 const waveData={
- 'hep-normal':{axis:44,path:'M 9 44 Q 22 44 30 24 Q 38 20 42 44 C 53 44 57 103 76 104 C 95 104 99 45 112 44 C 126 44 136 80 155 82 C 174 82 180 44 194 44 L 221 44',labels:[[29,20,'a'],[73,116,'S'],[158,97,'D']]},
- 'hep-mild':{axis:44,path:'M 9 44 Q 22 44 30 24 Q 38 20 42 44 C 52 44 57 75 76 78 C 95 78 99 45 112 44 C 126 44 136 100 155 103 C 174 103 180 44 194 44 L 221 44',labels:[[29,20,'a'],[74,93,'S'],[157,116,'D']]},
- 'hep-severe':{axis:44,path:'M 9 44 Q 22 44 30 24 Q 38 20 42 44 C 52 44 60 12 76 12 C 95 12 99 43 112 44 C 126 44 136 100 155 103 C 174 103 180 44 194 44 L 221 44',labels:[[75,11,'S'],[156,116,'D']]},
- 'por-normal':{axis:108,path:'M 7 66 Q 25 68 40 64 Q 55 60 72 66 Q 90 69 106 65 Q 123 60 142 66 Q 158 69 175 64 Q 193 61 222 66',labels:[]},
- 'por-mild':{axis:108,path:'M 7 55 C 21 34 39 35 55 55 S 88 77 106 55 S 142 34 158 55 S 194 77 222 55',labels:[]},
- 'por-severe':{axis:108,path:'M 7 75 C 21 13 40 13 55 75 S 87 117 106 75 S 141 13 158 75 S 193 117 222 75',labels:[]},
- 'ren-normal':{axis:35,path:'M 7 59 Q 25 55 41 62 Q 60 69 80 59 Q 99 54 118 62 Q 135 69 155 59 Q 175 55 195 62 Q 212 66 223 61',labels:[]},
- 'ren-mild':{axis:35,path:'M 7 35 L 19 35 C 26 35 27 65 42 66 C 58 66 60 35 68 35 L 83 35 C 89 35 92 88 111 90 C 130 90 131 35 141 35 L 153 35 C 159 35 163 65 178 66 C 192 66 193 35 202 35 L 223 35',labels:[[41,80,'S'],[112,105,'D'],[177,80,'S']]},
- 'ren-severe':{axis:35,path:'M 7 35 L 39 35 C 45 35 54 94 72 95 C 91 95 99 35 107 35 L 151 35 C 157 35 166 94 184 95 C 203 95 211 35 219 35 L 223 35',labels:[[73,109,'D'],[185,109,'D']]}
+ 'hep-normal':{axis:41,path:'M9 41 L23 41 Q30 18 38 41 C52 41 55 102 73 102 C92 102 96 41 110 41 C126 41 139 78 154 78 C172 78 176 41 193 41 L221 41',labels:[[71,115,'S'],[155,94,'D']]},
+ 'hep-mild':{axis:41,path:'M9 41 L22 41 Q29 19 36 41 C52 41 57 68 74 68 C94 68 97 41 111 41 C127 41 137 103 155 103 C171 103 176 41 193 41 L221 41',labels:[[74,83,'S'],[156,116,'D']]},
+ 'hep-severe':{axis:41,path:'M9 41 L22 41 Q32 19 39 41 C53 41 58 13 74 13 C91 13 97 41 111 41 C128 41 137 102 155 103 C171 103 180 41 193 41 L221 41',labels:[[73,12,'S'],[156,116,'D']]},
+ 'por-normal':{axis:109,path:'M8 61 C28 60 35 58 54 62 S94 65 111 61 S146 58 163 62 S199 64 222 61',labels:[],filled:true,peaks:[[30,48,'Vmin'],[153,47,'Vmax']]},
+ 'por-mild':{axis:109,path:'M8 73 C23 73 30 26 52 26 C72 26 77 68 95 69 C115 70 118 26 139 26 C159 26 170 71 192 71 L222 71',labels:[],filled:true,peaks:[[96,83,'Vmin'],[51,17,'Vmax']]},
+ 'por-severe':{axis:109,path:'M8 106 C28 105 32 17 51 17 C69 17 72 104 95 104 C115 104 120 17 139 17 C157 17 171 105 194 105 L222 105',labels:[],filled:true,peaks:[[95,94,'Vmin'],[50,12,'Vmax']]},
+ 'ren-normal':{axis:87,path:'M9 87 L25 87 C30 87 34 18 47 18 C58 18 67 67 88 68 L220 68',labels:[],filled:true},
+ 'ren-mild':{axis:87,path:'M9 87 L22 87 C27 87 32 18 46 18 C59 18 66 70 88 70 L115 70 L125 87 C130 87 133 29 148 29 C161 29 167 72 188 72 L221 72',labels:[[80,103,'S'],[178,103,'D']],filled:true},
+ 'ren-severe':{axis:87,path:'M9 87 L68 87 C73 87 79 20 93 20 C109 20 120 69 144 69 L220 69',labels:[[144,103,'D']],filled:true}
 };
+function renalSVG(type){
+ const basal=61;
+ const upper='M10 61 L18 61 L32 20 C38 10 41 30 55 44 C64 55 69 55 78 55 L218 55';
+ const veins={
+  'ren-normal':{p:'M17 61 C27 62 30 84 46 89 C64 97 77 91 89 89 L216 89',labels:[],top:'Flujo venoso continuo'},
+  'ren-mild':{p:'M20 61 L48 61 Q51 81 66 90 Q80 95 90 61 L123 61 Q127 82 143 91 Q159 94 169 61 L216 61',labels:[[70,112,'S'],[146,112,'D']],top:'Flujo venoso bifásico discontinuo'},
+  'ren-severe':{p:'M22 61 L125 61 Q128 83 145 92 Q161 94 172 61 L217 61',labels:[[151,112,'D']],top:'Flujo venoso monofásico discontinuo'}
+ };
+ const v=veins[type];if(!v)return '';
+ const venousFill=`<path d="${v.p} L217 ${basal} L17 ${basal}Z" fill="#9ea3a8" fill-opacity=".78"/>`;
+ const names=v.labels.map(([x,y,t])=>`<text class="lab" x="${x}" y="${y}" text-anchor="middle">${t}</text>`).join('');
+ return `<svg class="doppler-vector" viewBox="0 0 230 122" role="img" aria-label="${v.top}, bajo la línea basal amarilla; flujo arterial de referencia arriba"><rect width="230" height="122" rx="5" fill="#080a0c"/><path d="${upper}" fill="none" stroke="#fff" stroke-width="1.8" opacity=".85"/>${venousFill}<path d="${v.p}" fill="none" stroke="#e9edf0" stroke-width="1.8"/><line class="baseline" x1="7" x2="223" y1="${basal}" y2="${basal}" stroke="#e5e32d" stroke-width="3"/>${names}</svg>`;
+}
 function svgFor(type){
- if(type.startsWith('ivc-')){
-   const large=type==='ivc-large';
-   return `<svg viewBox="0 0 230 118" role="img" aria-label="Esquema de vena cava ${large?'dilatada':'no dilatada'}"><path d="M12 59 H218" stroke="#d2dae4" stroke-dasharray="4 5"/><path d="M13 ${large?25:44} C 65 ${large?21:41}, 160 ${large?24:44}, 218 ${large?25:44} L 218 ${large?93:74} C 160 ${large?95:76}, 65 ${large?98:77}, 13 ${large?93:74} Z" fill="#8ba9c9" fill-opacity=".45" stroke="#284f7a" stroke-width="2.5"/><path d="M195 ${large?25:44} v ${large?68:30} m -5 -68 h 10 m -10 68 h 10" stroke="#254f81" stroke-width="1.7" fill="none"/><text x="22" y="17" fill="#4c6685" font-size="12" font-weight="700">${large?'≥ 2 cm':'< 2 cm'}</text></svg>`;
- }
- const x=waveData[type];const labs=x.labels.map(([px,py,l])=>`<text class="lab" x="${px}" y="${py}" text-anchor="middle">${l}</text>`).join('');
- return `<svg viewBox="0 0 230 121" role="img" aria-label="Esquema ilustrativo del patrón Doppler"><line class="axis" x1="7" x2="223" y1="${x.axis}" y2="${x.axis}"/><path class="wave" d="${x.path}"/>${labs}</svg>`
+ if(type.startsWith('ivc-'))return '';
+ if(type.startsWith('ren-'))return renalSVG(type);
+ const x=waveData[type];if(!x)return '';
+ const labs=(x.labels||[]).map(([px,py,l])=>`<text class="lab" x="${px}" y="${py}" text-anchor="middle">${l}</text>`).join('');
+ const vmax=(x.peaks||[]).map(([px,py,l])=>`<text class="peaklabel" x="${px}" y="${py}" text-anchor="middle">${l}</text>`).join('');
+ const extra=x.filled?`<path class="doppler-fill" d="${x.path} L 222 ${x.axis} L 8 ${x.axis} Z"/>`:'';
+ return `<svg class="doppler-vector" viewBox="0 0 230 122" role="img" aria-label="Esquema Doppler ${type}"><rect width="230" height="122" rx="5" fill="#080a0c"/>${extra}<path class="doppler-curve" d="${x.path}"/><line class="baseline" x1="7" x2="223" y1="${x.axis}" y2="${x.axis}"/>${labs}${vmax}</svg>`;
 }
 function renderOptions(){Object.entries(model).forEach(([group,choices])=>{const root=$('opts-'+group);choices.forEach(c=>{const label=document.createElement('label');label.className='pattern';label.innerHTML=`<input type="radio" name="${group}" value="${c.v}"><strong>${c.t}</strong><span class="small">${c.hint}</span>${svgFor(c.type)}`;root.append(label)})})}
 function selected(group){return document.querySelector(`input[name="${group}"]:checked`)?.value||null}

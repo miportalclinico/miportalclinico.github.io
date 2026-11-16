@@ -52,6 +52,8 @@ const DEF=[
 ['ast','GOT/AST','GOT','bioquimica','aspartato aminotransferasa|transaminasa got|got|ast|asat'],
 ['alt','GPT/ALT','GPT','bioquimica','alanina aminotransferasa|transaminasa gpt|gpt|alt|alat'],
 ['ggt','GGT','GGT','bioquimica','gamma glutamil transferasa|gamma gt|gamma-gt|ggt'],
+['amilasa','Amilasa','amilasa','bioquimica','amilasa serica|amilasa'],
+['lipasa','Lipasa','lipasa','bioquimica','lipasa serica|lipasa'],
 ['alp','Fosfatasa alcalina','FA','bioquimica','fosfatasa alcalina|alp|fa'],
 ['ferritina','Ferritina','ferritina','ferrico','ferritina'],
 ['transferrina','Transferrina','transferrina','ferrico','transferrina'],
@@ -127,8 +129,8 @@ if(global.LabCatalog?.entries){
 
 const NEVER=new Set(['hematíes']);
 const HEMO=new Set(['hb','vcm','hcm','ade','leucocitos','neutro','linfo','plaquetas','retic','retic_abs']);
-const ENZYMES=new Set(['cpk','ldh','ast','alt','ggt','alp']);
-const FIELD_ORDER={bioquimica:['glucosa','urea','creatinina','fg','sodio','potasio','cloro','calcio','calcio_corr','magnesio','fosforo','proteinas','albumina','urato','bili_total','bili_directa','bili_indirecta','cpk','ldh','ast','alt','ggt','alp'],ferrico:['ferritina','transferrina','sat_trans'],lipidico:['col_total','col_hdl','col_ldl','col_non_hdl','tg','lpa','apoa','apob'],diabetico:['hba1c','cpeptido'],orina:['densidad','ph_orina','leucocitos_orina','hematíes_orina','nitrito_orina','glucosa','proteinas','cetonas_orina','urobilinogeno_orina','bili_orina','creatinina_orina','urea_orina','albumina_orina','uacr','sodio_orina','sodio_creat_orina','potasio_orina','potasio_creat_orina','cloro_orina','bun_creat_orina'],coagulacion:['tp','tp_act','inr','tpta','tpta_ratio','fibrinogeno','dimero_d'],hormonas:['tsh','ft4','ft3','cortisol'],vitaminas:['b12','folato','vitd'],cardiacos:['troponina','ntprobnp','bnp']};
+const ENZYMES=new Set(['cpk','ldh','ast','alt','ggt','alp','amilasa','lipasa']);
+const FIELD_ORDER={bioquimica:['glucosa','urea','creatinina','fg','sodio','potasio','cloro','calcio','calcio_corr','magnesio','fosforo','proteinas','albumina','urato','cpk','ldh','ast','alt','bili_total','bili_directa','bili_indirecta','ggt','alp','amilasa','lipasa'],ferrico:['ferritina','transferrina','sat_trans'],lipidico:['col_total','col_hdl','col_ldl','col_non_hdl','tg','lpa','apoa','apob'],diabetico:['hba1c','cpeptido'],orina:['densidad','ph_orina','leucocitos_orina','hematíes_orina','nitrito_orina','glucosa','proteinas','cetonas_orina','urobilinogeno_orina','bili_orina','creatinina_orina','urea_orina','albumina_orina','uacr','sodio_orina','sodio_creat_orina','potasio_orina','potasio_creat_orina','cloro_orina','bun_creat_orina'],coagulacion:['tp','tp_act','inr','tpta','tpta_ratio','fibrinogeno','dimero_d'],hormonas:['tsh','ft4','ft3','cortisol'],vitaminas:['b12','folato','vitd'],cardiacos:['troponina','ntprobnp','bnp']};
 function sorted(items,section){const order=FIELD_ORDER[section];if(!order)return items;return [...items].sort((a,b)=>{const ai=order.indexOf(a.key),bi=order.indexOf(b.key);return (ai<0?999:ai)-(bi<0?999:bi)});}
 const CULTURE_RE=/\b(hemocultivos?|urocultivos?|exudados?|esputos?|cultivos? de (?:sangre|orina|herida|liquido|líquido|cateter|catéter)|liquido cefalorraquideo|líquido cefalorraquídeo|liquido pleural|líquido pleural|liquido ascitico|líquido ascítico|lcr)\b/i;
 const DATE_RE=/\b(?:\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{4}|\d{4}-\d{2}-\d{2})\b/g;
@@ -472,7 +474,7 @@ function makeGas(items,opts,gasType){
  }else{
   const d=['ph','pco2','po2','hco3'].map(find);
   if(d.every(e=>e&&Number.isFinite(e.num))){
-   detail=displayNum(d[0].num,2)+'/'+displayNum(d[1].num,1)+'/'+displayNum(d[2].num,1)+'/'+withStdCompact()+'///';
+   detail=displayNum(d[0].num,2)+'/'+displayNum(d[1].num,1)+'/'+displayNum(d[2].num,1)+'/'+withStdCompact();
   }else{
    detail=['ph','pco2','po2','hco3'].map(k=>k==='hco3'?standard('hco3','hco3_std'):(find(k)?fullValue(find(k),opts):'')) .filter(Boolean).join(', ');
   }
