@@ -1,15 +1,15 @@
-/* Editor de analíticas · v32 · Orden fijo de apartados · Procesamiento local. */
+/* Editor de analíticas · v55 · Marcadores sin título y omisión opcional de pendientes. */
 'use strict';
 (function(global){
 // Orden fijo de presentación acordado. Los apartados vacíos no se imprimen.
-const ORDER=['hemograma','vsg','frotis','coagulacion','bioquimica','pcr','cardiacos','gasometria','orina','diabetico','lipidico','ferrico','vitaminas','hormonas','proteinograma','autoinmunidad','cultivos','microbiologia','serologias','otros'];
-const TITLES={hemograma:'Hemograma',vsg:'VSG',frotis:'Frotis de sangre periférica',coagulacion:'Coagulación',bioquimica:'Bioquímica',pcr:'PCR',cardiacos:'Marcadores cardíacos',gasometria:'Gasometría',orina:'Orina',orina_bioq:'Orina',orina_sistema:'Orina',indices_renales:'Orina',diabetico:'Perfil diabético',lipidico:'Perfil lipídico',ferrico:'Perfil férrico',vitaminas:'Vitaminas',hormonas:'Hormonas',proteinograma:'Proteinograma',autoinmunidad:'Autoinmunidad',cultivos:'Cultivos',microbiologia:'Microbiología',serologias:'Serologías',otros:'Otros resultados'};
+const ORDER=['hemograma','vsg','frotis','coagulacion','bioquimica','tumorales','pcr','cardiacos','gasometria','orina','diabetico','lipidico','ferrico','vitaminas','hormonas','proteinograma','autoinmunidad','cultivos','microbiologia','serologias','otros'];
+const TITLES={hemograma:'Hemograma',vsg:'VSG',frotis:'Frotis de sangre periférica',coagulacion:'Coagulación',bioquimica:'Bioquímica',tumorales:'CEA, CA 19-9 y otros',pcr:'PCR',cardiacos:'Marcadores cardíacos',gasometria:'Gasometría',orina:'Orina',orina_bioq:'Orina',orina_sistema:'Orina',indices_renales:'Orina',diabetico:'Perfil diabético',lipidico:'Perfil lipídico',ferrico:'Perfil férrico',vitaminas:'Vitaminas',hormonas:'Hormonas',proteinograma:'Proteinograma',autoinmunidad:'Autoinmunidad',cultivos:'Cultivos',microbiologia:'Microbiología',serologias:'Serología',otros:'Otros resultados'};
 const DEF=[
 ['hb','Hemoglobina','Hb','hemograma','hemoglobina|hgb|hb'],
 ['hematocrito','Hematocrito','Hto','hemograma','hematocrito|hct|hto'],
 ['vcm','VCM','VCM','hemograma','volumen corpuscular medio|vcm|mcv'],
 ['hcm','HCM','HCM','hemograma','hemoglobina corpuscular media|hcm|mch'],
-['chcm','CHCM','CHCM','hemograma','concentracion de hemoglobina corpuscular media|chcm|mchc'],
+['chcm','CHCM','CHCM','hemograma','concentracion de hemoglobina corpuscular media|concentracion de hemoglobina corpuscular|chcm|mchc'],
 ['ade','ADE','ADE','hemograma','amplitud de distribucion eritrocitaria|ancho de distribucion eritrocitaria|rdw-cv|rdw|ade'],
 ['hematíes','Hematíes','Hematíes','hemograma','hematies|eritrocitos|rbc'],
 ['leucocitos','Leucocitos','Leucocitos','hemograma','recuento de leucocitos|globulos blancos|leucocitos|wbc'],
@@ -24,6 +24,20 @@ const DEF=[
 ['retic','Reticulocitos','Reticulocitos','hemograma','reticulocitos|retic'],
 ['vsg','VSG','VSG','vsg','velocidad de sedimentacion globular|velocidad de sedimentacion|vsg'],
 ['tp','TP','TP','coagulacion','tiempo de protrombina|tp'],
+    ['tp_ratio','TP ratio','TP ratio','coagulacion','tp ratio|ratio tp|ratio de protrombina'],
+    ['cea','Antígeno carcinoembrionario (CEA)','CEA','tumorales','ag carcinoembrionario (cea)|antigeno carcinoembrionario|cea'],
+    ['ca199','CA 19-9','CA 19-9','tumorales','ca 19-9 ag|ca 19-9|ca19-9|ca 199'],
+    ['ca125','CA 125','CA 125','tumorales','ca 125 ag|ca 125|ca125'],
+    ['ca153','CA 15-3','CA 15-3','tumorales','ca 15-3 ag|ca 15-3|ca15-3'],
+    ['afp','Alfafetoproteína','AFP','tumorales','alfa fetoproteina|alfafetoproteina|afp'],
+    ['psa_libre','PSA libre','PSA libre','tumorales','antigeno prostatico especifico libre|psa libre|free psa'],
+    ['psa_total','PSA total','PSA total','tumorales','antigeno prostatico especifico total|antigeno prostatico especifico|psa total|psa'],
+    ['bhcg','Beta-hCG','β-hCG','tumorales','beta-hcg|beta hcg|bhcg|β-hcg'],
+    ['nse','Enolasa neuronal específica','NSE','tumorales','enolasa neuronal especifica|nse'],
+    ['cyfra211','CYFRA 21-1','CYFRA 21-1','tumorales','cyfra 21-1|cyfra21-1'],
+    ['cromogranina_a','Cromogranina A','cromogranina A','tumorales','cromogranina a|chromogranin a'],
+    ['calcitonina','Calcitonina','calcitonina','tumorales','calcitonina'],
+    ['scc','Antígeno SCC','SCC','tumorales','antigeno scc|scc'],
 ['inr','INR','INR','coagulacion','indice internacional normalizado|inr'],
 ['tpta','TTPA','TTPA','coagulacion','tiempo parcial de tromboplastina activado|tiempo de tromboplastina parcial activada|tpta|tt pa|ttpa|aptt'],
 ['tpta_ratio','Ratio TTPA','ratio TTPA','coagulacion','ratio del aptt|ttpa ratio|ratio ttp a|ratio tpta|ratio ttp a'],
@@ -57,7 +71,7 @@ const DEF=[
 ['alp','Fosfatasa alcalina','FA','bioquimica','fosfatasa alcalina|alp|fa'],
 ['ferritina','Ferritina','ferritina','ferrico','ferritina'],
 ['transferrina','Transferrina','transferrina','ferrico','transferrina'],
-['sat_trans','Índice de saturación de transferrina','IST','ferrico','indice de saturacion de la transferrina|saturacion de transferrina|saturacion transferrina|ist'],
+['sat_trans','Índice de saturación de transferrina','IST','ferrico','indice de saturacion de la transferrina|indice de saturacion de transferrina|saturacion de transferrina|saturacion transferrina|ist'],
 ['hierro','Hierro','hierro','ferrico','hierro serico|sideremia|hierro'],
 ['col_total','Colesterol total','colesterol total','lipidico','colesterol total|colesterol'],
 ['col_hdl','Colesterol HDL','HDL','lipidico','colesterol hdl|hdl-colesterol|hdl colesterol|hdl'],
@@ -130,7 +144,7 @@ if(global.LabCatalog?.entries){
 const NEVER=new Set(['hematíes']);
 const HEMO=new Set(['hb','vcm','hcm','ade','leucocitos','neutro','linfo','plaquetas','retic','retic_abs']);
 const ENZYMES=new Set(['cpk','ldh','ast','alt','ggt','alp','amilasa','lipasa']);
-const FIELD_ORDER={bioquimica:['glucosa','urea','creatinina','fg','sodio','potasio','cloro','calcio','calcio_corr','magnesio','fosforo','proteinas','albumina','urato','cpk','ldh','ast','alt','bili_total','bili_directa','bili_indirecta','ggt','alp','amilasa','lipasa'],ferrico:['ferritina','transferrina','sat_trans'],lipidico:['col_total','col_hdl','col_ldl','col_non_hdl','tg','lpa','apoa','apob'],diabetico:['hba1c','cpeptido'],orina:['densidad','ph_orina','leucocitos_orina','hematíes_orina','nitrito_orina','glucosa','proteinas','cetonas_orina','urobilinogeno_orina','bili_orina','creatinina_orina','urea_orina','albumina_orina','uacr','sodio_orina','sodio_creat_orina','potasio_orina','potasio_creat_orina','cloro_orina','bun_creat_orina'],coagulacion:['tp','tp_act','inr','tpta','tpta_ratio','fibrinogeno','dimero_d'],hormonas:['tsh','ft4','ft3','cortisol'],vitaminas:['b12','folato','vitd'],cardiacos:['troponina','ntprobnp','bnp']};
+const FIELD_ORDER={bioquimica:['glucosa','urea','creatinina','fg','sodio','potasio','cloro','calcio','calcio_corr','magnesio','fosforo','proteinas','albumina','urato','cpk','ldh','ast','alt','bili_total','bili_directa','bili_indirecta','ggt','alp','amilasa','lipasa'],ferrico:['ferritina','transferrina','sat_trans'],lipidico:['col_total','col_hdl','col_ldl','col_non_hdl','tg','lpa','apoa','apob'],diabetico:['hba1c','cpeptido'],orina:['densidad','ph_orina','leucocitos_orina','hematíes_orina','nitrito_orina','glucosa','proteinas','cetonas_orina','urobilinogeno_orina','bili_orina','creatinina_orina','urea_orina','albumina_orina','uacr','sodio_orina','sodio_creat_orina','potasio_orina','potasio_creat_orina','cloro_orina','bun_creat_orina'],coagulacion:['tp','tp_act','inr','tpta','tpta_ratio','fibrinogeno','dimero_d'],hormonas:['tsh','ft4','ft3','cortisol'],vitaminas:['b12','folato','vitd'],cardiacos:['troponina','ntprobnp','bnp'],tumorales:['cea','ca199','ca125','ca153','afp','psa_total','psa_libre','bhcg','nse','cyfra211','cromogranina_a','calcitonina','scc']};
 function sorted(items,section){const order=FIELD_ORDER[section];if(!order)return items;return [...items].sort((a,b)=>{const ai=order.indexOf(a.key),bi=order.indexOf(b.key);return (ai<0?999:ai)-(bi<0?999:bi)});}
 const CULTURE_RE=/\b(hemocultivos?|urocultivos?|exudados?|esputos?|cultivos? de (?:sangre|orina|herida|liquido|líquido|cateter|catéter)|liquido cefalorraquideo|líquido cefalorraquídeo|liquido pleural|líquido pleural|liquido ascitico|líquido ascítico|lcr)\b/i;
 const DATE_RE=/\b(?:\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{4}|\d{4}-\d{2}-\d{2})\b/g;
@@ -159,7 +173,7 @@ function extractValue(line){const m=line.match(/(?:^|\s|[:=\[])([<>]?\s*-?\d+(?:
  let unit=after.replace(ref?ref.text:'','').replace(/(?:\b(?:alto|bajo|elevado|disminuido|normal|anormal|critico|crítico)\b|[↑↓*!])/gi,'').trim();
  // If the laboratory writes the unit before the value, e.g. "Glucosa (mg/dL): 90".
  if(!unit){const pu=prefix.match(/\(([^()]{1,25})\)/);if(pu&&!/\d+\s*[-–]/.test(pu[1]))unit=pu[1];}
- unit=unit.replace(/\s*\(?[<>]\s*[\d.,]+\)?/g,'').replace(/^\s*\(CKD-EPI\)\s*/i,'').replace(/^\s*en funci[oó]n de la alb[uú]mina\s*/i,'').replace(/^\s*\((?:CK|ALP)\)\s*/i,'').replace(/\s+Densidad\b.*$/i,'').replace(/^[\s:=;]+|[;,\.\s]+$/g,'').replace(/^\[|\]$/g,'').replace(/\s+/g,' ').slice(0,44);
+ unit=unit.replace(/^\(?CKD-EPI\)?$/i,'').replace(/\s*\(?[<>]\s*[\d.,]+\)?/g,'').replace(/^\s*\(CKD-EPI\)\s*/i,'').replace(/^\s*en funci[oó]n de la alb[uú]mina\s*/i,'').replace(/^\s*\((?:CK|ALP)\)\s*/i,'').replace(/\s+Densidad\b.*$/i,'').replace(/\s+NEG(?:ATIVO)?\s*$/i,'').replace(/^[\s:=;]+|[;,\.\s]+$/g,'').replace(/^\[|\]$/g,'').replace(/\s+/g,' ').slice(0,44);
  const status=/\b(alto|elevado|high)\b|↑/.test(after)?'high':/\b(bajo|disminuido|low)\b|↓/.test(after)?'low':null;
  let abnormal=status;
  if(!abnormal&&ref) abnormal=n<ref.low?'low':n>ref.high?'high':'normal';
@@ -201,15 +215,18 @@ function numericOrQualitative(tail){
 function isHeader(gn){
  if(/^(?:hemograma)(?:\s+hemograma)?$/.test(gn))return 'hemograma';
  if(/^(?:sistematico orina|sistematico de orina|sedimento urinario)$/.test(gn))return 'orina';
+ if(/^(?:analisis de orina|urianalisis|sedimento microscopico)(?:\s|$)/.test(gn))return 'orina';
  if(/^coacgoualgaucliaocnion$/.test(gn))return 'coagulacion';
  if(/^bioqbuioimquicimai cean esna snagrere$/.test(gn))return 'bioquimica';
  if(/^(?:bioquimica en sangre|oquimica en sangre|bioquimica)(?:\s+bioquimica en sangre)?$/.test(gn))return 'bioquimica';
  if(/^(?:metabolismo lipidico|perfil lipidico)(?:\s+metabolismo lipidico)?$/.test(gn))return 'lipidico';
  if(/^(?:bioquimica en orina aislada|orina|sedimento urinario)(?:\s+bioquimica en orina aislada)?$/.test(gn))return 'orina';
  if(/^(?:hormonas|hormona)(?:\s+hormonas)?$/.test(gn))return 'hormonas';
+ if(/^(?:marcadores\s+tumorales|marcadores\s+oncologicos)(?:\s+marcadores\s+tumorales)?$/.test(gn))return 'tumorales';
  if(/^(?:proteinas especiales)(?:\s+proteinas especiales)?$/.test(gn))return 'pcr';
  if(/^(?:hemoglobina hplc)(?:\s+hemoglobina hplc)?$/.test(gn))return 'diabetico';
  if(/^(?:serologias?|serologia viral)(?:\s+.*)?$/.test(gn))return 'serologias';
+ if(/(?:^|\s)(?:orina aislada|bioquimica en orina)(?:$|\s)/.test(gn))return 'orina';
  if(/^(?:microbiologia|estudios microbiologicos)(?:\s+.*)?$/.test(gn))return 'microbiologia';
  if(/^(?:coagulacion|vitaminas|perfil ferrico|autoinmunidad|gasometria)(?:\s+.*)?$/.test(gn))return gn.split(' ')[0];
  return '';
@@ -220,12 +237,27 @@ function normalizeSource(source){
  .replace(/&nbsp;/gi,' ').replace(/&amp;/gi,'&')
  .replace(/\\\*/g,'*').replace(/\*\*/g,'').replace(/\\\|/g,'|')
  .replace(/\r/g,'').replace(/[\u00a0\u200b\u200c\u200d]/g,' ');
+ // Copias del visor: determinación | vacío | valor | intervalo | técnico | muestra.
+ // Nunca importar columnas de profesionales ni otras columnas no clínicas.
+ const copiedViewer=/(?:\|[^\n]*\bTEL\s*:|\|\s*[-:]+\s*\|)/i.test(t);
  t=t.split('\n').map(l=>{
   if(/^\s*\|.*\|\s*$/.test(l)){
-   if(/^\s*\|\s*(?:-+|:-+:?)\s*(?:\|\s*(?:-+|:-+:?)\s*)+\|?\s*$/.test(l))return '';
-   return l.replace(/^\s*\||\|\s*$/g,'').split('|').map(x=>x.trim()).filter(Boolean).join('  ');
-  }return l;
+   const cells=l.replace(/^\s*\||\|\s*$/g,'').split('|').map(x=>x.trim());
+   if(cells.every(x=>!x||/^:?-{1,}:?$/.test(x)))return '';
+   const name=cells[0]||'';
+   if(!name||/^\s*\(?[-+]?\d+(?:[.,]\d+)?\s*[-–]\s*\d+\)?\s*$/.test(name))return '';
+   if(/^TEL\s*:/i.test(name))return '';
+   if(cells.length>=3 && cells.some(x=>/^TEL\s*:/i.test(x))){
+    const value=(cells[2]||cells[1]||'').trim();const range=(cells[3]||'').trim();
+    return [name,value,/^\([^()]*\)$/.test(range)?range:''].filter(Boolean).join(' ');
+   }
+   return cells.filter(Boolean).join(' ');
+  }
+  if(copiedViewer&&/^(?:SUERO|ORINA|SANGRE (?:EDTA|ARTERIAL|VENOSA)|PLASMA CITRATO)\s*$/i.test(l.trim()))return '';
+  if(copiedViewer&&/^(?:Un valor de NT-proBNP|Por otra parte los valores ajustados|Un de NT-proBNP)/i.test(l.trim()))return '';
+  return l;
  }).join('\n');
+ if(copiedViewer)t=t.replace(/\bNT-proBNP\s*\n\s*([<>]?\s*\d[\d.,]*\s*pg\/mL)\b/gi,'NT-proBNP $1');
  t=t.replace(/(concentraci[oó]n de hemoglobina corpuscular)\s*\n\s*(media eritrocitaria)/gi,'$1 $2')
  .replace(/(tiempo parcial de tromboplastina activado)\s*\n\s*(\(aPTT\))/gi,'$1 $2')
  .replace(/(tiempo de tromboplastina parcial activada)\s*\n\s*(\(aPTT\))/gi,'$1 $2');
@@ -238,6 +270,66 @@ function microAdd(c,drug,status){if(!drug)return;for(const k of ['S','I','R'])if
  c.sens[status].push(drug);}
 function microOrganism(line){const m=line.match(/^\s*((?:Staphylococcus|Escherichia|Klebsiella|Enterococcus|Pseudomonas|Proteus|Enterobacter|Streptococcus|Serratia|Citrobacter|Candida)\s+[a-z][\w.-]+)/i);return m?m[1].trim():'';}
 
+// Solo estados expresos del laboratorio; «PENDIENTE» nunca se infiere de un valor ausente.
+const LAB_CANCELLED = /\b(?:prueba\s+anulad[ao]|anulad[ao]\s+por\s+regla|no\s+procede|muestra\s+(?:no\s+recibida|no\s+disponible|no\s+procesada|insuficiente|coagulada|hemolizada|hemol[ií]tica|contaminada|rechazada)|(?:tubo|muestra)\s+con\s+(?:hem[oó]lisis|co[aá]gulo)|error\s+(?:de\s+)?laboratorio|determinaci[oó]n\s+no\s+realizada|prueba\s+rechazada|no\s+se\s+realiza|no\s+se\s+ha\s+realizado|incidencias?|hem[oó]lisis|muestra\s+lip[eé]mica|interferencia\s+anal[ií]tica|sin\s+muestra)\b/i;
+const LAB_NOTES = /^(?:servicio\s+extreme[nñ]o\s+de\s+salud|informe\s+(?:parcial|de\s+laboratorio)|(?:determinaci[oó]n|descripci[oó]n)\s+(?:resultado|valor)|(?:v\.?\s*referencia|rango|unidades)\s*$|hem[aá]timetri[aá]|hematolog[ií]a|bioqu[ií]mica|marcadores(?:\s+bioqu[ií]micos)?\s+de\s+anemia|marcadores\s+tumorales|metabolismo\s+lip[ií]dico|serolog[ií]a|microbiolog[ií]a|hormonas|sistem[aá]tico\s+orina|validado\s+por|validadores?\s+cl[ií]nicos?|validadores?\s+t[eé]cnicos?|f\.?\s*firma|n[º°]\s*(?:de\s*)?petici[oó]n|p[aá]gina\s+\d+|resultado\s+rescatado\s+de\s+hist[oó]rico|el\s+resultado\s+mostrado|valores\s+recomendados|riesgo\s+aterog[eé]nico|normal\s+o\s+indicador|cociente\s+no\s+calculable|prueba\s+trepon[eé]mica|determinaci[oó]n\s+cualitativa|no\s+procede\s+la\s+repetici[oó]n|seg[uú]n\s+las\s+recomendaciones)/i;
+const ADMIN_LINE = /^(?:fecha(?:\s+de)?|f\.?(?:\s*ingr|\s*firma)|paciente|solicitante|solicitado\s+por|procedencia|petici[oó]n|n[º°uú]mero|laboratorio|hospital|servicio\s+(?:extreme[nñ]o|de)|muestra|sexo|edad|unidad|identificador|secci[oó]n|observaciones|comentarios\s+generales|nombre|apellidos|cip|dni|nss|domicilio|poblaci[oó]n|provincia|cama|centro\s+solicitante|diagn[oó]stico|categ\.?)\b/i;
+// No dejar pasar cabeceras personales ni a los resultados ni a los listados de revisión.
+const PERSONAL_MARKERS = /(?:\b(?:dni|cip|nss|domicilio|nombre|apellidos|paciente|identificador|nhc)\s*:|\bsexo\s*:|\bdatos\s+del\s+paciente\b|\bnombre\s+y\s+apellidos\b|\bhistoria\s+cl[ií]nica\b|\bn\.?\s*historia\s*:)/i;
+function explicitPending(line){return /^(?:pendiente|en\s+estudio|en\s+proceso|pendiente\s+de\s+resultado)\b/i.test(line.trim());}
+function serologyResult(line){
+ const status=/\s+(PENDIENTE|Negativo|Positivo|Reactivo|No\s+reactivo|No\s+detectado|Detectado|Indeterminado)(?=\s|$)/i.exec(line);
+ if(!status)return null;
+ const name=line.slice(0,status.index).replace(/[\s:=*]+$/,'').trim();
+ if(name.length<3||name.length>110||ADMIN_LINE.test(clean(name)))return null;
+ let raw=/pendiente/i.test(status[1])?'PENDIENTE':status[1];
+ const after=line.slice(status.index+status[0].length).trim();
+ if(/^(?:Positivo|Reactivo)$/i.test(status[1])){
+  const t=after.match(/^\(\s*[<>]?\s*[-\d.,]+\s*\)(?:\s+(?:UI\/mL|mUI\/mL|U\/mL|IU\/mL))?/i);
+  if(t)raw+=' '+t[0].trim().replace(/\s+/g,' ');
+ }
+ return {name,raw};
+}
+// Agrupar sólo determinaciones serológicas del mismo agente; IgG siempre antes de IgM.
+// Esta normalización es de presentación: el nombre y el resultado originales
+// permanecen en los datos analizados para su revisión.
+function serologyParts(items){
+ const groups=new Map();
+ for(const e of items){
+  const n=clean(e.name),ig=/\bigg\b/.test(n)?'IgG':/\bigm\b/.test(n)?'IgM':'';
+  let group='',component='',order=25;
+  if(/\bvih\b|\bhiv\b/.test(n)){group='VIH';component='Ac. VIH-1/2';order=10;}
+  else if(/\bvha\b|hepatitis a/.test(n)){group='VHA';component=ig||'Ac. totales';order=ig==='IgG'?0:ig==='IgM'?10:5;}
+  else if(/\bhbs\b|\bhbc\b|\bvhb\b|hepatitis b/.test(n)){
+   group='VHB';
+   if(/\bhbc\b/.test(n)){component='Ac. anti-HBc';order=10;}
+   else if(/\bhbs\b/.test(n)&&/\bantigeno\b|\bag\b|\bhbsag\b/.test(n)){component='Ag HBs';order=0;}
+   else if(/\bhbs\b/.test(n)){component='Ac. anti-HBs';order=20;}
+   else component=e.name.replace(/^anticuerpos\s+/i,'Ac. ');
+  }
+  else if(/\bvhc\b|\bhcv\b|hepatitis c/.test(n)){group='VHC';component='Ac. anti-VHC';}
+  else if(/citomegalovirus|\bcmv\b/.test(n)){group='Citomegalovirus';component=ig||'Ac.';order=ig==='IgG'?0:ig==='IgM'?10:20;}
+  else if(/epstein.?barr|\bebv\b/.test(n)){group='Virus Epstein-Barr';component=(ig||'Ac.')+(/capside|\bvca\b/.test(n)?' anti-VCA':'');order=ig==='IgG'?0:ig==='IgM'?10:20;}
+  else if(/rubeola/.test(n)){group='Rubéola';component=ig||'Ac.';order=ig==='IgG'?0:ig==='IgM'?10:20;}
+  else if(/sifilis|syphilis|treponem|\brpr\b/.test(n)){group='Sífilis';component=/\brpr\b/.test(n)?'RPR':ig||'Ac. totales';order=ig==='IgG'?0:ig==='IgM'?10:20;}
+  else if(/sarampion/.test(n)){group='Sarampión';component=ig||'Ac.';order=ig==='IgG'?0:ig==='IgM'?10:20;}
+  else if(/parotiditis/.test(n)){group='Parotiditis';component=ig||'Ac.';order=ig==='IgG'?0:ig==='IgM'?10:20;}
+  else if(/varicela|zoster/.test(n)){group='Varicela';component=ig||'Ac.';order=ig==='IgG'?0:ig==='IgM'?10:20;}
+  else {
+   const display=e.name.replace(/^anticuerpos\b\s*/i,'Ac. ').replace(/\banticuerpos\b/ig,'Ac.').trim();
+   if(ig){group=display.replace(/^Ac\.\s*/i,'').replace(/\bIg[GMA]\b/ig,'').replace(/\s+/g,' ').trim().replace(/[:\-]\s*$/,'');component=ig;order=ig==='IgG'?0:10;}
+   else {group=display;component='';}
+  }
+  const raw=String(e.raw||'').trim();
+  // La referencia NEG no es un segundo resultado: se conserva sólo la primera
+  // calificación informada en la columna 'Resultado'.
+  const value=/^PENDIENTE$/i.test(raw)?'PENDIENTE':raw.replace(/^(Positivo|Negativo|Reactivo|No reactivo|Detectado|No detectado|Indeterminado)\b/i,m=>m.toLowerCase());
+  const fragment=(component?component+' ':'')+value+historicalLabel(e);
+  if(!groups.has(group))groups.set(group,[]);
+  groups.get(group).push({fragment,order,position:groups.get(group).length});
+ }
+ return [...groups].map(([group,results])=>group+': '+results.sort((a,b)=>a.order-b.order||a.position-b.position).map(v=>v.fragment).join(', ')+'.');
+}
 function parse(source){
  const text=normalizeSource(source)
  // A copied PDF/table may join the chemistry heading to the end of a previous range.
@@ -245,10 +337,33 @@ function parse(source){
  .replace(/\b(BIOQU[IÍ]MICA EN SANGRE)\s+\1/gi,'$1');
  const lines=text.split(/\n|;(?=\s*[A-Za-zÁÉÍÓÚáéíóú])/).map(l=>l.trim()).filter(Boolean);
  const items=[],unrecognized=[],skipped=[],dates=new Set(),cultures=[],texts={};
- const gas={sourceType:'',suppliedType:false};let currentCulture=null,seenGas=false,sectionHint='',pendingAdministrative=false,microGroup='',microTable=false,microPending='';
- const personal=/\b(?:n[úu]mero de historia|n\.?\s*historia|nhc|dni|cip|paciente\s*:|nombre\s*y\s*apellidos)\b/i.test(text);
- for(const originalLine of lines){
-  const line=originalLine;if(/^[-|:\s]+$/.test(line))continue;
+ const gas={sourceType:'',suppliedType:false};let currentCulture=null,seenGas=false,sectionHint='',pendingAdministrative=false,microGroup='',microTable=false,microPending='',coagAnnulledCount=0;
+ const personal=PERSONAL_MARKERS.test(text)||/\b(?:dni|cip|nss|historia\s+cl[ií]nica)\s*:/i.test(text);
+ for(let lineIndex=0;lineIndex<lines.length;lineIndex++){
+  const line=lines[lineIndex];if(/^[-|:\s]+$/.test(line))continue;
+  // El laboratorio puede reutilizar un resultado previo en la petición actual.
+  // Asociar la fecha SOLO a la determinación inmediatamente anterior; jamás
+  // a la fecha de solicitud, nacimiento o firma del informe.
+  const historicalDateNote=line.match(/^el resultado mostrado es del d[ií]a\s+(\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{4}|\d{4}-\d{2}-\d{2})\b/i);
+  if(historicalDateNote){
+   const previous=items[items.length-1];
+   if(previous&&lines.slice(Math.max(0,lineIndex-3),lineIndex).includes(previous.line)){
+    const date=historicalDateNote[1];
+    const iso=date.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    previous.historicalDate=iso?`${iso[3]}/${iso[2]}/${iso[1]}`:date.replace(/[.\-]/g,'/');
+    previous.historical=true;
+   }
+   continue;
+  }
+  if(/resultado rescatado de hist[oó]rico/i.test(line)){
+   const previous=items[items.length-1];
+   if(previous&&lines.slice(Math.max(0,lineIndex-3),lineIndex).includes(previous.line))previous.historical=true;
+   continue;
+  }
+  if(LAB_CANCELLED.test(line)){if(sectionHint==='coagulacion'&&/prueba\s+anulada|anulada\s+por\s+regla/i.test(line))coagAnnulledCount++;skipped.push({line:'Incidencia o prueba no realizada',reason:'Excluido por estado del laboratorio'});continue;}
+  if(/^\s*[•·.\-]\s*(?:prevenci[oó]n secundaria|rcv|riesgo cardiovascular|muy alto|moderado)/i.test(line)||/^\d+\s*mg\/dL(?:\s+y\s+reducci[oó]n.*)?$/i.test(line)||/^\d+\s*mg\/dL\s+y\s+reducci[oó]n/i.test(line)){continue;}
+  if(!isHeader(clean(line))&&(ADMIN_LINE.test(clean(line))||LAB_NOTES.test(clean(line)))){continue;}
+
   if(/^\s*cultivo bacteriol[oó]gico\b/i.test(line)){
    currentCulture=emptyCulture('Cultivo bacteriológico',line);cultures.push(currentCulture);microGroup='';microTable=false;microPending='';continue;
   }
@@ -294,11 +409,16 @@ function parse(source){
    currentCulture=null;
   }
   const gn=clean(line),hdr=isHeader(gn);
+  // Cocientes y mensajes del sedimento: no confundir con colesterol LDL medido.
+  if(/^(?:[ií]ndice\s+colesterol\s+total\s*\/|colesterol\s+ldl\s*\/|[ií]ndice\s+colesterol\s+ldl\s*\/)/i.test(gn)){continue;}
+  if(sectionHint==='orina'&&/^(?:leucocitos|hemat[ií]es)\s+aislados?$/i.test(gn)){items.push({key:'sedimento_'+items.length,name:'Sedimento urinario',short:'Sedimento',section:'orina_sistema',num:NaN,raw:line.toLowerCase(),unit:'',range:null,abnormal:null,line,qualitative:true});continue;}
   // Reconocer el tipo de muestra antes de consumir la línea como encabezado.
   // Nunca deducir arterial/venosa por los valores analíticos.
   if(/\bgasometria\s+(?:arterial|venosa)\b|\b(?:sangre|muestra)\s+(?:arterial|venosa)\b/.test(gn)){gas.sourceType=/\barterial\b/.test(gn)?'arterial':'venosa';gas.suppliedType=true;seenGas=true;}
   if(hdr){sectionHint=hdr;if(hdr==='gasometria')seenGas=true;pendingAdministrative=false;continue;}
-  const dated=line.match(DATE_RE);if(dated)for(const d of dated)dates.add(d);
+  // Solo fechas de la MUESTRA; no nacimientos, firmas, impresión ni notas históricas.
+  const dated=/\b(?:extracci[oó]n|toma de muestra|fecha de realizaci[oó]n)\b/i.test(line)?line.match(DATE_RE):null;
+  if(dated)for(const d of dated)dates.add(d);
   if(/gasometria\s+(arterial|venosa)|(?:sangre|muestra)\s+(arterial|venosa)/.test(gn)){
    gas.sourceType=/arterial/.test(gn)?'arterial':'venosa';gas.suppliedType=true;seenGas=true;sectionHint='gasometria';if(/^gasometria\b/.test(gn)||!/[\d]/.test(line))continue;
   }
@@ -315,32 +435,31 @@ function parse(source){
    else if(desc)unrecognized.push({line,reason:'Proteinograma sin interpretación claramente identificada'});continue;
   }
   // Administrative lines, rejected tests and narrative notes are excluded from the formatted report.
-  if(/(?:prueba rechazada|no procede|no se realiza la determinaci[oó]n|no se ha realizado|periodicidad de realizaci[oó]n|objetivo terap[eé]utico|indicador erc|resultado no disponible|muestra insuficiente)/i.test(gn)||/^\s*(?:al existir|la periodicidad|en un periodo|moderado rcv|muy alto rcv)/.test(gn)){
+  if(/(?:prueba rechazada|no procede|no se realiza la determinaci[oó]n|no se ha realizado|periodicidad de realizaci[oó]n|objetivo terap[eé]utico|indicador erc|resultado no disponible|muestra insuficiente|recomendaciones de gu[ií]as cl[ií]nicas)/i.test(gn)||/^\s*(?:al existir|la periodicidad|en un periodo|moderado rcv|muy alto rcv)/.test(gn)){
    skipped.push({line,reason:/prueba rechazada|no procede|no se ha realizado|no se realiza|muestra insuficiente/.test(gn)?'Prueba no realizada o sin resultado':'Texto administrativo / comentario del laboratorio'});continue;
   }
   if(/^\s*(?:fecha|paciente|solicitante|peticion|petici[oó]n|numero|n[uú]mero|laboratorio|hospital|muestra|sexo|edad|unidad|identificador|secci[oó]n|observaciones|comentarios generales)\b/i.test(gn)||/^[\-=_\s]+$/.test(line)||/^\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{4}$/.test(line)){skipped.push({line,reason:'Cabecera o metadato'});continue;}
-  if(/^(?:serologia|serolog[ií]a|antigeno|ant[ií]geno|pcr viral|pcr de|anticuerpos|anti-|vih|hbsag|vhc|anti-hbc|anti-hbs|anti-hcv)/i.test(gn)||sectionHint==='serologias'){
-   const isSerology=sectionHint==='serologias'||/^(?:serologia|serolog[ií]a|ant[ií]geno|antigeno|vih|hbsag|vhc|anti-hbc|anti-hbs|anti-hcv)/i.test(gn);
+  if(/^(?:serologia|serolog[ií]a|antigeno|ant[ií]geno|pcr viral|pcr de|anticuerpos|ac\.|anti-|vih|hbsag|vhc|anti-hbc|anti-hbs|anti-hcv)/i.test(gn)||sectionHint==='serologias'){
+   const isSerology=sectionHint==='serologias'||/^(?:serologia|serolog[ií]a|ant[ií]geno|antigeno|anticuerpos|ac\.|vih|hbsag|vhc|anti-hbc|anti-hbs|anti-hcv)/i.test(gn);
    const section=/^pcr (?:viral|de)/i.test(gn)?'microbiologia':isSerology?'serologias':'autoinmunidad';
-   const marker=line.match(/^(.*?)\s*(?:[:=]\s*|\s+)(Negativo|Positivo|Reactivo|No reactivo|No detectado|Detectado|Indeterminado)(?:\s|$)/i);
-   const labelled=line.match(/^(.*?)\s*[:=]\s*(.+)$/);
-   const name=(marker?.[1]||labelled?.[1]||'').trim(),result=(marker?.[2]||labelled?.[2]||'').trim();
-   if(name&&result){items.push({key:'other_'+items.length,name,short:name,section,num:NaN,raw:result,unit:'',range:null,abnormal:null,line,qualitative:true});}
-   else unrecognized.push({line,reason:'Prueba serológica/inmunológica sin resultado inequívoco'});
+   const sr=serologyResult(line);
+   if(sr)items.push({key:'other_'+items.length,name:sr.name,short:sr.name,section,num:NaN,raw:sr.raw,unit:'',range:null,abnormal:null,line,qualitative:true});
+   else if(/\b(?:pendiente|positivo|negativo|reactivo|detectado|indeterminado)\b/i.test(line)&&/^(?:anticuerpos|ac\.|ant[ií]geno|anti-|vih)/i.test(gn))unrecognized.push({line,reason:'Serología con resultado ambiguo; verificar'});
+   // Comentarios de técnica o ensayos anulados nunca pasan a revisión.
    continue;
   }
   let normalized=normalizeSESLine(line);
   const mapped=matchEntry(normalized.line);
   if(mapped){
-   const tail=normalized.line.slice(mapped.alias.length).replace(/^[\s:=–—]+/,'');
-   let val=numericOrQualitative(tail);
+   const tail=normalized.line.slice(mapped.alias.length).replace(/^[\s:=–—]+/,'').replace(/^(?:orina|urinari[oa])\s+/i,'');
+   let val=explicitPending(tail)?{num:NaN,raw:'PENDIENTE',unit:'',range:null,abnormal:null,qualitative:true}:numericOrQualitative(tail);
    if(!val){unrecognized.push({line,reason:'Determinación reconocida, valor no identificado'});continue;}
    let key=mapped.key,section=mapped.section;
    if(key==='neutro'||key==='linfo'||key==='retic'){
     if(key==='retic'&&/\b(?:abs|absolutos?)\b/i.test(line))key='retic_abs';
     if((key==='neutro'||key==='linfo')&&!val.unit&&line.includes('%'))val.unit='%';
    }
-   if(sectionHint==='orina'||/\b(?:en orina|urinari[ao]s?)\b/i.test(line)){
+   if(sectionHint==='orina'||/\b(?:en orina|orina|urinari[ao]s?)\b/i.test(line)){
      if(key==='uacr'){section='orina_bioq';}
      else if(['sodio_creat_orina','potasio_creat_orina','bun_creat_orina'].includes(key)){section='orina_bioq';}
      else if(['creatinina','urea','albumina','sodio','potasio','cloro'].includes(key)){
@@ -365,21 +484,40 @@ function parse(source){
    if(['leucocitos','neutro','linfo','mono','eos','baso','plaquetas','retic_abs'].includes(key)&&/(?:\/mm3|\/mm³|\/ul|\/µl)/i.test(val.unit)&&/^[+-]?\d{1,3}\.\d{3}$/.test(val.raw))val.num=Number(val.raw.replace('.',''));
    items.push({key,name:mapped.name,short:mapped.short,section,...val,line});continue;
   }
+  // Las determinaciones no catalogadas también pueden estar realmente pendientes.
+  const pend=line.match(/^([A-Za-zÁÉÍÓÚÜÑáéíóúüñ][\p{L}\p{N} .()\/+\-]{3,100}?)\s+(?:PENDIENTE|En estudio|En proceso)\s*$/iu);
+  if(pend&&!ADMIN_LINE.test(clean(pend[1]))){items.push({key:'other_'+items.length,name:pend[1].trim(),short:pend[1].trim(),section:sectionHint||'otros',num:NaN,raw:'PENDIENTE',unit:'',range:null,abnormal:null,line,qualitative:true});continue;}
   if(/(?:sin valor|sin resultado|no detectado)/i.test(gn)){skipped.push({line,reason:'Sin valor numérico informado'});continue;}
   // Determinaciones no incluidas en el diccionario: reconocer solo filas con
   // nombre, valor Y unidad explícitos. No adivinar cifras de texto administrativo.
   const generic=line.match(/^([A-Za-zÁÉÍÓÚÜÑáéíóúüñ][A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9()\/+.\- ]{3,85}?)\s+([<>]?\s*-?\d+(?:[.,]\d+)?)\s+([A-Za-zµμ%°][A-Za-zµμ%°0-9^\/\-]*)(?:\s+\([^()]{3,40}\))?$/);
   if(generic&&!/\b(?:fecha|firma|peticion|diagnostico|referencia|pagina|página)\b/i.test(generic[1])){
    const result=extractValue(line.slice(generic[1].length).trim());
-   if(result&&result.unit){items.push({key:'other_'+items.length,name:generic[1].trim(),short:generic[1].trim(),section:'otros',...result,line});continue;}
+   if(result&&result.unit){unrecognized.push({line:'[Determinación no catalogada]',reason:'Valor no incorporado automáticamente por protección frente a datos identificativos'});continue;}
   }
-  unrecognized.push({line,reason:'Parámetro o formato no reconocido'});
+  if(/\d+\s*(?:mg\/dL|g\/dL|mmol\/L|UI\/L|µg\/dL|ng\/mL|uUI\/mL|%)\b/i.test(line) && !ADMIN_LINE.test(gn))unrecognized.push({line:'[Determinación no catalogada]',reason:'Comprobar en el informe de origen; el texto no se reproduce para proteger datos identificativos'});
+  else skipped.push({line:'Comentario o encabezado',reason:'Texto no analítico excluido'});
+ }
+ // En un mismo bloque de coagulación con numerosas determinaciones anuladas y
+ // constancia de muestra coagulada, un TP ratio aislado como «Pendiente» es
+ // incoherente. Se excluye del informe, SIN transformarlo en un resultado anulado.
+ // Si hay cualquier resultado numérico de coagulación, no asumimos invalidez global.
+ if(coagAnnulledCount>=3&&/muestra\s+coagulada/i.test(text)&&
+    !items.some(e=>e.section==='coagulacion'&&Number.isFinite(e.num))){
+  for(let i=items.length-1;i>=0;i--){
+   const e=items[i];
+   if(e.section==='coagulacion'&&e.raw==='PENDIENTE'){
+    skipped.push({line:'Determinación pendiente en serie de coagulación anulada',reason:'Muestra coagulada: estado no confirmable; resultado omitido'});
+    items.splice(i,1);
+   }
+  }
  }
  return{items,cultures,unrecognized,skipped,dates:[...dates],multipleDates:dates.size>1,gas,seenGas,texts,personal};
 }
 function first(items,key){return items.find(x=>x.key===key)}
-function textValue(e,showUnits){return e.raw+(showUnits&&e.unit?' '+e.unit:'')}
-function fullValue(e,opts){if(e.qualitative)return e.raw?e.short+': '+e.raw:e.short;if(opts.normal&&opts.profile!=='alterados'&&e.abnormal==='normal')return e.short+' normal';return e.short+' '+textValue(e,opts.units);}
+function historicalLabel(e){return e.historical?' ('+(e.historicalDate||'fecha anterior no indicada')+')':'';}
+function textValue(e,showUnits){return e.raw+(showUnits&&e.unit?' '+e.unit:'')+historicalLabel(e);}
+function fullValue(e,opts){if(e.qualitative)return (e.raw?e.short+': '+e.raw:e.short)+historicalLabel(e);if(opts.normal&&opts.profile!=='alterados'&&e.abnormal==='normal'&&!e.historical)return e.short+' normal';return e.short+' '+textValue(e,opts.units);}
 function formattedCell(n,units=true){return displayNum(Math.round(n),0)+(units?'/mm3':'');}
 function makeHemogram(items,opts,profile){
  // «Resumido» es una plantilla cerrada y no añade parámetros adicionales.
@@ -388,15 +526,15 @@ function makeHemogram(items,opts,profile){
   const parts=[];
   for(const k of ['hb','vcm','hcm']){const e=pick(k);if(e)parts.push(fullValue(e,opts));}
   const w=pick('leucocitos');const n=pick('neutro'),l=pick('linfo');
-  if(w){let line='Leucocitos '+formattedCell(asCells(w),true);const differ=[];
-   if(n)differ.push('neutrófilos '+formattedCell(asCells(n),true));
-   if(l)differ.push('linfocitos '+formattedCell(asCells(l),true));
+  if(w){let line='Leucocitos '+formattedCell(asCells(w),true)+historicalLabel(w);const differ=[];
+   if(n)differ.push('neutrófilos '+formattedCell(asCells(n),true)+historicalLabel(n));
+   if(l)differ.push('linfocitos '+formattedCell(asCells(l),true)+historicalLabel(l));
    if(differ.length)line+=' ('+differ.join(', ')+')';parts.push(line);
   }else{
-   if(n)parts.push('Neutrófilos '+formattedCell(asCells(n),true));
-   if(l)parts.push('Linfocitos '+formattedCell(asCells(l),true));
+   if(n)parts.push('Neutrófilos '+formattedCell(asCells(n),true)+historicalLabel(n));
+   if(l)parts.push('Linfocitos '+formattedCell(asCells(l),true)+historicalLabel(l));
   }
-  const pl=pick('plaquetas');if(pl)parts.push('Plaquetas '+formattedCell(asCells(pl),true));
+  const pl=pick('plaquetas');if(pl)parts.push('Plaquetas '+formattedCell(asCells(pl),true)+historicalLabel(pl));
   return parts;
  }
  const arr=[];const skip=new Set(['hematíes']);
@@ -404,7 +542,7 @@ function makeHemogram(items,opts,profile){
  const choose=k=>{if(['leucocitos','neutro','linfo','mono','eos','baso','plaquetas','retic_abs'].includes(k))return items.find(x=>x.key===k&&asCells(x)!==null)||items.find(x=>x.key===k&&x.unit!=='%');return items.find(x=>x.key===k);};
  const used=new Set();const add=(e,label)=>{if(!e)return;used.add(e);if(skip.has(e.key))return;
   if(['leucocitos','neutro','linfo','mono','eos','baso','plaquetas','retic_abs'].includes(e.key)){
-   const n=asCells(e);if(n!==null)arr.push((label||e.short)+(opts.normal&&opts.profile!=='alterados'&&e.abnormal==='normal'?' normal':' '+formattedCell(n,true)));
+   const n=asCells(e);if(n!==null)arr.push((label||e.short)+(opts.normal&&opts.profile!=='alterados'&&e.abnormal==='normal'&&!e.historical?' normal':' '+formattedCell(n,true)+historicalLabel(e)));
    else if(e.unit!=='%')arr.push((label||e.short)+' '+textValue(e,true));
   }else arr.push(fullValue(e,opts));
  };
@@ -414,7 +552,7 @@ function makeHemogram(items,opts,profile){
   const e=choose(k);if(e){add(e);if(opts.differentialPct){const pct=items.find(x=>x.key===k&&x.unit.includes('%'));if(pct&&arr.length)arr[arr.length-1]+=' ('+pct.raw+' %)';}}
  }
  const ne=choose('neutro'),li=choose('linfo');const n=ne?asCells(ne):null,l=li?asCells(li):null;
- if(opts.rnl&&n!==null&&l>0)arr.push('RNL '+displayNum(n/l,2));
+ if(opts.rnl&&n!==null&&l>0&&!ne.historical&&!li.historical)arr.push('Ratio neutrófilo-linfocito (RNL) '+displayNum(n/l,2));
  add(choose('plaquetas'));add(choose('vpm'));add(choose('retic_abs'));add(choose('retic'));
  // Additional supported hematology parameters not covered above.
  for(const e of items)if(!used.has(e)&&!skip.has(e.key)&&e.unit!=='%'&&!['neutro','linfo','mono','eos','baso'].includes(e.key))add(e);
@@ -430,7 +568,7 @@ function makeBio(items,opts,profile,needsReview){const arr=[];const normal=[];co
  if(normal.length&&profile!=='completo')arr.push(normal.join(', ')+' '+(normal.length===1?'normal':'normales'));
  return arr;
 }
-function makeLipid(items,opts){const arr=[];for(const e of items)arr.push(fullValue(e,opts));if(opts.nonhdl&&!first(items,'col_non_hdl')){const t=first(items,'col_total'),h=first(items,'col_hdl');if(t&&h&&clean(t.unit)===clean(h.unit)&&t.num>=h.num&&Number.isFinite(t.num)&&Number.isFinite(h.num)){const val=Math.round((t.num-h.num)*100)/100;const needle=arr.findIndex(s=>s.startsWith('LDL '));arr.splice(needle<0?arr.length:needle+1,0,'no-HDL '+displayNum(val,2)+(opts.units&&t.unit?' '+t.unit:''));}}
+function makeLipid(items,opts){const arr=[];for(const e of items)arr.push(fullValue(e,opts));if(opts.nonhdl&&!first(items,'col_non_hdl')){const t=first(items.filter(e=>!e.historical),'col_total'),h=first(items.filter(e=>!e.historical),'col_hdl');if(t&&h&&clean(t.unit)===clean(h.unit)&&t.num>=h.num&&Number.isFinite(t.num)&&Number.isFinite(h.num)){const val=Math.round((t.num-h.num)*100)/100;const needle=arr.findIndex(s=>s.startsWith('LDL '));arr.splice(needle<0?arr.length:needle+1,0,'no-HDL '+displayNum(val,2)+(opts.units&&t.unit?' '+t.unit:''));}}
  return arr;
 }
 function makeGas(items,opts,gasType){
@@ -485,7 +623,7 @@ function makeGas(items,opts,gasType){
 }
 function makeMicro(cultures,others,opts){const arr=[];for(const c of cultures){let line=c.name+(c.date?' ('+c.date+')':'')+': ';let status=c.status;
  if(!status&&c.organism)status='positivo';
- if(status==='negativo')line+=/s$/i.test(c.name)?'negativos':'negativo';else if(status==='positivo')line+=c.organism?c.organism:'positivo';else if(status==='pendiente')line+='pendiente';else if(c.organism)line+=c.organism;else continue;
+ if(status==='negativo')line+=/s$/i.test(c.name)?'negativos':'negativo';else if(status==='positivo')line+=c.organism?c.organism:'positivo';else if(status==='pendiente')line+='PENDIENTE';else if(c.organism)line+=c.organism;else continue;
  const antibiogram=[];for(const k of ['S','I','R']){
   const vals=c.sens[k].map(x=>opts.cmi?x:x.replace(/\s*\((?:CMI|MIC)\s*[^)]*\)/gi,''));if(vals.length)antibiogram.push(opts.microDetail?vals.map(x=>x+' ('+k+')').join(', '):k+': '+vals.join(', '));
  }
@@ -581,18 +719,26 @@ function derivedTibc(items,opts){if(!opts.tibc)return'';
 const URINE_SECTIONS=new Set(['orina','orina_bioq','orina_sistema','indices_renales']);
 function reportSection(section){return URINE_SECTIONS.has(section)?'orina':section;}
 function format(parsed,opts,selected,extras={}){
- const sections={},ignored=[],pending=[...parsed.unrecognized],out=[];
+ const sections={},ignored=[],pending=parsed.personal?[]:[...parsed.unrecognized],out=[];
  if(parsed.personal)return{output:'',sections:{},pending,ignored,blocked:'Se han detectado posibles datos identificativos. Elimina la información personal antes de procesar.'};
  if(parsed.multipleDates)return{output:'',sections:{},pending,ignored,blocked:'Se han encontrado varias fechas fuera de microbiología. Separa las analíticas para impedir que se mezclen resultados.'};
  if(parsed.cultures.some(c=>c.ambiguous))return{output:'',sections:{},pending,ignored,blocked:'Se han detectado varios microorganismos en un cultivo sin poder asociar cada antibiograma a su aislamiento. Separa los aislamientos antes de generar el informe.'};
  for(const c of parsed.cultures){if(!c.status&&!c.organism)pending.push({line:c.raw.join(' | '),reason:'Cultivo sin resultado identificable; requiere revisión'});}
- const processedItems=parsed.items.map(e=>enrichItem(e,opts));
+ const seenValues=new Set();
+ const processedItems=parsed.items.filter(e=>{const k=[e.section,e.key,e.raw,e.unit,clean(e.name),e.historicalDate||'',e.historical?'hist':'act'].join('|');if(seenValues.has(k))return false;seenValues.add(k);return true;}).map(e=>enrichItem(e,opts));
+ for(const e of processedItems)if(e.historical&&!e.historicalDate)pending.push({line:'[Resultado histórico sin fecha]',reason:'El laboratorio indica que es histórico, pero no se ha reconocido la fecha original. Comprobar antes de interpretar.'});
  const inferred=[];
  for(const e of processedItems){if(e.unitInferred||e.rangeInferred){
   inferred.push({line:e.name+' '+e.raw+(e.unit?' '+e.unit:''),reason:(e.unitInferred?'Unidad inferida':'')+(e.unitInferred&&e.rangeInferred?' · ':'')+(e.rangeInferred?'Intervalo orientativo (no aportado por laboratorio)':'')});
  }}
- const bySec={};for(const e of processedItems){(bySec[reportSection(e.section)]??=[]).push(e);}
- const urinaryDerived=derivedUrine(processedItems,opts),gasDerived=derivedGas(processedItems,opts),tibcDerived=derivedTibc(processedItems,opts);
+ // Omitir pendientes afecta exclusivamente al informe exportado. Se mantienen
+ // en los datos procesados y en la tabla de revisión, sin crear resultados ficticios.
+ const isPending=e=>/^\s*PENDIENTE\b/i.test(String(e.raw||''));
+ const reportItems=opts.omitPending?processedItems.filter(e=>!isPending(e)):processedItems;
+ const bySec={};for(const e of reportItems){(bySec[reportSection(e.section)]??=[]).push(e);}
+ // Nunca combinar resultados históricos y actuales para cálculos derivados.
+ const currentForCalculations=processedItems.filter(e=>!e.historical);
+ const urinaryDerived=derivedUrine(currentForCalculations,opts),gasDerived=derivedGas(currentForCalculations,opts),tibcDerived=derivedTibc(currentForCalculations,opts);
  for(const sec of ORDER){
   const elems=sorted(bySec[sec]||[],sec);let parts=[];
   if(sec==='hemograma')parts=makeHemogram(elems,opts,opts.profile);
@@ -603,8 +749,9 @@ function format(parsed,opts,selected,extras={}){
    if(elems.length&&!opts.gasType){pending.push({line:'Gasometría',reason:'Selecciona arterial o venosa; no se deduce por los valores'});}
    else if(elems.length){const detail=makeGas(elems,opts,opts.gasType);parts=[detail+(gasDerived.length?(detail?', ':'')+gasDerived.join(', '):'')];}
   }
-  else if(sec==='cultivos')parts=makeMicro(parsed.cultures,[],opts);
+  else if(sec==='cultivos')parts=makeMicro(opts.omitPending?parsed.cultures.filter(c=>c.status!=='pendiente'):parsed.cultures,[],opts);
   else if(sec==='microbiologia')parts=elems.map(e=>fullValue(e,opts));
+  else if(sec==='serologias')parts=serologyParts(elems);
   else if(sec==='frotis')parts=parsed.texts.frotis?[parsed.texts.frotis]:[];
   else if(sec==='proteinograma')parts=parsed.texts.proteinograma?[parsed.texts.proteinograma]:[];
   else parts=elems.filter(e=>!NEVER.has(e.key)).map(e=>fullValue(e,opts));
@@ -612,15 +759,15 @@ function format(parsed,opts,selected,extras={}){
   // No se recortan gasometrías, cultivos, microbiología, serologías ni textos descriptivos.
   if(opts.profile==='alterados'&&!(sec==='hemograma'&&opts.hemogramShort)&&!['cultivos','microbiologia','serologias','gasometria','frotis','proteinograma'].includes(sec)){
    const eligible=elems.filter(e=>!NEVER.has(e.key)&&!(sec==='hemograma'&&['neutro','linfo','mono','eos','baso'].includes(e.key)&&e.unit.includes('%')));
-   const altered=eligible.filter(e=>e.abnormal==='high'||e.abnormal==='low');
-   const normalCount=eligible.filter(e=>e.abnormal==='normal').length;
+   const altered=eligible.filter(e=>e.historical||e.abnormal==='high'||e.abnormal==='low');
+   const normalCount=eligible.filter(e=>!e.historical&&e.abnormal==='normal').length;
    const unknown=eligible.filter(e=>!e.abnormal);
    if(sec==='hemograma'){
     const keep=[...altered,...unknown];
     if(opts.differentialPct){for(const e of elems){if(['neutro','linfo','mono','eos','baso'].includes(e.key)&&e.unit.includes('%')&&keep.some(a=>a.key===e.key&&!a.unit.includes('%')))keep.push(e);}}
     parts=makeHemogram(keep,{...opts,normal:false,rnl:false,retic:false},'alterados');
    }else parts=[...altered,...unknown].map(e=>fullValue(e,{...opts,normal:false}));
-   for(const e of unknown)pending.push({line:e.line,reason:'Sin rango de referencia: se conserva el valor numérico; no se presume normalidad'});
+   for(const e of unknown)if(!e.qualitative)pending.push({line:e.line,reason:'Sin rango de referencia: se conserva el valor numérico; no se presume normalidad'});
    if(normalCount>0&&!unknown.length)parts.push('resto normal');
   }
   // Cada cálculo se añade a su perfil, también cuando se muestran solo alteraciones.
@@ -628,7 +775,7 @@ function format(parsed,opts,selected,extras={}){
   if(sec==='ferrico'&&tibcDerived)parts.push(tibcDerived);
   if(sec==='hemograma'&&opts.profile==='alterados'){
    const calculations=makeHemogram(elems,{...opts,normal:false,differentialPct:false},'completo')
-    .filter(x=>x.startsWith('RNL ')||x.startsWith('Reticulocitos corregidos '));
+    .filter(x=>x.startsWith('Ratio neutrófilo-linfocito (RNL) ')||x.startsWith('Reticulocitos corregidos '));
    parts.push(...calculations);
   }
   if(sec==='lipidico'&&opts.profile==='alterados'&&opts.nonhdl){
@@ -650,13 +797,15 @@ function format(parsed,opts,selected,extras={}){
   if(extras.bySection&&Array.isArray(extras.bySection[sec]))parts.push(...extras.bySection[sec]);
   if(!parts.length)continue;
   const title=sec==='gasometria'?'Gasometría '+opts.gasType:TITLES[sec];
-  sections[sec]='- '+title+': '+((sec==='pcr'||sec==='vsg')?parts.join(', ').replace(/^(?:PCR|VSG) /,''):parts.join(sec==='cultivos'?'; ':', '))+'.';
+  sections[sec]=sec==='serologias'?'- Serología:\n    '+parts.join('\n    '):
+   sec==='tumorales'?'- '+parts.join(', ')+'.':
+   '- '+title+': '+((sec==='pcr'||sec==='vsg')?parts.join(', ').replace(/^(?:PCR|VSG) /,''):parts.join(sec==='cultivos'?'; ':', '))+'.';
  }
- for(const s of (parsed.skipped||[])){if(s&&typeof s==='object'&&/Prueba no realizada/.test(s.reason))ignored.push(s);}
+ // Incidencias y pruebas no realizadas se descartan sin introducirse en revisión.
  for(const e of parsed.items){if(NEVER.has(e.key))ignored.push({line:e.line,reason:'Omitido por regla fija'});}
  for(const sec of ORDER){if(sections[sec]&&selected?.[sec]!==false)out.push(sections[sec]);}
  return{output:out.join('\n'),sections,pending,ignored,inferred,processedItems,blocked:''};
 }
-const defaults={profile:'completo',normal:false,inferUnits:true,units:true,rnl:false,nonhdl:false,retic:false,sodiumCorr:false,fena:false,feurea:false,ureaRatio:false,crRatio:false,rfi:false,anionGap:false,deltaRatio:false,tibc:false,cmi:false,microDetail:false,vpm:true,differentialPct:false,gasFormat:'barras',includeStandard:false,hemogramShort:false,gasType:''};
+const defaults={profile:'completo',normal:false,inferUnits:true,units:true,omitPending:false,rnl:false,nonhdl:false,retic:false,sodiumCorr:false,fena:false,feurea:false,ureaRatio:false,crRatio:false,rfi:false,anionGap:false,deltaRatio:false,tibc:false,cmi:false,microDetail:false,vpm:true,differentialPct:false,gasFormat:'barras',includeStandard:false,hemogramShort:false,gasType:''};
 global.LabEditor={parse,format,clean,numberOf,defaults,ORDER,TITLES};
 })(window);

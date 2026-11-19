@@ -1,6 +1,6 @@
 
 'use strict';
-const $=x=>document.getElementById(x), L=window.LabEditor, KEYS={normal:'optNormal',units:'optUnits',rnl:'optRnl',nonhdl:'optNonhdl',hemogramShort:'optHemogramShort',includeStandard:'optIncludeStandard',inferUnits:'optInferUnits',cmi:'optCmi',differentialPct:'optDifferentialPct',fena:'optFena',feurea:'optFeurea',ureaRatio:'optUreaRatio',crRatio:'optCrRatio',rfi:'optRfi',anionGap:'optAnionGap',deltaRatio:'optDeltaRatio',tibc:'optTibc',sodiumCorr:'optSodiumCorr'};
+const $=x=>document.getElementById(x), L=window.LabEditor, KEYS={omitPending:'optOmitPending',normal:'optNormal',units:'optUnits',rnl:'optRnl',nonhdl:'optNonhdl',hemogramShort:'optHemogramShort',includeStandard:'optIncludeStandard',inferUnits:'optInferUnits',cmi:'optCmi',differentialPct:'optDifferentialPct',fena:'optFena',feurea:'optFeurea',ureaRatio:'optUreaRatio',crRatio:'optCrRatio',rfi:'optRfi',anionGap:'optAnionGap',deltaRatio:'optDeltaRatio',tibc:'optTibc',sodiumCorr:'optSodiumCorr'};
 let parsed=null,selected={},generated='',manual=false,confirmRegen=false;
 function readOpts(){const o={profile:$('profile').value,gasType:$('gasType').value,gasFormat:$('gasFormat').value,microDetail:$('microFormat').value==='antibiotico',retic:false,showRpi:$('showRpi').checked,lipTotal:$('showLipTotal').checked,lipTg:$('showLipTg').checked,lipLdl:$('showLipLdl').checked};for(const [k,id] of Object.entries(KEYS))o[k]=$(id).checked;return o;}
 function writeOpts(o){if(o.profile==='resumen'){o={...o,profile:'completo',normal:true};}$('profile').value=['completo','alterados'].includes(o.profile)?o.profile:'completo';$('gasFormat').value=['completo','etiquetado','barras'].includes(o.gasFormat)?o.gasFormat:'barras';$('microFormat').value=o.microDetail?'antibiotico':'agrupado';$('showRpi').checked=!!o.showRpi;for(const [id,key] of [['showLipTotal','lipTotal'],['showLipTg','lipTg'],['showLipLdl','lipLdl']])$(id).checked=!!(o[key]??o.showLipids);updateToolVisibility();for(const [k,id] of Object.entries(KEYS))$(id).checked=o[k]??L.defaults[k];if(o.gasType)$('gasType').value=o.gasType;}
@@ -184,7 +184,7 @@ function regenerate(force=false){if(!parsed){outputStatus('Procesa una analític
  if(res.blocked){outputStatus('Generación detenida: revisa el aviso.');return;}
  const reportExtras=[...addedResults.values()].filter(Boolean);generated=[res.output,...reportExtras].filter(Boolean).join('\n');$('outputText').value=generated;manual=false;$('restoreBtn').hidden=true;outputStatus(res.pending.length?'Resultado generado. Revisa los '+res.pending.length+' elementos pendientes.':'Resultado generado. Puedes editarlo y copiarlo.');}
 function process(){const raw=$('rawInput').value;if(!raw.trim()){$('inputStatus').textContent='Pega una analítica anonimizada o selecciona un archivo de prueba.';return;}
- parsed=L.parse(raw);selected={};addedResults.clear();activeResults.clear();suppressedIndices.clear();resetPatientContext();autoFillCalculators();$('gasField').classList.toggle('hidden',!parsed.seenGas);$('gasType').value=parsed.gas.sourceType||'';buildSections();manual=false;confirmRegen=false;generated='';$('restoreBtn').hidden=true;$('outputText').value='';$('inputStatus').textContent='Análisis completado localmente: '+(parsed.items.length+parsed.cultures.length)+' valores o cultivos identificados.';regenerate(true);showTab('review');}
+ parsed=L.parse(raw);if(parsed.personal){$('outputText').value='';$('parseAlert').hidden=false;$('parseAlert').textContent='Posibles datos identificativos: se ha detenido la revisión y no se ha generado ningún informe. Retira esos datos del texto original.';$('inputStatus').textContent='Documento no procesado por protección de datos.';parsed=null;return;}selected={};addedResults.clear();activeResults.clear();suppressedIndices.clear();resetPatientContext();autoFillCalculators();$('gasField').classList.toggle('hidden',!parsed.seenGas);$('gasType').value=parsed.gas.sourceType||'';buildSections();manual=false;confirmRegen=false;generated='';$('restoreBtn').hidden=true;$('outputText').value='';$('inputStatus').textContent='Análisis completado localmente: '+(parsed.items.length+parsed.cultures.length)+' valores o cultivos identificados.';regenerate(true);showTab('review');}
 $('processBtn').addEventListener('click',process);
 $('clearBtn').addEventListener('click',()=>{$('rawInput').value='';$('outputText').value='';$('documentFile').value='';$('retirePdfBtn').hidden=true;$('fileStatus').textContent='PDF.js local · texto seleccionable · sin OCR.';$('inputStatus').textContent='';$('outputStatus').textContent='';$('parseAlert').hidden=true;$('gasField').classList.add('hidden');parsed=null;selected={};addedResults.clear();activeResults.clear();suppressedIndices.clear();generated='';manual=false;confirmRegen=false;$('restoreBtn').hidden=true;clearContext();$('issuesPreview').innerHTML='<span class="empty">Procesa una analítica para revisar sus resultados.</span>';$('indicesList').replaceChildren();$('indicesBadge').textContent='';$('doubtfulList').innerHTML='<li>Sin analítica procesada.</li>';$('countWarning').textContent='0 alterados';$('countCritical').textContent='0 críticos';$('countDoubtful').textContent='0 dudosos';$('sectionChecks').innerHTML='<span class="empty">Primero procesa una analítica para ver sus apartados.</span>';$('recognizedList').replaceChildren();reviewList('omittedList',[],'Sin resultados procesados.');reviewList('inferredList',[],'Sin resultados procesados.');reviewList('pendingList',[],'Sin resultados procesados.');$('countRecognized').textContent='0 reconocidos';$('countOmitted').textContent='0 omitidos';$('countPending').textContent='0 pendientes';});
 $('outputText').addEventListener('input',()=>{manual=$('outputText').value!==generated;$('restoreBtn').hidden=!manual;confirmRegen=false;outputStatus(manual?'Texto modificado manualmente; tus cambios se conservarán hasta regenerar.':'Texto generado sin modificaciones.');});
@@ -351,7 +351,7 @@ function indexData(){
  if(!parsed)return[];
  const opts=readOpts(),out=[];const add=(r)=>{if(r)out.push(r)};
  const rnl=nlrValues();
- if(opts.rnl&&rnl!==null){const cl=nlrClassification(rnl);add(makeIndex('rnl','RNL',rnl,'',cl.name+' · Escala orientativa de respuesta inflamatoria/estrés, no diagnóstico ni clasificación clínica universal.','1–3 normal · >3–<6 indeterminado (normal-leve) · 6–<9 estrés leve · 9–18 estrés moderado · >18 estrés intenso/grave.',2));}
+ if(opts.rnl&&rnl!==null){const cl=nlrClassification(rnl);add(makeIndex('rnl','Ratio neutrófilo-linfocito (RNL)',rnl,'',cl.name+' · Escala orientativa de respuesta inflamatoria/estrés, no diagnóstico ni clasificación clínica universal.','1–3 normal · >3–<6 indeterminado (normal-leve) · 6–<9 estrés leve · 9–18 estrés moderado · >18 estrés intenso/grave.',2));}
  const pna=firstVal('bioquimica','sodio','sodium'),pcr=firstVal('bioquimica','creatinina','creat'),pu=firstVal('bioquimica','urea','urea');
  const glucose=numUnit(firstKey('bioquimica','glucosa'),'glucose');
  if(opts.sodiumCorr&&pna!==null&&pna>0&&glucose!==null&&glucose>=200){
@@ -418,8 +418,19 @@ function renderIndices(){
   const why=document.createElement('p');why.className='meaning';why.textContent=r.interpretation;
   const controls=document.createElement('div');controls.dataset.actionsFor=r.id;card.append(hd,range,val);
   if(r.id==='rnl'){
-   const cl=nlrClassification(Number(r.value.replace(',','.'))),badge=document.createElement('span');badge.className='indexGrade';badge.style.color=cl.color;badge.style.background=cl.color+'20';badge.textContent=cl.name;card.append(badge);
-   const gauge=document.createElement('div');gauge.className='indexGauge';for(const c of ['#27966f','#64748b','#d9ac35','#e38b42','#cc4c4c']){const step=document.createElement('span');step.style.background=c;gauge.append(step)}card.append(gauge);
+   const numeric=Number(r.value.replace(',','.'));
+   const cl=nlrClassification(numeric);
+   // La barra representa un continuo 0-24; el tramo >18 se satura visualmente en 24+.
+   // No cambiamos la interpretación clínica ni los umbrales ya existentes.
+   const position=Math.max(0,Math.min(100,numeric/24*100));
+   const gaugeWrapper=document.createElement('div');gaugeWrapper.className='rnlGaugeWrap';
+   const badge=document.createElement('span');badge.className='indexGrade rnlFloatingGrade';badge.style.color=cl.color;badge.style.background=cl.color+'20';badge.style.left=Math.max(14,Math.min(86,position))+'%';badge.textContent=cl.name;
+   const pointer=document.createElement('span');pointer.className='rnlPointer';pointer.style.left=Math.max(1,Math.min(99,position))+'%';pointer.setAttribute('aria-label','Posición del RNL en la barra');
+   const gauge=document.createElement('div');gauge.className='indexGauge rnlScaledGauge';
+   for(const [c,start,end] of [['#94a3b8',0,1],['#27966f',1,3],['#64748b',3,6],['#d9ac35',6,9],['#e38b42',9,18],['#cc4c4c',18,24]]){const step=document.createElement('span');step.style.background=c;step.style.flex=(end-start)+' 1 0';gauge.append(step)}
+   const ticks=document.createElement('div');ticks.className='rnlGaugeTicks';ticks.textContent='0          3          6          9          18          24+';
+   for(const [text,pct] of [['0',0],['3',12.5],['6',25],['9',37.5],['18',75],['24+',100]]){const tick=document.createElement('span');tick.textContent=text;tick.style.left=Math.max(2,Math.min(98,pct))+'%';ticks.append(tick)}
+   ticks.firstChild.remove();gaugeWrapper.append(badge,pointer,gauge,ticks);card.append(gaugeWrapper);
   }
   card.append(why,controls);dest.append(card);
  }

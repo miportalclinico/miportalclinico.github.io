@@ -46,7 +46,7 @@
   // PDF text items expose their PDF-page coordinates. Reconstruct by baseline,
   // not by raw stream order; value, unit and reference intervals stay in the same row.
   function isAdministrativeLine(line) {
-    return /^(?:SERVICIO EXTREMEÑO DE SALUD|(?:SE\s+)?Sexo\s*:|CIP\s*:|Tlf\s*:|Poblaci[oó]n\s*:|F\.Ingr\.?\s*:|Fecha Solicitud\s*:|N[º°o]\.? de petici[oó]n\s*:|Solicitante\s*:|Diagnostico\s*:|Observaciones\s*:|Categ\. prof\s*:|Centro solicitante\s*:|F\. Firma\s*:|Validado por\s*:|HEMATOLOG[IÍ]A$|HEMATIMETR[IÍ]A$|Determinaci[oó]n\s+Resultado|v\d+[.,]\d+\s*$)/i.test(line);
+    return /^(?:SERVICIO EXTREMEÑO DE SALUD|(?:SE\s+)?Sexo\s*:|CIP\s*:|Tlf\s*:|Poblaci[oó]n\s*:|F\.Ingr\.?\s*:|Fecha Solicitud\s*:|N[º°o]\.? de petici[oó]n\s*:|Solicitante\s*:|Diagnostico\s*:|Observaciones\s*:|Categ\. prof\s*:|Centro solicitante\s*:|F\. Firma\s*:|Validado por\s*:|HEMATOLOG[IÍ]A$|HEMATIMETR[IÍ]A$|v\d+[.,]\d+\s*$)/i.test(line);
   }
   function normalizePdfRow(line) {
     const v = line.trim();
@@ -93,15 +93,20 @@
         text += separator + p.text;
         endX = Math.max(endX, p.x + p.width);
       }
-      if (/^Validado por\s*:/i.test(text)) {validatorBlock = true; continue;}
-      if (validatorBlock) {
-        if (/^F\. Firma\s*:/i.test(text)) validatorBlock = false;
-        continue;
-      }
+      if (/^(?:Validado por\s*:|VALIDADORES?\s+(?:CL[IÍ]NICOS?|T[EÉ]CNICOS?)\s*:|DR\.\/DRA\.\s+ANALISTA\s*:)/i.test(text)) {validatorBlock = true; continue;}
+      if (validatorBlock) continue;
       const safeLine = normalizePdfRow(text);
       if (safeLine) output.push(safeLine);
     }
-    return output;
+    // Las cabeceras de los informes SES contienen identificadores y nombres
+    // sin etiquetas claras. Solo exportamos las filas de la TABLA (nunca el
+    // encabezado del paciente). Se aplica POR PÁGINA para PDFs extensos.
+    const colHeader = output.findIndex(row => /(?:determinaci[oó]n\s*resultado|descripci[oó]n\s*valor)/i.test(row.replace(/\s+/g,' ')));
+    if(colHeader >= 0) return output.slice(colHeader + 1).filter(row => !isAdministrativeLine(row) && !/\b(?:CIP|DNI|NSS|Domicilio|Fecha Nacimiento|Nombre:|Apellidos:)\s*:/i.test(row));
+    // Las páginas sin tabla pueden contener solo validadores y datos personales.
+    // Para evitar fugas, no devolvemos su texto (el usuario puede usar TXT
+    // anonimizado si el PDF no tiene una tabla accesible).
+    return [];
   }
 
   async function extractPdf(file) {
@@ -141,9 +146,15 @@
         recognizedChars += pageText.length;
         if (recognizedChars > MAX_TEXT)
           throw Error('El texto extraído supera el tamaño máximo permitido.');
-        // A scanned page is not silently omitted from a multipage document.
-        if (pageText.trim().length < 12)
-          throw Error('La página ' + i + ' no contiene texto seleccionable suficiente. Este editor todavía no incorpora OCR.');
+        if (pageText.trim().length < 12) {
+          // Algunas páginas finales contienen únicamente firmas o validadores.
+          // No se exportan, pero tampoco deben bloquear una analítica válida.
+          const rawPageText = content.items.map(item => item.str || '').join(' ');
+          const adminOnly = /(?:validadores?|validado por|datos del paciente|fecha impresi[oó]n|f\.? firma)/i.test(rawPageText)
+            && !/(?:mg\/dL|mmol\/L|g\/dL|UI\/L|ng\/mL|x10\^|positivo|negativo|pendiente|hemoglobina|leucocitos|creatinina|glucosa|colesterol|serolog[ií]a)\s+[<>]?\s*\d/i.test(rawPageText);
+          if (adminOnly) { page.cleanup(); continue; }
+          throw Error('La página ' + i + ' no contiene una tabla analítica reconocible. No se ha generado un informe parcial para evitar omisiones o datos personales.');
+        }
         pages.push(pageText);
         page.cleanup();
       }

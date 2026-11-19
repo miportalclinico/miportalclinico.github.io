@@ -87,6 +87,7 @@ button[hidden],details[hidden]{display:none!important}.legendItem{display:inline
 .indexGrade{display:inline-block;border-radius:6px;padding:4px 8px;font-weight:750;font-size:11px;margin-top:6px}
 .indexGauge{height:7px;border-radius:9px;overflow:hidden;display:flex;margin:8px 0}
 .indexGauge>span{flex:1}
+.rnlGaugeWrap{position:relative;padding-top:45px;margin:6px 4px 10px}.rnlFloatingGrade{position:absolute;top:0;transform:translateX(-50%);white-space:normal;max-width:185px;text-align:center;line-height:1.22}.rnlPointer{position:absolute;top:34px;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid #203d52}.rnlScaledGauge{height:12px;margin:0;overflow:hidden;border-radius:6px}.rnlScaledGauge>span{flex-basis:0}.rnlGaugeTicks{height:18px;position:relative;font-size:9px;color:#62778b;margin-top:4px}.rnlGaugeTicks span{position:absolute;transform:translateX(-50%)}
 </style><link href="favicon.ico" rel="icon" sizes="any"/>
 <link href="favicon-16x16.png" rel="icon" sizes="16x16" type="image/png"/>
 <link href="favicon-32x32.png" rel="icon" sizes="32x32" type="image/png"/>
@@ -103,13 +104,14 @@ button[hidden],details[hidden]{display:none!important}.legendItem{display:inline
 <div class="generalPrefs">
 <div class="field"><label for="profile">Perfil de presentación</label><select id="profile"><option value="completo">Todos los resultados</option><option value="alterados">Resultados alterados</option></select></div>
 <label class="pref"><input checked="" id="optUnits" type="checkbox"/><span>Conservar unidades</span></label>
-<label class="pref"><input id="optNormal" type="checkbox"/><span>Sustituir valores en rango por «normal»</span></label>
 <label class="pref"><input checked="" id="optInferUnits" type="checkbox"/><span>Completar unidades ausentes</span></label>
+<label class="pref"><input id="optNormal" type="checkbox"/><span>Sustituir valores en rango por «normal»</span></label>
+<label class="pref"><input id="optOmitPending" type="checkbox"/><span>Omitir resultados pendientes</span></label>
 </div>
 <div class="prefsAccordions" style="margin-top:17px">
 <details class="prefGroup"><summary>Hemograma</summary><div class="prefBody"><label class="pref"><input id="optHemogramShort" type="checkbox"/><span>Hemograma resumido</span></label>
 <label class="pref"><input id="optDifferentialPct" type="checkbox"/><span>Porcentajes leucocitarios</span></label>
-<label class="pref"><input id="optRnl" type="checkbox"/><span>RNL</span></label><label class="pref"><input id="showRpi" type="checkbox"/><span>Índice reticulocitario (IPR)</span></label>
+<label class="pref"><input id="optRnl" type="checkbox"/><span>Ratio neutrófilo-linfocito (RNL)</span></label><label class="pref"><input id="showRpi" type="checkbox"/><span>Índice reticulocitario (IPR)</span></label>
 </div></details>
 <details class="prefGroup"><summary>Bioquímica</summary><div class="prefBody">
 <label class="pref"><input id="optSodiumCorr" type="checkbox"/><span>Sodio corregido por glucemia</span></label>

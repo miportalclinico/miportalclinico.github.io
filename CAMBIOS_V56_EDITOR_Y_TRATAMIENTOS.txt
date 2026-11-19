@@ -1,0 +1,46 @@
+PORTAL CLÍNICO v56 — CAMBIOS ACUMULADOS DESDE v55
+18/11/2026
+
+1. ESTRUCTURA DE HERRAMIENTAS DE CONSULTA
+- La tarjeta de portada abre ahora el índice "Herramientas de consulta".
+- Dos herramientas independientes: Editor de analíticas (existente) y Analizador de tratamientos (nuevo).
+- El resto del portal y el Vademécum se conservan.
+
+2. EDITOR DE ANALÍTICAS
+- En el Hemograma, la salida del índice se denomina «Ratio neutrófilo-linfocito (RNL)».
+- Igual denominación en la preferencia e índice calculado.
+- Sobre la barra RNL se posicionan la interpretación y un marcador según el valor.
+- Se mantienen umbrales previos: por debajo de 1, 1-3, >3-<6, 6-<9, 9-18 y >18, con tramo final visual 18-24+ (límite superior de representación, no de escala clínica).
+- Copias fragmentadas del visor (tabla Markdown): reconstrucción de determinación/resultado; supresión de columnas TEL y muestra, de tablas vacías, notas y referencia tipo NEG. Reconocimiento de NT-proBNP en la línea siguiente, gasometría arterial y pH urinario diferenciados.
+- Se mantienen todas las mejoras v55 (marcadores tumorales, serologías, antecedentes históricos, pendientes, etc.).
+
+3. ANALIZADOR DE TRATAMIENTOS — PRIMERA VERSIÓN FUNCIONAL
+- Entrada de prescripciones en formato A: (MEDICAMENTO) VÍA,DOSIS,FRECUENCIA, incluidos paréntesis anidados.
+- Entrada en formato C: DESCRIPCIÓN DE PRODUCTO <TAB> VÍA,DOSIS,FRECUENCIA.
+- Entrada en formato D: DESCRIPCIÓN <TAB> @0L@ <TAB> VÍA,DOSIS,FRECUENCIA. El marcador se ignora.
+- Formato B (solo nombre y envase) se puede pegar pero está pendiente de desarrollo y conciliación completa.
+- Catálogo local INICIAL de nombres genéricos y comerciales para pruebas, NO catálogo integral AEMPS/CIMA.
+- Pautas C6H, C12H, C24H, C48H; vías VO, IN, OV y otras habituales.
+- Tres estados: Reconocido, Revisar pauta, No reconocido. El estado de reconocimiento NO certifica seguridad farmacológica.
+- Alertas sobre C48H: posible 1/2 comprimido diario frente a días alternos. Nunca se transforma la prescripción sin confirmación.
+- Anticoagulantes AVK: presentar concentración, nunca asumir dosis diaria fija ni interpretar como pauta completa.
+- Antimicrobianos: advertencia si no consta duración o fin.
+- Tres bloques: farmacología, nutrición y productos sanitarios. Para nutrición/espesantes y productos sanitarios basta el nombre/presencia, sin cantidad o frecuencia.
+- Inhaladores al final del bloque farmacológico, sin tamaño del dispositivo; se mantiene la concentración y pauta cuando se identifican.
+- Orden predeterminado por familias clínicas personales, sin títulos por familia: HTA, dislipemia, diabetes (insulinas incluidas), inmunosupresión, neurología, psiquiatría, hormonal, respiratorio, cardiología, hematología (anticoagulantes/antiagregantes), reumatología, digestivo, nefrourología, antiinfecciosos, analgesia, vitaminas, otros; después inyectables, parches, inhaladores, oftálmicos y tópicos.
+- También orden alfabético, por frecuencia y original. Medicación a demanda separada.
+- Corrección manual de nombres, dosis, frecuencias y grupo; las preferencias de grupo se recuerdan localmente por navegador.
+- Vista de tratamiento lista para copiar y editar.
+- Campos opcionales de datos clínicos, NO utilizados aún para decisiones terapéuticas.
+- Duplicidades e interacciones: SOLO un conjunto limitado de reglas ilustrativas explícitas. La ausencia de alertas NO implica ausencia de interacción.
+- Módulos ACB (carga anticolinérgica) y STOPP/START v3 visibles como próximos desarrollos: aún NO se calcula ni se declara puntuación/resultado por falta de integración y validación exhaustiva.
+- No se envía el tratamiento a ningún servicio externo. Se bloquean campos explícitos con datos personales, aunque NO se garantiza detectar todos los identificadores posibles: solo textos anonimizados.
+
+4. PRUEBAS REALIZADAS
+- Regresión Node con PDF SES de 5 páginas y PDF anterior de 4 páginas: sin pérdida de resultados, serologías ni histórico.
+- Prueba Node de copia del visor en Markdown con gasometría, orina, NT-proBNP y datos de técnicos.
+- Prueba Node del reconocimiento de formatos A, C y D, paréntesis anidados, marca de inhalador, pauta de AVK, separación nutrición/sanitarios.
+- Revisiones sintácticas Node de los scripts modificados.
+- Una prueba de navegador automatizada NO pudo ejecutarse por restricciones del entorno gráfico. Revisar manualmente en escritorio y móvil al subir a GitHub.
+
+IMPORTANTE: herramienta preliminar de apoyo, NO validada para garantizar ausencia de interacciones ni prescripción correcta. Comparar siempre con los documentos originales y fuentes farmacológicas actualizadas.

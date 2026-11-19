@@ -1,0 +1,47 @@
+PORTAL CLÍNICO · ACTUALIZACIÓN COMPLETA v61
+18 de noviembre de 2026
+
+BASE CONSERVADA
+- Portal Clínico completo v56: portada y navegación, calculadoras clínicas,
+  editor de analíticas, Vademécum, equivalencias, documentación, iconos y
+  dependencias PDF.js, sin alterar sus funcionalidades.
+
+NOVEDAD INTEGRADA
+- El Analizador de tratamientos del portal se ha sustituido por la versión
+  independiente v60, ahora accesible desde Herramientas de consulta y la
+  búsqueda de la portada, con enlace para volver a Herramientas de consulta.
+- En Revisar medicamentos: botones Desayuno, Comida, Merienda, Cena y Dormir;
+  cantidades por toma, p. ej., 2-0-1; merienda y dormir más pequeños; opción
+  «Pauta irregular» desplegable SOLO para el medicamento seleccionado;
+  selección de días de la semana y pauta variable literal para casos como AVK.
+- Tres formatos de copia: por horas, numérico X-X-X (con franjas extra descritas)
+  y texto para el paciente; frecuencia/días originales preservados cuando falta
+  detalle de dosis. El modo «cada X horas» no añade comidas entre paréntesis.
+- «Ordenar y copiar» presenta directamente un cuadro editable de texto final
+  junto al botón Copiar tratamiento; cada línea usa «Medicamento: pauta».
+  Ediciones manuales protegidas contra regeneración silenciosa.
+- Suplementos nutricionales opcionales. Productos sanitarios y espesantes
+  excluidos de la copia.
+- Revisión farmacológica orientativa: interacción/duplicidad de cobertura
+  LIMITADA, avisos de fracciones en cápsulas o formulaciones especiales,
+  avisos de fraccionamiento actualizados al cambiar las cantidades,
+  revisión de indicación de IBP con enlaces y borradores de retirada bajo
+  comprobación clínica, alertas exploratorias sobre combinaciones fijas y
+  alternativas de familias terapéuticas.
+
+ADVERTENCIAS
+- NO incluye base farmacológica completa de CIMA; NO calcula ACB, DBI ni
+  STOPP/START v3. No sustituye la comprobación de prescripción y fuentes.
+- Las pautas de ejemplo no representan indicaciones personalizadas.
+- Todos los datos del analizador se procesan localmente en el navegador.
+
+CÓMO INSTALAR EN GITHUB PAGES
+1. Descomprimir el ZIP.
+2. Abrir la carpeta «portal_medicina».
+3. Subir o sustituir el CONTENIDO de esta carpeta en la raíz de tu
+   repositorio de GitHub Pages (donde ya está index.html).
+4. Conservar las carpetas «vendor», «icons» y demás recursos.
+5. Confirmar el cambio; después refrescar la web y revisar las nuevas funciones.
+
+PARA USAR SIN PUBLICAR: abrir portal_medicina/index.html o
+portal_medicina/analizador_tratamientos.html en un navegador moderno.
