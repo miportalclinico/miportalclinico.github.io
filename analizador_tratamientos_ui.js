@@ -1,26 +1,10 @@
-/* Portal Clínico · Analizador independiente v60. Interfaz compacta, procesamiento local. */
+/* Portal Clínico · Analizador de tratamientos. Interfaz compacta y procesamiento local. */
 'use strict';
 (()=>{
 const A=window.TreatmentAnalyzer;
 const $=id=>document.getElementById(id);
 let items=[],order=[],draggingId=null;
-const exampleA='(PARACETAMOL) VO,650 MG,C12H (ABSORBENTE INC ORINA DIA ANAT) OV,1 C/U,C6H (TORASEMIDA) VO,5 MG,C24H (LERCANIDIPINO) VO,10 MG,C24H (CANDESARTAN) VO,32 MG,C48H (BOLSAS RECOGIDA ORINA PIERNA) OV,1 C/U,C12H (TRAZODONA) VO,100 MG,C48H (ACENOCUMAROL) VO,1 MG,C24H (SITAGLIPTINA) VO,50 MG,C12H (SERTRALINA) VO,50 MG,C24H (OMEPRAZOL) VO,20 MG,C24H (APOSITO ESTERIL) OV,1 C/U,C24H (COLECTOR BOLSA RECOGIDA ORINA AADH (AUTOADHESIVO)) OV,1 C/U,C12H (MÓDULOS ESPESANTES.) VO,400 G,BISEMANAL (CEFIXIMA) VO,400 MG,C24H';
-const exampleD=`BSORB INC ORINA DIA/ANAT-PANTS 80 UD/ENV T MED\t@0L@\tOV,1 C/U,C6H
-ANORO ELLIPTA 55 MCG/22 MCG POLVO PARA INHALACION (UNIDOSIS) 30 DOSIS\t@0L@\tIN,1 C/U,C24H
-APOSITO ESTERIL ALLEVYN GENTLE BORDER LITE OVAL 8.6X7.7CM 3U\t@0L@\tOV,1 C/U,C24H
-BOLSAS RECOGIDA ORINA PIERNA FLEMING 75O ML 30 U\t@0L@\tOV,1 C/U,C12H
-CANDESARTAN 32 MG 28 COMPRIMIDOS\t@0L@\tVO,32 MG,C48H
-CEFIXIMA 400 MG 10 CAPSULAS\t@0L@\tVO,400 MG,C24H
-COLECTOR BOLSA RECOG ORINA AADH CONVEEN OPTIMA 30MM 30U\t@0L@\tOV,1 C/U,C12H
-DEPRAX 100 MG COMPRIMIDOS RECUBIERTOS CON PELICULA EFG . 30 COMPRIMIDOS\t@0L@\tVO,100 MG,C48H
-ESPESANTE NUTRISENS(antes ESPESANTE VEGENAT MED) NEUTRO (AN ) 400G 1 BOTE\t@0L@\tVO,400 G,BISEMANAL
-LERCANIDIPINO 10 MG 28 COMPRIMIDOS\t@0L@\tVO,10 MG,C24H
-OMEPRAZOL 20 MG 28 CAPSULAS\t@0L@\tVO,20 MG,C24H
-PARACETAMOL 650 MG 40 COMPRIMIDOS\t@0L@\tVO,650 MG,C12H
-SERTRALINA 50 MG 30 COMPRIMIDOS\t@0L@\tVO,50 MG,C24H
-SINTROM 1 MG COMPRIMIDOS . 60 COMPRIMIDOS\t@0L@\tVO,1 MG,C24H
-SITAGLIPTINA 50 MG 28 COMPRIMIDOS\t@0L@\tVO,50 MG,C12H
-TORASEMIDA 5 MG 30 COMPRIMIDOS\t@0L@\tVO,5 MG,C24H`;
+let ppiDecisions=new Map();
 function el(tag,className='',text){const n=document.createElement(tag);if(className)n.className=className;if(text!==undefined)n.textContent=String(text);return n;}
 function button(text,cb,cls='',title=''){const b=el('button',cls,text);b.type='button';if(title)b.title=title;b.addEventListener('click',cb);return b;}
 function isPrn(m){return /a demanda|si precisa|\bprn\b|s\s*\/\s*p/i.test(A.getFrequency(m));}
@@ -35,14 +19,19 @@ const SLOT_NAMES=['Desayuno','Comida','Merienda','Cena','Antes de dormir'];
 const SLOT_SHORT=['Des','Com','Mer','Cena','Dorm'];
 const DAYS_SHORT=['L','M','X','J','V','S','D'];
 function activeAmounts(m){return A.chosenAmounts(m);}
-function editSlot(id,j){
+function toggleSlot(id,j){
  const m=getItem(id);if(!m)return;
- if(m.interval==='48'&&!m.verified48){m._choose48=true;renderReview();$('reviewStatus').textContent='Confirma antes si cada 48 horas significa días alternos o media unidad diaria.';return;}
- if(A.isAvk(m)&&!m.irregular?.text?.trim()){$('reviewStatus').textContent='En AVK introduce la pauta individual en «Pauta irregular»; no se deduce del envase.';m.irregularOpen=true;renderReview();return;}
+ if(A.isAvk(m)){m.avkSlot=m.avkSlot===j?null:j;renderAll();$('reviewStatus').textContent='Antivitamina K: se indica el momento, siempre según pauta de INR, sin asignar dosis.';return;}
+ if(m.interval==='48'&&!m.verified48){m._choose48=true;renderReview();$('reviewStatus').textContent='Confirma primero cómo se administra la pauta de 48 horas.';return;}
  const counts=activeAmounts(m);
- if(counts[j]<=0){const suggestion=m.verified48==='half'?0.5:normalUnitCount(m);if(suggestion!==null)counts[j]=suggestion;}
- m.slotAmounts=counts;m.editSlot=j;
- renderAll();$('reviewStatus').textContent=counts[j]>0?'Toma seleccionada. Puedes modificar sus unidades con los controles.':'Cantidad por toma desconocida: introduce unidades antes de usar esta franja.';
+ counts[j]=counts[j]>0?0:(m.verified48==='half'?0.5:1);
+ m.slotAmounts=counts;
+ if(counts[j]===0&&m.editSlot===j)m.editSlot=null;
+ renderAll();$('reviewStatus').textContent=counts[j]?'Toma seleccionada: 1 unidad por defecto (o 0.5 si se confirmó media unidad diaria).':'Toma desactivada.';
+}
+function editSlot(id,j){const m=getItem(id);if(!m||A.isAvk(m))return;
+ if(m.interval==='48'&&!m.verified48){m._choose48=true;renderReview();return;}
+ m.editSlot=m.editSlot===j?null:j;renderReview();
 }
 function setAmount(id,j,value){const m=getItem(id);if(!m)return;const n=Number(String(value).replace(',','.'));
  if(!Number.isFinite(n)||n<0||n>20){$('reviewStatus').textContent='Introduce entre 0 y 20 unidades, o elimina la toma con «Quitar».';return;}
@@ -51,9 +40,9 @@ function setAmount(id,j,value){const m=getItem(id);if(!m)return;const n=Number(S
 }
 function confirm48(id,choice){
  const m=getItem(id);if(!m)return;
- if(choice==='half'&&normalUnitCount(m)!==1){$('reviewStatus').textContent='No se ha podido verificar media unidad: comprueba concentración y dosis.';return;}
- m.verified48=choice;m.slotAmounts=[0,0,0,0,0];m.editSlot=null;m.amountEdited=false;m._choose48=false;
- renderAll();$('reviewStatus').textContent=choice==='half'?'Confirmado: 0.5 comprimido cada 24 horas. Selecciona las tomas si quieres un formato por comidas.':choice==='alternate'?'Pauta cada 48 horas confirmada.':'Pauta de 48 horas sin confirmar.';
+ if(choice==='half'&&!m._confirmHalfPending){m._confirmHalfPending=true;renderReview();$('reviewStatus').textContent='Comprueba que realmente toma medio comprimido diario (no 0.5 mg).';return;}
+ m.verified48=choice;m.slotAmounts=[0,0,0,0,0];m.editSlot=null;m.amountEdited=false;m._choose48=false;m._confirmHalfPending=false;
+ renderAll();$('reviewStatus').textContent=choice==='half'?'Confirmado: medio comprimido cada 24 h. No se calculan mg si falta la presentación.':choice==='alternate'?'Pauta cada 48 horas confirmada.':'Pauta de 48 horas sin confirmar.';
 }
 function setDays(id,days){const m=getItem(id);if(!m)return;m.irregular.days=days.slice().sort((a,b)=>a-b);renderAll();}
 function irregularMode(id,mode){const m=getItem(id);if(!m)return;m.irregular.mode=mode;renderAll();}
@@ -77,13 +66,13 @@ function renderIrregular(row,m){
   panel.append(el('label','fieldLabel','Pauta exacta, con días y cantidades (sin inferencias)'));
   const ta=el('textarea');ta.rows=3;ta.placeholder='Ej.: lunes 1 comprimido; martes 0.5; miércoles 1...';ta.value=m.irregular.text||'';
   ta.addEventListener('input',()=>{m.irregular.text=ta.value;renderOrder();renderClinical();});panel.append(ta);
-  panel.append(el('p','hint','El texto se reproducirá tal cual en los tres formatos. Útil para acenocumarol o dosis variables; comprueba el original.'));
+  panel.append(el('p','hint','El texto se reproducirá tal cual en los tres formatos. Útil para dosis variables según días; comprueba el original.'));
  }
  row.append(panel);
 }
 function renderReview(){
  const dest=$('medList');dest.replaceChildren();const meds=orderedReview();
- $('medCount').replaceChildren(el('span','',meds.length+' medicamentos'),el('span','',meds.filter(x=>!x.excluded).length+' para copiar'),el('span','',meds.filter(x=>x.interval==='48'&&!x.verified48).length+' pautas de 48 h pendientes'));
+ $('medCount').replaceChildren(el('span','',meds.length+' medicamentos'),el('span','',meds.filter(x=>!x.excluded).length+' para copiar'),el('span','',meds.filter(x=>!A.isAvk(x)&&x.interval==='48'&&!x.verified48).length+' pautas de 48 h pendientes'));
  if(!meds.length){dest.append(el('p','muted','No se han identificado medicamentos.'));return;}
  for(const m of meds){
   const row=el('div','medRow compactMed'+(m.excluded?' excluded':''));row.dataset.id=m.id;
@@ -94,41 +83,56 @@ function renderReview(){
   let freq=A.getFrequency(m)||'Pauta no identificada';
   if(m.verified48==='half')freq='0.5 comprimido cada 24 h · confirmado';
   if(m.verified48==='alternate')freq='cada 48 h · confirmado';
-  ident.append(el('div','detail',freq+(m.dose&&!m.strength?' · '+m.dose:'')));
+  ident.append(el('div','detail',freq+(!A.isAvk(m)&&m.dose&&!m.strength?' · '+m.dose:'')));
   if(!m.drugKey)ident.append(el('small','smallReview','No reconocido; comprueba el original.'));
-  else if(m.interval==='48'&&!m.verified48)ident.append(button('⚠ Confirmar pauta',()=>{m._choose48=!m._choose48;renderReview();},'interval48'));
-  else if(m.interval==='48')ident.append(button('Cambiar pauta',()=>{m._choose48=!m._choose48;renderReview();},'miniLinkButton'));
-  if(A.isAvk(m))ident.append(el('small','smallReview','Confirmar pauta individual; no se deduce del envase.'));
+  else if(!A.isAvk(m)&&m.interval==='48'&&!m.verified48)ident.append(button('⚠ Confirmar pauta',()=>{m._choose48=!m._choose48;renderReview();},'interval48'));
+  else if(!A.isAvk(m)&&m.interval==='48')ident.append(button('Cambiar pauta',()=>{m._choose48=!m._choose48;renderReview();},'miniLinkButton'));
+  if(A.isAvk(m))ident.append(el('small','smallReview','Dosis según pauta individual de INR; selecciona solo el momento de toma.'));
   const expected={'24':1,'12':2,'8':3,'6':4}[m.interval];
   const count=activeAmounts(m).filter(x=>x>0).length;
-  if(expected&&count&&count!==expected)ident.append(el('small','smallReview','⚠ Tomas seleccionadas distintas de la frecuencia registrada.'));
+  if(!A.isAvk(m)&&expected&&count&&count!==expected)ident.append(el('small','smallReview','⚠ Tomas seleccionadas distintas de la frecuencia registrada.'));
   const actions=el('div','moveButtons');const i=meds.findIndex(x=>x.id===m.id);
   const up=button('↑',()=>move(m.id,-1),'','Subir');const down=button('↓',()=>move(m.id,1),'','Bajar');
   up.disabled=i===0||isPrn(m)!==isPrn(meds[i-1]);down.disabled=i===meds.length-1||isPrn(m)!==isPrn(meds[i+1]);actions.append(up,down);
   top.append(grip,omit,ident,actions);row.append(top);
-  if(!A.isAvk(m)){
+  {
    const slots=el('div','slotPills');const amounts=activeAmounts(m);
    for(let j=0;j<5;j++){
-    const amount=amounts[j];const small=j===2||j===4;
-    const lab=SLOT_SHORT[j]+(amount>0?' '+amount:'');
-    const b=button(lab,()=>editSlot(m.id,j),'slotPill'+(small?' minor':'')+(amount>0?' selected':''),SLOT_NAMES[j]+' · '+(amount>0?amount+' unidades':'sin configurar'));
+    const avk=A.isAvk(m), amount=avk?(m.avkSlot===j?1:0):amounts[j], small=j===2||j===4;
+    const lab=SLOT_SHORT[j]+(!avk&&amount>0?' '+amount:'');
+    const b=button(lab,()=>toggleSlot(m.id,j),'slotPill'+(small?' minor':'')+(amount>0?' selected':''),SLOT_NAMES[j]+' · '+(avk?'según pauta':amount>0?amount+' unidades':'sin configurar'));
     b.setAttribute('aria-pressed',String(amount>0));slots.append(b);
    }row.append(slots);
-   if(m.editSlot!=null){const j=m.editSlot,amount=amounts[j];const editor=el('div','amountEditor');
-    editor.append(el('span','',SLOT_NAMES[j]+':'));
-    const minus=button('−',()=>setAmount(m.id,j,Math.max(0,amount-0.5)),'qtyBtn','Restar 0.5');minus.setAttribute('aria-label','Restar 0.5 unidades');editor.append(minus);
-    const n=el('input');n.type='number';n.step='any';n.min='0';n.max='20';n.value=amount||'';n.placeholder='unidades';n.setAttribute('aria-label','Unidades en '+SLOT_NAMES[j]);
-    n.addEventListener('change',()=>setAmount(m.id,j,n.value));editor.append(n);
-    const plus=button('+',()=>setAmount(m.id,j,amount+0.5),'qtyBtn','Añadir 0.5');plus.setAttribute('aria-label','Añadir 0.5 unidades');editor.append(plus);
-    editor.append(button('Quitar',()=>setAmount(m.id,j,0),'quiet miniAction'));
-    editor.append(button('Cerrar',()=>{m.editSlot=null;renderReview();},'quiet miniAction'));row.append(editor);
+   if(!A.isAvk(m)){
+    const any=amounts.some(x=>x>0);
+    if(any||m.editSlot!==null){
+     const tools=el('div','amountTools');
+     tools.append(button(m.editSlot!==null?'Cerrar ajuste de cantidades':'± Ajustar cantidades',()=>{
+      m.editSlot=m.editSlot!==null?null:Math.max(0,amounts.findIndex(x=>x>0));renderReview();
+     },'quiet miniAction'));row.append(tools);
+    }
+    if(m.editSlot!=null){const j=m.editSlot,amount=amounts[j];const editor=el('div','amountEditor');
+     const select=el('select');select.setAttribute('aria-label','Franja a ajustar');
+     SLOT_NAMES.forEach((name,i)=>{const op=el('option','',name);op.value=String(i);op.selected=i===j;select.append(op);});
+     select.addEventListener('change',()=>{m.editSlot=Number(select.value);renderReview();});editor.append(select);
+     const minus=button('−',()=>setAmount(m.id,j,Math.max(0,amount-0.5)),'qtyBtn','Restar 0.5');minus.setAttribute('aria-label','Restar 0.5 unidades');editor.append(minus);
+     const n=el('input');n.type='number';n.step='any';n.min='0';n.max='20';n.value=amount;n.setAttribute('aria-label','Unidades en '+SLOT_NAMES[j]);
+     n.addEventListener('change',()=>setAmount(m.id,j,n.value));editor.append(n);
+     const plus=button('+',()=>setAmount(m.id,j,amount+0.5),'qtyBtn','Añadir 0.5');plus.setAttribute('aria-label','Añadir 0.5 unidades');editor.append(plus);
+     row.append(editor);
+    }
    }
   }
-  if(m._choose48){const p=el('div','confirm48');p.append(el('span','','¿Cómo toma realmente este medicamento?'));
-   const actions=el('div','choice48');const half=button('0.5 comprimido cada 24 h',()=>confirm48(m.id,'half'),'quiet');half.disabled=normalUnitCount(m)!==1||/c[aá]psul/i.test(m.rawName);
-   actions.append(half,button('Dosis cada 48 h',()=>confirm48(m.id,'alternate'),'quiet'),button('Sin confirmar',()=>confirm48(m.id,''),'quiet'));p.append(actions);row.append(p);
+  if(!A.isAvk(m)&&m._choose48){const p=el('div','confirm48');p.append(el('span','','¿Cómo toma realmente este medicamento?'));
+   const actions=el('div','choice48');const half=button('0.5 comprimido cada 24 h',()=>confirm48(m.id,'half'),'quiet');
+   actions.append(half,button('Dosis cada 48 h',()=>confirm48(m.id,'alternate'),'quiet'),button('Sin confirmar',()=>confirm48(m.id,''),'quiet'));p.append(actions);
+   if(m._confirmHalfPending){const confirm=el('div','halfConfirm');
+    confirm.append(el('p','hint','Confirma que la pauta REAL es medio comprimido al día y que su presentación permite partirse. Si no consta concentración, no se calcularán mg. Si es cápsula o liberación modificada, revisa la ficha técnica.'));
+    confirm.append(button('Sí, confirmar medio comprimido al día',()=>confirm48(m.id,'half'),'primary miniAction'));
+    p.append(confirm);
+   }row.append(p);
   }
-  renderIrregular(row,m);dest.append(row);
+  if(!A.isAvk(m))renderIrregular(row,m);dest.append(row);
  }
 }
 function supplementalLines(){
@@ -137,11 +141,45 @@ function supplementalLines(){
  return items.filter(x=>x.kind==='nutrition'&&!/espesante|modulos espesantes/i.test(A.normal(x.rawName)))
    .map(x=>(x.name&&x.name!=='Espesante / producto nutricional'?x.name:'Suplemento nutricional oral')+': '+timing);
 }
+// Reglas de instrucciones con respaldo en fichas técnicas. No inferir horarios
+// ni aplicarlas a formulaciones, concentraciones o vías no comprobadas.
+function foodInstruction(m){
+ if(m.route&&/intravenosa|intramuscular|subcut[aá]nea|transd[eé]rmica|inhalatoria/i.test(m.route))return '';
+ const name=A.normal(m.drugKey||'');
+ if(name==='levotiroxina')return 'Tomar por la mañana en ayunas, al menos 30 minutos antes del desayuno. (CIMA, Eutirox, FT 64014)';
+ if(name==='alendronato'||name==='acido alendronico')return 'Tomar con agua del grifo, al menos 30 minutos antes de la primera comida, bebida u otro medicamento; permanecer incorporado al menos 30 minutos. (CIMA, FT 67028)';
+ if(name==='rivaroxaban'&&/^\s*(15|20)\s*mg\s*$/i.test(m.strength||''))return 'Los comprimidos de 15 y 20 mg deben tomarse con alimentos. (CIMA, FT 89322)';
+ return '';
+}
+function foodInstructionLines(){
+ if($('copyMode').value!=='patient'||!$('includeFoodNotes').checked)return [];
+ return orderedCopy().map(m=>{const note=foodInstruction(m);return note?A.displayName(m)+(m.strength?' '+m.strength:'')+': '+note:null;}).filter(Boolean);
+}
 function exportFinal(){
  const pharmacology=A.exportText(orderedCopy(),$('copyMode').value);
  const extra=supplementalLines();
- return [pharmacology,extra.length?'SUPLEMENTOS NUTRICIONALES\n'+extra.join('\n'):''].filter(Boolean).join('\n\n');
+ const plans=[];const rescues=[];
+ for(const m of medicines()){
+  if(m.excluded)continue;
+  const d=ppiDecisions.get(m.id);
+  if(!d||d.status!=='possible'||!d.verified)continue;
+  if(d.taper)plans.push(ppiTaper(m));
+  if(d.reflux)rescues.push(ppiReflux(m));
+ }
+ const foodNotes=foodInstructionLines();
+ return [pharmacology,extra.length?'SUPLEMENTOS NUTRICIONALES\n'+extra.join('\n'):'',
+  foodNotes.length?'INDICACIONES DE ADMINISTRACIÓN CON ALIMENTOS\n'+foodNotes.join('\n'):'',
+  plans.length?'PAUTA DE RETIRADA DE IBP\n'+plans.join('\n\n'):'',
+  rescues.length?'ALTERNATIVAS PARA EL REFLUJO\n'+rescues.join('\n\n'):''].filter(Boolean).join('\n\n');
 }
+function ppiTaper(m){
+ const base=A.displayName(m);const strength=(m.strength||'').trim();
+ if(m.drugKey==='Omeprazol'&&/^20\s*mg$/i.test(strength))return base+': propuesta orientativa tras confirmar la indicación: 10 mg cada 24 h durante 1–2 semanas; después suspender si se tolera. Utilizar la presentación adecuada, sin dividir cápsulas gastrorresistentes. Reevaluar síntomas y necesidad de tratamiento.';
+ if(m.drugKey==='Omeprazol'&&/^40\s*mg$/i.test(strength))return base+': propuesta orientativa tras confirmar la indicación: 20 mg cada 24 h durante 1–2 semanas; después 10 mg cada 24 h durante 1–2 semanas y suspender si se tolera. Ajustar el plan al contexto clínico y usar presentaciones adecuadas.';
+ return base+': retirada progresiva a individualizar según indicación, dosis actual, formulación y tolerancia. No se ha calculado una dosis automática por falta de verificación.';
+}
+function ppiReflux(m){return A.displayName(m)+': si reaparece reflujo leve, valorar medidas posturales y dietéticas y alginato o antiácido a demanda si son apropiados. Si persiste, reevaluar; otras opciones según indicación incluyen antagonista H2 o IBP a demanda. Son alternativas a valorar, no medicación prescrita simultáneamente.';}
+
 let generatedOutput='';
 function renderOrder(force=false){
  const next=exportFinal();const field=$('outputText');
@@ -158,47 +196,50 @@ function dragStart(ev,id,handle){if(ev.pointerType==='mouse'&&ev.button!==0)retu
  handle.addEventListener('pointermove',onMove);handle.addEventListener('pointerup',finish);handle.addEventListener('pointercancel',finish);
 }
 function clearSchedules(){
- for(const m of medicines()){m.slotAmounts=[0,0,0,0,0];m.amountEdited=false;m.editSlot=null;}
+ for(const m of medicines()){m.slotAmounts=[0,0,0,0,0];m.avkSlot=null;m.amountEdited=false;m.editSlot=null;}
  renderAll();$('reviewStatus').textContent='Franjas desmarcadas. En los formatos no horarios se conservará cada frecuencia original.';
 }
 // Apoyo a la revisión, sin modificar nunca prescripciones ni presentarse como verificador completo.
 function guidanceLink(text,url){const a=el('a','',text);a.href=url;a.target='_blank';a.rel='noopener noreferrer';return a;}
 function renderOptimization(){
  const root=$('optimizationReview');root.replaceChildren();if(!items.length)return;
- const drugs=medicines(),found=new Set(drugs.map(x=>x.drugKey));
- const head=el('h3','optimizationTitle','Optimización y adecuación');root.append(head);
- const ibps=drugs.filter(x=>x.family==='ibp');
+ const drugs=medicines(),found=new Set(drugs.map(x=>x.drugKey)),ibps=drugs.filter(x=>x.family==='ibp');
+ const ppiActionNodes=[];
+ root.append(el('h3','optimizationTitle','Adecuación de la prescripción'));
  for(const med of ibps){
+  const state=ppiDecisions.get(med.id)||{status:'unknown',verified:false,taper:false,reflux:false};ppiDecisions.set(med.id,state);
   const pane=el('details','clinicalTool');pane.append(el('summary','','Revisar indicación de '+A.displayName(med)));
-  pane.append(el('p','','Antes de considerar la retirada, revisar ERGE complicada o esofagitis grave, Barrett, úlcera péptica activa o complicada, H. pylori durante tratamiento, hipersecreción y necesidad de gastroprotección según riesgo individual. No tener datos no equivale a descartar una indicación.'));
-  const choices=el('fieldset');choices.append(el('legend','fieldLabel','Situación clínica (a confirmar)'));
-  const statuses=[['unknown','Datos insuficientes / no revisado'],['keep','Indicación de mantenimiento o alto riesgo digestivo identificado'],['possible','Sin indicación de mantenimiento tras revisión clínica']];
-  const name='ppi-'+med.id;let chosen='unknown';let verified=false;
-  for(const [value,label] of statuses){const l=el('label');const inp=el('input');inp.type='radio';inp.name=name;inp.value=value;inp.checked=value==='unknown';l.append(inp,document.createTextNode(label));choices.append(l);inp.addEventListener('change',()=>{chosen=value;updateGuidance();});}
-  pane.append(choices);
-  const checklist=el('label','checkline');const tick=el('input');tick.type='checkbox';checklist.append(tick,document.createTextNode(' He descartado indicaciones de mantenimiento y alto riesgo gastrointestinal tras revisar antecedentes y antitrombóticos.'));pane.append(checklist);
-  const result=el('div','caution','Indicación sin verificar: no generar retirada.');pane.append(result);
-  const generate=button('Ver propuesta orientativa de retirada',()=>{proposal.hidden=!proposal.hidden;},'quiet');generate.disabled=true;pane.append(generate);
-  const proposal=el('div','proposal');proposal.hidden=true;pane.append(proposal);
-  tick.addEventListener('change',()=>{verified=tick.checked;updateGuidance();});
-  function plan(){
-   const strength=med.strength||'';
-   if(med.drugKey==='Omeprazol'&&/^20\s*mg$/i.test(strength))return 'Ejemplo para valorar: omeprazol 10 mg cada 24 h durante aproximadamente 1–2 semanas y, si se tolera, suspensión. Confirmar disponibilidad de la presentación y seguimiento clínico.';
-   if(med.drugKey==='Omeprazol'&&/^40\s*mg$/i.test(strength))return 'Ejemplo para valorar: pasar de omeprazol 40 mg a 20 mg cada 24 h durante 1–2 semanas; considerar luego 10 mg cada 24 h durante otras 1–2 semanas antes de suspender, según evolución.';
-   return 'Propuesta individualizada: considerar descenso escalonado hacia una dosis menor durante 1–2 semanas por escalón, utilizando una presentación autorizada y comprobando indicación, tolerancia y síntomas. No se propone una dosis concreta porque falta una equivalencia validada para esta presentación.';
-  }
-  function updateGuidance(){
-   generate.disabled=!(chosen==='possible'&&verified);
-   if(chosen==='unknown')result.textContent='Datos insuficientes: no valorar la retirada sin revisar la indicación y el riesgo gastrointestinal.';
-   else if(chosen==='keep')result.textContent='Indicación/riesgo identificado: no proponer retirada rutinaria.';
-   else if(!verified)result.textContent='Antes de generar una propuesta, confirma que has revisado los factores de riesgo digestivo.';
-   else result.textContent='Posible candidato a deprescripción tras valoración clínica. Esta herramienta solo prepara un borrador y no modifica la prescripción.';
-   proposal.textContent=plan()+'\n\nSi aparecen síntomas, valorar antiácidos/alginatos ocasionales, antagonista H2 o IBP a demanda cuando proceda. Advertir de posible rebote ácido y reevaluar síntomas.';
-   if(generate.disabled)proposal.hidden=true;
-  }
-  const refs=el('div','referenceLinks');refs.append(guidanceLink('AGA: cuándo retirar IBP','https://gastro.org/clinical-guidance/de-prescribing-proton-pump-inhibitors-ppis/'),guidanceLink('Guía de retirada: deprescribing.com','https://deprescribing.com/08-alimentary-tract-and-metabolism/01-proton-pump-inhibitors.html'));
-  pane.append(refs);root.append(pane);
+  pane.append(el('p','','Revisar reflujo complicado/esofagitis grave, Barrett, úlcera activa o complicada, hipersecreción, H. pylori durante su tratamiento y necesidad de gastroprotección según riesgo digestivo. La falta de datos no descarta una indicación.'));
+  const field=el('fieldset');field.append(el('legend','fieldLabel','Situación clínica'));
+  [['unknown','Datos insuficientes / sin revisar'],['keep','Mantener: indicación o alto riesgo gastrointestinal'],['possible','Posible retirada tras revisión clínica']].forEach(([v,label])=>{
+   const l=el('label','checkline');const input=el('input');input.type='radio';input.name='ppi-'+med.id;input.value=v;input.checked=state.status===v;
+   input.addEventListener('change',()=>{state.status=v;if(v!=='possible'){state.taper=false;state.reflux=false;state.verified=false;}sync();});l.append(input,document.createTextNode(' '+label));field.append(l);
+  });pane.append(field);
+  const line=el('label','checkline');const tick=el('input');tick.type='checkbox';tick.checked=state.verified;line.append(tick,document.createTextNode(' He comprobado indicación, antecedentes digestivos y antitrombóticos, y no encuentro motivo de mantenimiento.'));pane.append(line);
+  tick.addEventListener('change',()=>{state.verified=tick.checked;if(!state.verified){state.taper=false;state.reflux=false;}sync();});
+  const result=el('p','caution');pane.append(result);
+  const refs=el('div','referenceLinks');refs.append(guidanceLink('AGA · Deprescripción de IBP','https://gastro.org/clinical-guidance/de-prescribing-proton-pump-inhibitors-ppis/'),guidanceLink('Guía de retirada · deprescribing.com','https://deprescribing.com/08-alimentary-tract-and-metabolism/01-proton-pump-inhibitors.html'));pane.append(refs);
+  root.append(pane);
+  const optim=el('div','ppiActions');optim.append(el('strong','','Omeprazol / IBP: '+A.displayName(med)));
+  const note=el('p','hint','Añade instrucciones editables al final del tratamiento, tras revisar la indicación en Adecuación. No se modifica la prescripción original.');optim.append(note);
+  const taper=button('',()=>{state.taper=!state.taper;sync();},'quiet');const rescue=button('',()=>{state.reflux=!state.reflux;sync();},'quiet');
+  optim.append(taper,rescue);
+  const preview=el('p','hint','');optim.append(preview);
+  const sync=()=>{
+   const ok=state.status==='possible'&&state.verified;
+   if(!ok){state.taper=false;state.reflux=false;}
+   taper.disabled=!ok;rescue.disabled=!ok;
+   taper.textContent=(state.taper?'✓ Quitar':'＋ Añadir')+' pauta de retirada';
+   rescue.textContent=(state.reflux?'✓ Quitar':'＋ Añadir')+' alternativas para el reflujo';
+   result.textContent=state.status==='keep'?'Indicación de mantenimiento o riesgo identificado: no proponer retirada rutinaria.':state.status==='unknown'?'Datos insuficientes: revisar indicación y riesgo gastrointestinal antes de valorar retirada.':!state.verified?'Confirmar la evaluación clínica para preparar un borrador de retirada.':'Posible candidato a deprescripción: las propuestas son orientativas y requieren validación clínica.';
+   preview.textContent=ok?(state.taper||state.reflux?'Los bloques seleccionados aparecen al final de «Ver o editar texto final».':'Selecciona las intervenciones que quieras añadir al texto final.'):'Acciones bloqueadas hasta confirmar la valoración clínica.';
+   renderOrder();
+  };
+  ppiActionNodes.push({node:optim,sync});
  }
+ root.append(el('h3','optimizationTitle','Optimización terapéutica'));
+ for(const action of ppiActionNodes){root.append(action.node);action.sync();}
+ if(!ibps.length)root.append(el('p','hint','No hay IBP identificados para revisión específica.'));
  const combination=[];
  if(found.has('Sitagliptina')&&found.has('Metformina'))combination.push('Sitagliptina + metformina: comprobar si las dosis y frecuencias coinciden con una combinación autorizada en España.');
  if(found.has('Amlodipino')&&found.has('Valsartán'))combination.push('Amlodipino + valsartán: valorar una presentación combinada si las dosis, la pauta y la indicación son compatibles.');
@@ -225,29 +266,81 @@ function renderFractionWarnings(){
   if(capsule)addAlert(dest,'⚠ Fracción de cápsula: '+A.displayName(m),'La división del contenido no garantiza una dosis homogénea y abrir una cápsula puede estar contraindicado según formulación. Revisar ficha técnica y presentación alternativa.');
  }
  }
-function renderClinical(){const dest=$('clinicalReview');dest.replaceChildren();if(!items.length){dest.append(el('p','muted','Introduce un tratamiento.'));return;}const r=A.review(items);
- if(r.unknown)addAlert(dest,'Medicamentos no reconocidos',`${r.unknown} medicamento(s) no se han comprobado.`);
- for(const a of r.alerts)addAlert(dest,`${a.level}: ${a.a} + ${a.b}`,a.desc);
- for(const d of r.duplicates)addAlert(dest,'Posible duplicidad',d);
- if(!r.alerts.length&&!r.duplicates.length)addAlert(dest,'Sin coincidencias en las reglas incluidas','Esto no equivale a ausencia de interacciones. La cobertura de esta versión es limitada.');
+function makeLink(text,url){
+ if(!/^https:\/\//i.test(String(url||'')))return el('span','',text+' (enlace no disponible)');
+ const l=el('a','',text);l.href=url;l.target='_blank';l.rel='noopener noreferrer';return l;
+}
+function sectionHeading(text){return el('h3','docSectionHeading',text);}
+function renderDocumental(dest){
+ const engine=window.DocumentalInteractionEngine;
+ if(!engine){addAlert(dest,'Base documental no disponible','No se puede ejecutar la comprobación.');return;}
+ const result=engine.analyze(items);
+ const intro=el('div','docNotice');intro.append(el('strong','','BASE v0.5 · SOLO PRUEBAS'),el('p','','342 reglas documentales pendientes de validación clínica. Las coincidencias no son alertas asistenciales y pueden contener errores de clasificación, contexto o cobertura. No tomar decisiones terapéuticas a partir de este prototipo.'));
+ dest.append(intro);
+ const totals=el('div','docStats');totals.append(el('strong','',`${result.matched.length} ${result.matched.length===1?'coincidencia documental':'coincidencias documentales'}`),el('span','',`${result.recognized}/${result.total} medicamentos identificados en la base · ${result.baseRules} reglas disponibles`));dest.append(totals);
+ if(result.combosIdentified.length){const comboPane=el('details','clinicalTool docExpand');comboPane.append(el('summary','','Combinaciones antirretrovirales reconocidas ('+result.combosIdentified.length+')'));
+  for(const c of result.combosIdentified)comboPane.append(el('p','docComponents',c.combo.toUpperCase()+': '+c.components.join(' + ')));dest.append(comboPane);
+ }
+ if(result.unknown.length){const pane=el('details','clinicalTool docExpand');pane.append(el('summary','','Medicamentos fuera de cobertura ('+result.unknown.length+')'));
+   pane.append(el('p','caution','Su ausencia del diccionario no significa que carezcan de interacciones.'));
+   for(const m of result.unknown)pane.append(el('p','',m.rawName||m.name));dest.append(pane);
+ }
+ if(!result.matched.length){dest.append(el('p','hint','No se han identificado coincidencias en esta base parcial. Esto NO descarta interacciones farmacológicas.'));}
+ const groups=[
+  {id:'contraindicacion',icon:'⛔',cls:'contra'},
+  {id:'interaccion_clinicamente_relevante',icon:'⚠',cls:'relevant'},
+  {id:'precaucion_monitorizacion',icon:'●',cls:'monitor'},
+  {id:'informacion',icon:'ℹ',cls:'information'}
+ ];
+ for(const g of groups){const found=result.matched.filter(x=>x.rule.categoria===g.id);if(!found.length)continue;
+  const box=el('section','docGroup');box.append(sectionHeading(g.icon+' '+engine.labels[g.id]+' ('+found.length+')'));
+  for(const hit of found){const r=hit.rule;
+   const node=el('details','docInteraction doc-'+g.cls);
+   const summary=el('summary');const title=el('span','docLabel',hit.medications.map(m=>m.brand||m.name||m.rawName).join(' + '));summary.append(title);
+   summary.append(el('span','docStatus','Documental · '+(hit.decision==='conditional'?'condiciones por verificar':'pendiente de validación')));node.append(summary);
+   const inner=el('div','docBody');
+   const field=(label,value)=>{if(!value)return;const p=el('p');p.append(el('strong','',label+': '),document.createTextNode(value));inner.append(p);};
+   field('Principios implicados',r.principios_activos.join(' + '));field('Consecuencia descrita',r.consecuencia);
+   field('Mecanismo',r.mecanismo);field('Actuación descrita en la fuente',r.actuacion_orientativa);
+   field('Contexto / excepciones',r.contexto_y_limitaciones);field('Pendiente de comprobar',hit.needs||'Validación clínica independiente de la regla y de la categoría');
+   const refs=el('div','docRefs');refs.append(el('strong','','Fuente(s): '));for(const f of (r.fuentes||[])){
+    refs.append(makeLink((f.organismo||'Fuente')+' · '+(f.documento||r.id),f.url));refs.append(document.createTextNode(' · '));
+   }inner.append(refs);
+   inner.append(el('p','docFoot',`${r.id} · Revisión documental ${r.fecha_revision_documental||'no indicada'} · NO VALIDADA PARA ALERTAS CLÍNICAS`));
+   node.append(inner);box.append(node);
+  }dest.append(box);
+ }
+ if(result.withheld.length){const withheld=el('details','clinicalTool docExpand');withheld.append(el('summary','',`${result.withheld.length} coincidencias excluidas por formulación o régimen no aplicable`));
+  withheld.append(el('p','hint','No se han mostrado como interacciones porque sus condiciones de origen no se cumplen. Esta exclusión solo valida el filtrado de reglas, no acredita seguridad farmacológica.'));
+  for(const h of result.withheld)withheld.append(el('p','docFoot',h.rule.id+': '+h.rule.principios_activos.join(' + ')+' — '+h.needs));dest.append(withheld);
+ }
+ const links=el('div','docExternal');links.append(el('strong','','Consulta complementaria: '));
+ links.append(makeLink('CIMA / AEMPS','https://cima.aemps.es/'),document.createTextNode(' · '),makeLink('BOT PLUS','https://www.farmaceuticos.com/botplus/'),document.createTextNode(' · '),makeLink('Liverpool VIH','https://www.hiv-druginteractions.org/checker'));
+ dest.append(links);
+}
+function renderClinical(){
+ const dest=$('clinicalReview');dest.replaceChildren();if(!items.length){dest.append(el('p','muted','Introduce un tratamiento.'));return;}
+ renderDocumental(dest);
+ const old=A.review(items);
+ for(const duplicate of old.duplicates)addAlert(dest,'Posible duplicidad · comprobar',duplicate);
  const fractionContainer=el('div','fractionWarnings');fractionContainer.id='fractionWarnings';dest.append(fractionContainer);
- dest.append(el('p','hint',`Medicamentos identificados: ${r.recognized}. ACB, DBI y STOPP/START todavía no calculados. Excluir de la copia no excluye del análisis.`));renderFractionWarnings();renderOptimization();
+ dest.append(el('p','hint','Las reglas antiguas no se suman a las 342 de v0.5 para evitar avisos duplicados. ACB, DBI y STOPP/START siguen sin calcularse. Excluir de la copia no excluye del análisis.'));
+ renderFractionWarnings();renderOptimization();
 }
 function addAlert(target,title,text){const row=el('div','alertLine');row.append(el('strong','',title),el('span','',text));target.append(row);}
 function renderAll(){renderReview();renderOrder();renderFractionWarnings();}
 function parse(){const raw=$('rawInput').value;if(!raw.trim()){$('parseStatus').textContent='Introduce un tratamiento.';return;}const result=A.parse(raw);if(result.blocked){reset();$('parseStatus').classList.add('bad');$('parseStatus').textContent='Posible dato identificativo detectado: anonimiza el texto antes de procesarlo.';return;}
- $('parseStatus').classList.remove('bad');items=result.items;for(const m of medicines()){m.verified48='';m.slotAmounts=[0,0,0,0,0];m._choose48=false;m.irregularOpen=false;m.editSlot=null;m.amountEdited=false;}
+ $('parseStatus').classList.remove('bad');items=result.items;ppiDecisions=new Map();for(const m of medicines()){m.verified48='';m.slotAmounts=[0,0,0,0,0];m._choose48=false;m._confirmHalfPending=false;m.avkSlot=null;m.irregularOpen=false;m.editSlot=null;m.amountEdited=false;}
  const meds=medicines(),others=items.filter(x=>x.kind!=='drug');$('parseStatus').textContent=`Formato ${result.format}: ${meds.length} medicamentos y ${others.length} productos no farmacológicos. Revisa el texto antes de copiar.`;
  $('otherList').replaceChildren();$('additionalProducts').hidden=!others.length;$('otherCount').textContent=String(others.length);for(const other of others)$('otherList').append(el('span','other-chip',other.name));$('reviewStatus').textContent='';$('copyStatus').textContent='';chooseSort();renderClinical();}
-function reset(){items=[];order=[];$('medList').replaceChildren(el('p','muted','Introduce un tratamiento para empezar.'));$('medCount').replaceChildren();$('otherList').replaceChildren();$('additionalProducts').hidden=true;$('outputText').value='';generatedOutput='';$('manualEditWarning').hidden=true;$('clinicalReview').replaceChildren(el('p','muted','Reconoce un tratamiento para consultar las comprobaciones disponibles.'));$('optimizationReview').replaceChildren();$('copyStatus').textContent='';$('reviewStatus').textContent='';$('parseStatus').textContent='';}
+function reset(){items=[];order=[];ppiDecisions=new Map();$('medList').replaceChildren(el('p','muted','Introduce un tratamiento para empezar.'));$('medCount').replaceChildren();$('otherList').replaceChildren();$('additionalProducts').hidden=true;$('outputText').value='';generatedOutput='';$('manualEditWarning').hidden=true;$('clinicalReview').replaceChildren(el('p','muted','Reconoce un tratamiento para consultar las comprobaciones disponibles.'));$('optimizationReview').replaceChildren();$('copyStatus').textContent='';$('reviewStatus').textContent='';$('parseStatus').textContent='';}
 async function copy(){const txt=$('outputText').value;if(!txt.trim()){$('copyStatus').textContent='No hay medicamentos para copiar.';return;}try{if(navigator.clipboard&&window.isSecureContext)await navigator.clipboard.writeText(txt);else{$('outputText').focus();$('outputText').select();if(!document.execCommand('copy'))throw Error('no disponible');}$('copyStatus').textContent='Texto copiado. Los productos sanitarios y los espesantes no se incluyen.';}catch(e){$('outputText').focus();$('outputText').select();$('copyStatus').textContent='Selecciona el texto y pulsa Ctrl+C.';}}
 $('parseButton').addEventListener('click',parse);
-$('exampleA').addEventListener('click',()=>{$('rawInput').value=exampleA;parse();});
-$('exampleD').addEventListener('click',()=>{$('rawInput').value=exampleD;parse();});
 $('clearButton').addEventListener('click',()=>{$('rawInput').value='';reset();});
 $('sortSelect').addEventListener('change',chooseSort);
 $('resetOrder').addEventListener('click',chooseSort);
-$('copyMode').addEventListener('change',()=>renderOrder());
+$('copyMode').addEventListener('change',()=>{ $('foodNotesControl').hidden=$('copyMode').value!=='patient';renderOrder();});
+$('includeFoodNotes').addEventListener('change',renderOrder);
 $('clearSchedules').addEventListener('click',clearSchedules);
 $('includeSupplements').addEventListener('change',()=>{renderOrder();$('supplementOptions').hidden=!$('includeSupplements').checked;});
 $('supplementTiming').addEventListener('change',renderOrder);

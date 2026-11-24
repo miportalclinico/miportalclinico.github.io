@@ -1,21 +1,21 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Analizador de tratamientos · Portal Clínico</title><meta name="theme-color" content="#096b36"><link rel="icon" href="favicon.ico">
-<link rel="stylesheet" href="analizador_tratamientos.css"></head><body>
-<header><div class="wrap"><div class="eyebrow"><a class="backLink" href="herramientas_consulta.html">← Herramientas de consulta</a><span class="eyebrowContext">PORTAL CLÍNICO · HERRAMIENTAS DE CONSULTA</span></div><h1>Analizador de tratamientos</h1><p>Reconocer · Revisar · Ordenar · Copiar en tres formatos · Revisión farmacológica orientativa</p></div></header>
+<link rel="stylesheet" href="analizador_tratamientos.css"><style id="pcHomeNavStyle">.pcHomeLink{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;width:48px;height:48px;margin-left:auto;padding:3px;background:transparent!important;border:0!important;box-shadow:none!important;border-radius:10px;text-decoration:none!important;transition:background-color .16s ease}.pcHomeLink img{width:40px;height:40px;object-fit:contain;filter:drop-shadow(0 1px 2px rgba(0,0,0,.25))}.pcHomeLink:hover,.pcHomeLink:focus-visible{background:rgba(255,255,255,.19)!important}.pcHomeLink:focus-visible{outline:2px solid white;outline-offset:2px}@media(max-width:570px){.pcHomeLink{width:40px;height:40px}.pcHomeLink img{width:32px;height:32px}}@media(prefers-reduced-motion:reduce){.pcHomeLink{transition:none}}</style></head><body>
+<header><div class="wrap"><div class="eyebrow"><a class="backLink" href="herramientas_consulta.html">← Herramientas de consulta</a><a class="pcHomeLink" href="index.html" title="Volver al inicio de Portal Clínico" aria-label="Volver al inicio de Portal Clínico"><img alt="" src="logo_sin_mi.png" loading="eager"></a><span class="eyebrowContext">PORTAL CLÍNICO · HERRAMIENTAS DE CONSULTA</span></div><h1>Analizador de tratamientos</h1><p>Reconocer · Revisar · Ordenar · Copiar en tres formatos · Revisión farmacológica orientativa</p></div></header>
 <main class="wrap">
-<div class="callout">La identificación se realiza <strong>en este navegador</strong>. No pegues datos identificativos. Esta versión no verifica de forma exhaustiva interacciones, carga anticolinérgica ni criterios STOPP/START.</div>
+<div class="callout">La identificación se realiza <strong>en este navegador</strong>. No pegues datos identificativos. La revisión no es exhaustiva: aún no se calculan la carga anticolinérgica ni los criterios STOPP/START.</div>
 <section class="panel" aria-labelledby="introduccion"><div class="sectionTitle"><span class="step">1</span><h2 id="introduccion">Introducir tratamiento</h2></div>
 <label for="rawInput" class="fieldLabel">Pega una lista de tratamientos</label>
-<textarea id="rawInput" rows="6" spellcheck="false" placeholder="(CANDESARTAN) VO,32 MG,C48H (SITAGLIPTINA) VO,50 MG,C12H&#10;&#10;También admite: DEPRAX 100 MG ... @0L@ VO,100 MG,C48H"></textarea>
-<div class="buttons"><button id="parseButton" class="primary">Reconocer tratamiento</button><button id="exampleA" type="button">Ejemplo A</button><button id="exampleD" type="button">Ejemplo D</button><button id="clearButton" class="quiet" type="button">Borrar</button></div>
+<textarea id="rawInput" rows="6" spellcheck="false" placeholder="Pega aquí el tratamiento, con sus medicamentos y pautas, tal como aparece en la prescripción."></textarea>
+<div class="buttons"><button id="parseButton" class="primary">Reconocer tratamiento</button><button id="clearButton" class="quiet" type="button">Borrar</button></div>
 <div id="parseStatus" class="info" role="status"></div>
 <details id="additionalProducts" hidden><summary>Nutrición y productos sanitarios detectados: <span id="otherCount">0</span></summary><div id="otherList" class="other-list"></div><p class="muted">Se reconocen por separado. No aparecen en «Revisar medicamentos» ni en el texto a copiar.</p></details>
 </section>
 <div class="layout">
 <div>
 <section class="panel" aria-labelledby="revisar"><div class="sectionTitle"><span class="step">2</span><h2 id="revisar">Revisar medicamentos</h2></div>
-<p class="hint">Pulsa una franja para seleccionarla y ajustar las unidades, <strong>×</strong> para excluir de la copia y <strong>☰</strong> para arrastrar. Las franjas no se inventan: pulsa la toma para introducir las unidades reales. Comprueba la prescripción real: comidas y horas exactas no siempre son equivalentes.</p>
+<p class="hint">Pulsa una franja para añadir 1 unidad y vuelve a pulsarla para quitarla. Usa «Ajustar cantidades» solo si necesitas 0.5, 2, etc.; <strong>×</strong> para excluir de la copia y <strong>☰</strong> para arrastrar. Comprueba que las unidades seleccionadas coinciden con la prescripción real; las comidas y los intervalos horarios no siempre son equivalentes.</p>
 <div class="review-tools"><label>Orden inicial<select id="sortSelect"><option value="group">Familias terapéuticas</option><option value="alphabetical">Alfabético</option><option value="frequency">Frecuencia</option><option value="original">Orden original</option></select></label><button id="resetOrder" type="button" class="quiet">Restablecer orden</button></div>
 <div id="medCount" class="summary-counts"></div>
 
@@ -30,13 +30,14 @@
 <p class="hint">Las cantidades y días configurados actualizan los formatos compacto y para el paciente. «Por horas» conserva la frecuencia sin paréntesis de comidas; las pautas semanales se describen por días. Si faltan datos, se conserva la pauta original.</p>
 <div class="inlineMinor"><button id="clearSchedules" type="button" class="quiet">Desmarcar todas las franjas</button></div>
 <div class="supplementBox"><label class="checkline"><input type="checkbox" id="includeSupplements"> Incluir suplementos nutricionales en la copia</label><div id="supplementOptions" hidden><label for="supplementTiming" class="fieldLabel">Indicación para suplementos</label><select id="supplementTiming"><option value="between">Entre comidas</option><option value="after">Después de las comidas principales</option></select></div><p class="hint">Los espesantes y productos sanitarios permanecen excluidos. Si no se han detectado suplementos, esta opción no añade contenido.</p></div>
+<div class="foodNotesControl" id="foodNotesControl" hidden><label class="checkline"><input type="checkbox" id="includeFoodNotes"> Incluir indicaciones sobre alimentos (opcional)</label><p class="hint">Solo en «Para el paciente» y para presentaciones con indicaciones documentadas. No modifica la prescripción.</p></div>
 <div class="outputHead"><label for="outputText" class="fieldLabel">Ver o editar texto final</label><button id="copyButton" class="primary" type="button">Copiar tratamiento</button></div>
 <textarea id="outputText" rows="10" spellcheck="false" aria-label="Texto del tratamiento para copiar"></textarea>
 <div id="manualEditWarning" class="manualWarning" hidden>Has editado el texto manualmente. Los cambios del analizador no lo sobrescribirán. <button type="button" id="regenerateText" class="quiet">Regenerar texto (descarta mis ediciones)</button></div>
 <div id="copyStatus" class="info" role="status"></div>
 </section>
 <section class="panel" aria-labelledby="revfarm"><div class="sectionTitle"><span class="step">4</span><h2 id="revfarm">Revisión farmacológica</h2></div>
-<div class="warning">Las alertas proceden de un <strong>conjunto pequeño de reglas</strong>. Que no aparezcan interacciones <strong>no significa</strong> que el tratamiento sea seguro. No se han calculado ACB, DBI ni STOPP/START.</div>
+<div class="warning">Base documental v0.5: <strong>342 reglas en fase de validación</strong>. Las coincidencias que se muestran son experimentales y no constituyen alertas clínicas confirmadas. Que no aparezcan coincidencias <strong>no significa</strong> que el tratamiento sea seguro. ACB, DBI y STOPP/START siguen pendientes.</div>
 <div id="clinicalReview" class="clinical-review"><p class="muted">Reconoce un tratamiento para consultar las comprobaciones disponibles.</p></div>
 <div id="optimizationReview" class="optimization-review"></div>
 <details class="secondaryDetails"><summary>Carga anticolinérgica, DBI y STOPP/START</summary><p>ACB, DBI y STOPP/START v3 <strong>todavía no están calculados</strong>: falta incorporar y validar los datos farmacológicos y los criterios clínicos. No se presentan puntuaciones ficticias.</p></details>
@@ -44,7 +45,7 @@
 </section>
 </div></div>
 </main>
-<footer class="wrap">Portal Clínico · Analizador de tratamientos v60 integrado (portal v61) · Procesamiento local en el navegador · Comprueba cada pauta con la prescripción original.</footer>
+<footer class="wrap">Portal Clínico · Procesamiento local en el navegador · Comprueba cada pauta con la prescripción original.</footer>
 <datalist id="drugNames"></datalist>
-<script src="analizador_tratamientos_core.js"></script><script src="analizador_tratamientos_ui.js"></script>
+<script src="portal_interacciones_data.js"></script><script src="analizador_tratamientos_core.js"></script><script src="interacciones_motor_v05.js"></script><script src="analizador_tratamientos_ui.js"></script>
 </body></html>

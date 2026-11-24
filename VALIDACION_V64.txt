@@ -1,0 +1,14 @@
+Portal Clínico v64 — Informe de comprobaciones técnicas (24/11/2026)
+
+- Fuente base: ZIP PortalClinico_v63_Actualizacion_Completa.zip; todas las páginas y recursos de v63 conservados.
+- 47 enlaces de inicio con logo transparente ampliados (48x48 px enlace, 40x40 px imagen), rutas relativas index.html verificadas.
+- ACR TI-RADS: radios visibles y selección única; opciones de focos ecogénicos múltiples; TR1/TR2/TR3/TR4/TR5 y umbrales; sincronización por código; reinicio; texto de recomendación sin advertencias genéricas y notas clínicas visibles en pantalla.
+- UBE: máximo de 7 días/semana, consumo y cálculo por consumiciones, interpretación según sexo, advertencia de consumo intensivo separada del informe, texto para historia clínica sin disclaimers genéricos.
+- Tabaco: cálculo paquetes-año y umbrales de exposición, datos clínicos opcionales, texto copiable limpio.
+- Pruebas automatizadas Playwright/Chromium sobre HTML/CSS/JS cargados en memoria a anchuras 1100, 375 y 320 px: sin errores JS, sin desbordamiento horizontal, casos positivos y negativos.
+- Validación de ZIP: sin entradas corruptas y sin pérdida de archivos preexistentes; se comprobó que editor_analiticas.js, analizador_tratamientos_ui.js y base interacciones v0.5 son idénticos a v63.
+
+LÍMITES:
+- Navegador del entorno bloquea la carga local file:// y las pruebas de servidor local real. Las interacciones se probaron cargando el HTML/CSS/JS en memoria, no bajo GitHub Pages.
+- La base de 342 reglas documentales de interacciones sigue pendiente de validación farmacológica independiente; NO constituye un detector clínico exhaustivo.
+- La interpretación de tabaco y alcohol no equivale a un diagnóstico individual y requiere valoración clínica.

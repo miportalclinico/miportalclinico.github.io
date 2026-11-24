@@ -1,0 +1,31 @@
+PORTAL CLÍNICO — V63, ACTUALIZACIÓN COMPLETA
+Fecha: 24 de noviembre de 2026
+Origen: Portal Clínico v62 completo; mantiene las calculadoras y restantes secciones preexistentes.
+
+NOVEDADES — CALCULADORAS DE MISCELÁNEA
+- Nueva Carga tabáquica: índice paquetes-año (IPA) en uno o varios periodos de consumo. Copia de resultado.
+- Nueva Consumo de alcohol (UBE): 1 UBE = 10 g de etanol según estándar español. Entrada por número de cañas/cervezas, copas, combinados, etc., días a la semana. Tabla de equivalencias por formatos y posibilidad colapsada de ajustar ml y % vol. Copia de resultado.
+- Nueva ACR TI-RADS: una página con dos apartados alternables: «Valoración radiológica» (composición, ecogenicidad, forma, márgenes y focos ecogénicos, puntos TR1–TR5, informe para copiar) y «Conducta clínica» (categoría TR y diámetro máximo en mm, umbrales ACR de PAAF/seguimiento, calendario orientativo y botón «Copiar recomendación»). La clasificación calculada puede trasladarse a la conducta clínica; también permite introducir TR directamente.
+- Las tres herramientas aparecen en Miscelánea de calculadoras.html y comparten encabezado gris con degradado, botón de retorno a Miscelánea y logo transparente de acceso a inicio.
+
+EDITOR DE ANALÍTICAS
+- En hemograma completo, cifras del diferencial inmediatamente entre paréntesis después de leucocitos.
+- Histórico sin fecha: «(resultado de analíticas anteriores)». Si existe fecha anterior específica se mantiene.
+- No interpretar el umbral «<175 en ayunas» de triglicéridos como resultado.
+- Orden de bioquímica: creatinina, filtrado glomerular, urato, proteínas, albúmina, después iones.
+
+ANALIZADOR DE TRATAMIENTOS
+- Integración técnica de la base documental v0.5: 263 principios activos candidatos, 342 reglas documentales y 10 combinaciones de antirretrovirales desglosadas por componente. Reglas estrictamente identificadas como PROTOTIPO DOCUMENTAL, pendientes de validación clínica independiente. NO interpretar como un sistema exhaustivo ni aprobado de alertas de prescripción.
+- Cuatro rótulos de clasificación: Contraindicación, Interacción clínicamente relevante, Precaución/monitorización, Información. Accesos externos a CIMA, BOT PLUS y Liverpool VIH.
+- Nueva opción «Incluir indicaciones sobre alimentos» en formato Para el paciente, desactivada inicialmente. Primera cobertura reducida y contrastada por ficha técnica: levotiroxina, rivaroxabán 15/20 mg y alendronato. No activa automáticamente una pauta distinta.
+- Conservadas las funciones v62: cantidades y días por toma, AVK «según pauta», formato del paciente, texto final editable, propuesta orientativa de revisión de IBP y precauciones de fraccionamiento.
+
+SEGURIDAD, ALCANCE Y PENDIENTES
+- No se han realizado la segunda validación clínica independiente ni la revisión íntegra de las 342 reglas, incluidas las contraindicaciones. No utilizar los avisos documentales para tomar decisiones asistenciales.
+- No se ha realizado aún la ampliación masiva del catálogo a 400–500 fármacos mediante ranking oficial de consumo AEMPS; seguimos con los 263 principios activos de v0.5.
+- Las calculadoras aportan resultados orientativos; para ACR TI-RADS pueden cambiar la actuación los hallazgos ganglionares, citología previa y otros factores.
+- El tratamiento/analíticas del paciente no se envían automáticamente a CIMA, BOT PLUS ni Liverpool.
+- Pendiente: validar con informes anonimizados de distintas procedencias y pruebas completas de todos los flujos del portal.
+
+PARA ACTUALIZAR GITHUB
+1. Descomprimir el ZIP. 2. Subir el CONTENIDO de la carpeta «portal_medicina» a la raíz del repositorio existente. 3. Conservar las carpetas icons/ y vendor/ y la estructura de archivos. 4. Verificar index.html en la raíz. 5. Confirmar el cambio y comprobar GitHub Pages.

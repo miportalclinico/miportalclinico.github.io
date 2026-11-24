@@ -1,0 +1,16 @@
+CONTROLES TÉCNICOS — Portal Clínico v63
+
+✓ Sintaxis JS de editor_analiticas.js, analizador_tratamientos_core.js, analizador_tratamientos_ui.js e interacciones_motor_v05.js.
+✓ Analizador: prueba de integración de tres instrucciones alimentarias (solo formato paciente); comparación documental simvastatina/claritromicina; sin errores JS.
+✓ Editor de analíticas: casos sintéticos de leucocitos/diferencial, urato/proteínas antes de iones, triglicéridos con referencia «<175 en ayunas», historial B12 sin fecha.
+✓ UBE: 11 equivalencias, cálculo semanal con varias bebidas, ajustes ml/% vol., prueba de 320, 375 y 1100 px sin desbordamiento horizontal.
+✓ Carga tabáquica: 20 cigarrillos/día por 10 años = 10 paquetes-año; combinación de periodos.
+✓ ACR TI-RADS: categorías TR1–TR5, umbrales TR3/TR4/TR5 para seguimiento y PAAF, registro de calendarios, cálculo radiológico, modo clínico independiente, transferencia y copia de textos diferenciados; probadas versiones escritorio, 375 y 320 px, sin errores JS.
+✓ HTML del menú Miscelánea: aparecen las tres tarjetas.
+✓ ZIP completo comprobado sin nombres repetidos, sin archivos faltantes de v62, prueba de lectura de todos los archivos.
+
+LIMITACIÓN DE LA PRUEBA DE NAVEGACIÓN
+La apertura en Chromium de un servidor HTTP local quedó bloqueada por la configuración de la plataforma (ERR_BLOCKED_BY_ADMINISTRATOR). Las pruebas de navegador se realizaron cargando las páginas con HTML y JS en memoria. No equivale a una validación integral de navegación en GitHub Pages.
+
+VALIDACIÓN CLÍNICA
+Pendiente, especialmente para las 342 reglas documentales de interacciones. Ninguna de estas comprobaciones técnicas debe considerarse certificación de seguridad clínica.

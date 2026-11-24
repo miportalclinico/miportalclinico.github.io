@@ -26,6 +26,31 @@ add('Colecalciferol','vitaminas',['hidroferol d3'],'vitamina');add('Ácido fóli
 add('Montelukast','resp',['singulair'],'antileucotrieno');add('Roflumilast','resp',['daxas'],'respiratorio');add('Budesonida','inhaladores',['pulmicort'],'inhalador');add('Salbutamol/ipratropio','inhaladores',['combivent'],'inhalador');
 
 const normal=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+// En esta COPIA DE PRUEBA ampliar reconocimiento con el catálogo editorial v0.5.
+// No implica que el producto o presentación esté comercializado ni que la base esté validada.
+const editorialSeed=root.PCInteractionSeed;
+if(editorialSeed){
+ const groupFor=entry=>{const f=(entry.familias||[]).join(' ').toLowerCase();
+   if(/antirretroviral|antibi[oó]tico|antituberculo|antif[uú]ngico|antiviral|antiinfeccio/.test(f))return 'antimicro';
+   if(/anticoagulante|antiagregante|heparin/.test(f))return 'hema';
+   if(/antidepresivo|ansiol[ií]tico|antipsic|neurol[eé]ptico|psic/.test(f))return 'psiq';
+   if(/hipolipemiante|estatina/.test(f))return 'dlp';
+   if(/diabet/.test(f))return 'dm';
+   if(/inmuno|corticoid/.test(f))return 'inmuno';
+   if(/cardio|antiarr[ií]tmico|diur[eé]tico/.test(f))return 'cardio';
+   if(/respiratorio|broncodilatador/.test(f))return 'resp';
+   if(/analges|antiinflamatorio/.test(f))return 'analgesia';
+   return 'otros';};
+ for(const entry of editorialSeed.medicamentos){
+   const found=meds.find(x=>normal(x.name)===normal(entry.nombre)||normal(x.name)===normal(entry.id));
+   if(found){const known=new Set(found.aliases.map(normal));for(const alias of [entry.nombre,...(entry.alias||[])])if(alias&&!known.has(normal(alias))){found.aliases.push(alias);known.add(normal(alias));}}
+   else add(entry.nombre,groupFor(entry),entry.alias||[],'');
+ }
+ for(const combo of editorialSeed.combinaciones){
+   const generic=combo.componentes.join('/');
+   if(!meds.some(m=>normal(m.name)===normal(generic))) add(generic,'antimicro',[combo.marca,...(combo.alias||[])],'antirretroviral_combinado');
+ }
+}
 const keys=meds.flatMap(d=>d.aliases.map(alias=>({key:normal(alias),alias,drug:d}))).sort((a,b)=>b.key.length-a.key.length);
 const routeNames={VO:'Oral',IN:'Inhalatoria',IV:'Intravenosa',IM:'Intramuscular',SC:'Subcutánea',SL:'Sublingual',TD:'Transdérmica',TOP:'Tópica',OF:'Oftálmica',OV:'Otra/no especificada'};
 const specialBrands={'deprax':'Deprax','sintrom':'Sintrom','anoro ellipta':'Anoro Ellipta','eutirox':'Eutirox','emconcor':'Emconcor','symbicort':'Symbicort','seguril':'Seguril','renitec':'Renitec','januvia':'Januvia','lantus':'Lantus','forxiga':'Forxiga','jardiance':'Jardiance','eliquis':'Eliquis','xarelto':'Xarelto','clexane':'Clexane','aldactone':'Aldactone','spiriva':'Spiriva'};
@@ -35,13 +60,17 @@ function tidyOther(name,kind){const n=normal(name);if(kind==='nutrition')return 
 function dataRisk(text){return /\b(?:DNI|CIP|NSS|NHC|NIF|NIE|Paciente|Apellidos?|Domicilio|N[úu]mero de historia|Historia cl[íi]nica|Tel[ée]fono)\s*:/i.test(text)||/\b[A-Z]{0,2}\d{7,8}[A-Z]\b/i.test(text);}
 function cleanName(x){let s=String(x||'').replace(/@0L@/gi,' ').replace(/[\t\r\n]+/g,' ').trim().replace(/\s+/g,' ');if(s.startsWith('(')&&s.endsWith(')')){let depth=0,valid=true;for(let i=0;i<s.length;i++){if(s[i]==='(')depth++;if(s[i]===')'){depth--;if(depth===0&&i!==s.length-1){valid=false;break;}}}if(valid&&depth===0)s=s.slice(1,-1).trim();}return s;}
 // La pauta se identifica por el código de vía, sin depender de tabulaciones ni paréntesis.
-const routePattern=/(?<![\p{L}\d])(VO|OV|IN|IV|IM|SC|SL|TD|TOP|OF)\s*,\s*([<>]?\s*\d+(?:[.,]\d+)?\s*(?:C\s*\/\s*U|COMPRIMIDOS?|COMP\.?|INHALACIONES?|UNIDADES?|MCG|µG|MG|ML|UI|G|U))\s*,\s*(C\s*\d+\s*H\b|BISEMANAL\b|C\s*\d+\s*D\b|A\s*DEMANDA\b|S\s*\/\s*P\b|PRN\b|(?:LUNES|MARTES|MI[EÉ]RCOLES|JUEVES|VIERNES|S[AÁ]BADO|DOMINGO)\b)/giu;
+const routePattern=/(?<![\p{L}\d])(VO|OV|IN|IV|IM|SC|SL|TD|TOP|OF)\s*,\s*([<>]?\s*\d+(?:[.,]\d+)?\s*(?:C\s*\/\s*U|COMPRIMIDOS?|COMP\.?|INHALACIONES?|UNIDAD(?:ES)?|MCG|µG|MG|ML|UI|G|U))\s*,\s*(C\s*\d+\s*H\b|BISEMANAL\b|C\s*\d+\s*D\b|A\s*DEMANDA\b|S\s*\/\s*P\b|PRN\b|(?:LUNES|MARTES|MI[EÉ]RCOLES|JUEVES|VIERNES|S[AÁ]BADO|DOMINGO)\b)/giu;
 function extractEntries(text){const s=String(text||'').replace(/\u00a0/g,' ');const matches=[...s.matchAll(routePattern)];if(!matches.length){return s.split(/\r?\n/).map(l=>l.trim()).filter(x=>x&&!/^@0L@$/.test(x)).map(name=>({name:cleanName(name),pauta:null}));}let cursor=0;const out=[];for(const m of matches){const chunk=s.slice(cursor,m.index);let name=cleanName(chunk);if(name){out.push({name,pauta:{route:m[1].toUpperCase(),dose:m[2],frequency:m[3]},rawPauta:m[0].trim()});}else{out.push({name:'Pauta sin medicamento identificado',pauta:{route:m[1].toUpperCase(),dose:m[2],frequency:m[3]},rawPauta:m[0].trim()});}cursor=m.index+m[0].length;}
  const leftover=cleanName(s.slice(cursor));if(leftover)for(const line of leftover.split(/\n+/)){if(line.trim())out.push({name:line.trim(),pauta:null});}
  return out;}
 function fmtDose(s){return String(s||'').trim().replace(/\s+/g,' ').replace(/\bMCG\b/gi,'µg').replace(/\bMG\b/gi,'mg').replace(/\bUI\b/gi,'UI').replace(/\bML\b/gi,'mL').replace(/\bG\b/gi,'g').replace(/\bC\s*\/\s*U\b/gi,'unidad');}
 function unitNumber(s){const m=String(s||'').trim().match(/^([<>]?\s*\d+(?:[.,]\d+)?)\s*(mg|µg|mcg|g|mL|UI|unidad|C\s*\/\s*U)\b/i);return m?{value:Number(m[1].replace(',','.')),unit:normal(m[2]).replace('mcg','µg').replace('c/u','unidad')}:null;}
-function strengthFromName(name){const a=name.match(/(\d+(?:[.,]\d+)?)\s*(MCG|µG|MG|G|UI)\s*\/\s*(\d+(?:[.,]\d+)?)\s*(MCG|µG|MG|G|UI)/i);if(a)return `${a[1].replace(',','.')}/${a[3].replace(',','.')} ${a[2].toUpperCase()==='MCG'?'µg':a[2].toLowerCase()}`;const m=name.match(/(\d+(?:[.,]\d+)?)\s*(MCG|µG|MG|G|UI)\b/i);return m?`${m[1].replace(',','.')} ${m[2].toUpperCase()==='MCG'?'µg':m[2].toLowerCase()}`:'';}
+function strengthFromName(name){
+ // Las combinaciones de tres o cuatro principios activos conservan todas las concentraciones.
+ const mult=name.match(/(\d+(?:[.,]\d+)?(?:\s*\/\s*\d+(?:[.,]\d+)?){2,})\s*(MCG|µG|MG|G)\b/i);
+ if(mult)return mult[1].replace(/\s/g,'').replace(/,/g,'.')+' '+(mult[2].toUpperCase()==='MCG'?'µg':mult[2].toLowerCase());
+ const a=name.match(/(\d+(?:[.,]\d+)?)\s*(MCG|µG|MG|G|UI)\s*\/\s*(\d+(?:[.,]\d+)?)\s*(MCG|µG|MG|G|UI)/i);if(a)return `${a[1].replace(',','.')}/${a[3].replace(',','.')} ${a[2].toUpperCase()==='MCG'?'µg':a[2].toLowerCase()}`;const m=name.match(/(\d+(?:[.,]\d+)?)\s*(MCG|µG|MG|G|UI)\b/i);return m?`${m[1].replace(',','.')} ${m[2].toUpperCase()==='MCG'?'µg':m[2].toLowerCase()}`:'';}
 function normalizeInterval(f){const t=String(f||'').trim().toUpperCase();const m=t.match(/^C\s*(\d+)\s*H$/);if(m)return {interval:m[1],other:'',frequency:`cada ${m[1]} h`};if(/BISEMANAL/.test(t))return {interval:'other',other:'bisemanal',frequency:'bisemanal'};if(/DEMANDA|PRN|S\s*\/\s*P/.test(t))return {interval:'other',other:'a demanda',frequency:'a demanda'};if(t)return{interval:'other',other:t.toLowerCase(),frequency:t.toLowerCase()};return{interval:'',other:'',frequency:''};}
 function getFrequency(item){if(item.interval==='other')return String(item.otherInterval||'').trim();if(item.interval)return `cada ${item.interval} h`;return'';}
 function isPrn(item){return /\b(?:a demanda|si precisa|prn|s\s*\/\s*p)\b/i.test(getFrequency(item));}
@@ -56,7 +85,7 @@ function displayName(item){if(!item.brand)return item.name;const gen=item.drugKe
 function isAvk(item){return ['Acenocumarol','Warfarina'].includes(item.drugKey);}
 function isInhaler(item){return item.group==='inhaladores'||item.route==='IN';}
 function labelDose(item){if(isInhaler(item)&&/^(?:1|1[.,]0)\s*(?:unidad|C\s*\/\s*U)$/i.test(item.dose))return '1 inhalación';if(isInhaler(item)&&/\bunidad\b/i.test(item.dose))return item.dose.replace(/unidad/i,'inhalación');return item.dose;}
-function baseText(item){const title=displayName(item);const strength=item.strength||(isAvk(item)?item.dose:'');return title+(strength?' '+strength:'');}
+function baseText(item){const title=displayName(item);const strength=item.strength||'';return title+(strength?' '+strength:'');}
 function unitsPerDose(item){const d=unitNumber(item.dose),s=unitNumber(item.strength);if(d&&d.unit==='unidad')return d.value;if(!d||!s||d.unit!==s.unit||!Number.isFinite(s.value)||s.value<=0)return null;const q=d.value/s.value;return Number.isFinite(q)&&q>0&&q<=8?Number(q.toFixed(3)):null;}
 function suggestedSchedule(item){if(isAvk(item)||isPrn(item))return null;const n=unitsPerDose(item);if(n===null)return null;const q=item.interval;if(q==='12')return [n,0,n];if(q==='8')return [n,n,n];if(q==='6')return [n,n,n,n];return null;}
 // Las cinco franjas se guardan por unidades, en el orden real del día.
@@ -75,15 +104,27 @@ function unitName(item,n){
  if(isInhaler(item))return n===1?'inhalación':'inhalaciones';
  if(/c[aá]psul/i.test(item.rawName))return n===1?'cápsula':'cápsulas';
  if(/comprimi|\bcomp\.?\b|tableta|\btab\b/i.test(item.rawName))return n===1?'comprimido':'comprimidos';
+ if(/\bsobre(s)?\b/i.test(item.rawName))return n===1?'sobre':'sobres';
+ if(/\bparche(s)?\b/i.test(item.rawName))return n===1?'parche':'parches';
  return n===1?'unidad':'unidades';
+}
+function patientQuantity(item,n){
+ const unit=unitName(item,n),tablet=/comprimido/.test(unit);
+ const exact={0.25:tablet?'un cuarto de comprimido':'un cuarto de unidad',0.5:tablet?'medio comprimido':'media unidad',0.75:tablet?'tres cuartos de comprimido':'tres cuartos de unidad',1.5:tablet?'un comprimido y medio':'una unidad y media',2.5:tablet?'dos comprimidos y medio':'dos unidades y media'};
+ if(exact[n] && (tablet||!/c[aá]psul/i.test(unit)))return exact[n];
+ const number={1:'un',2:'dos',3:'tres',4:'cuatro',5:'cinco',6:'seis'}[n];
+ if(n===1&&/cápsula|inhalación|unidad/.test(unit))return 'una '+unit;
+ if(number)return number+' '+unit;
+ return numberString(n)+' '+unit;
 }
 function slotText(item,i,n){
  const when=TIME_SLOTS[i]==='antes de dormir'?'antes de dormir':`en ${TIME_SLOTS[i]==='desayuno'?'el':'la'} ${TIME_SLOTS[i]}`;
- return `${numberString(n)} ${unitName(item,n)} ${when}`;
+ return `${patientQuantity(item,n)} ${when}`;
 }
+
 function joinWords(words){return words.length<=1?(words[0]||''):words.length===2?words.join(' y '):words.slice(0,-1).join(', ')+' y '+words.at(-1);}
 function scheduleInfo(item){
- if(isPrn(item)||isAvk(item)&&!item.irregular?.text?.trim())return null;
+ if(isPrn(item)||isAvk(item))return null;
  const values=chosenAmounts(item),active=values.some(x=>x>0);
  if(!active)return null;
  let compact=null,legend='';
@@ -114,6 +155,7 @@ function literalPauta(item){
 function formatted(item,mode='literal'){
  const base=baseText(item);
  const output=x=>base+': '+x;
+ if(isAvk(item)){const time=Number.isInteger(item.avkSlot)?TIME_SLOTS[item.avkSlot]:null;const where=time?(time==='antes de dormir'?'antes de dormir':`en ${time==='desayuno'?'el':'la'} ${time}`):'';return output(mode==='patient'&&where?where+', según pauta':'según pauta');}
  const fallback=()=>output(isAvk(item)?(item.avkText?.trim()||'según pauta individual (no disponible)'):(literalPauta(item)||'pauta no disponible'));
  const weekly=weeklyData(item);
  if(weekly?.mode==='text')return output(weekly.text);

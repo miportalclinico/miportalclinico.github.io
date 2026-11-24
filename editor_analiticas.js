@@ -144,7 +144,7 @@ if(global.LabCatalog?.entries){
 const NEVER=new Set(['hematíes']);
 const HEMO=new Set(['hb','vcm','hcm','ade','leucocitos','neutro','linfo','plaquetas','retic','retic_abs']);
 const ENZYMES=new Set(['cpk','ldh','ast','alt','ggt','alp','amilasa','lipasa']);
-const FIELD_ORDER={bioquimica:['glucosa','urea','creatinina','fg','sodio','potasio','cloro','calcio','calcio_corr','magnesio','fosforo','proteinas','albumina','urato','cpk','ldh','ast','alt','bili_total','bili_directa','bili_indirecta','ggt','alp','amilasa','lipasa'],ferrico:['ferritina','transferrina','sat_trans'],lipidico:['col_total','col_hdl','col_ldl','col_non_hdl','tg','lpa','apoa','apob'],diabetico:['hba1c','cpeptido'],orina:['densidad','ph_orina','leucocitos_orina','hematíes_orina','nitrito_orina','glucosa','proteinas','cetonas_orina','urobilinogeno_orina','bili_orina','creatinina_orina','urea_orina','albumina_orina','uacr','sodio_orina','sodio_creat_orina','potasio_orina','potasio_creat_orina','cloro_orina','bun_creat_orina'],coagulacion:['tp','tp_act','inr','tpta','tpta_ratio','fibrinogeno','dimero_d'],hormonas:['tsh','ft4','ft3','cortisol'],vitaminas:['b12','folato','vitd'],cardiacos:['troponina','ntprobnp','bnp'],tumorales:['cea','ca199','ca125','ca153','afp','psa_total','psa_libre','bhcg','nse','cyfra211','cromogranina_a','calcitonina','scc']};
+const FIELD_ORDER={bioquimica:['glucosa','urea','creatinina','fg','urato','proteinas','albumina','sodio','potasio','cloro','calcio','calcio_corr','magnesio','fosforo','cpk','ldh','ast','alt','bili_total','bili_directa','bili_indirecta','ggt','alp','amilasa','lipasa'],ferrico:['ferritina','transferrina','sat_trans'],lipidico:['col_total','col_hdl','col_ldl','col_non_hdl','tg','lpa','apoa','apob'],diabetico:['hba1c','cpeptido'],orina:['densidad','ph_orina','leucocitos_orina','hematíes_orina','nitrito_orina','glucosa','proteinas','cetonas_orina','urobilinogeno_orina','bili_orina','creatinina_orina','urea_orina','albumina_orina','uacr','sodio_orina','sodio_creat_orina','potasio_orina','potasio_creat_orina','cloro_orina','bun_creat_orina'],coagulacion:['tp','tp_act','inr','tpta','tpta_ratio','fibrinogeno','dimero_d'],hormonas:['tsh','ft4','ft3','cortisol'],vitaminas:['b12','folato','vitd'],cardiacos:['troponina','ntprobnp','bnp'],tumorales:['cea','ca199','ca125','ca153','afp','psa_total','psa_libre','bhcg','nse','cyfra211','cromogranina_a','calcitonina','scc']};
 function sorted(items,section){const order=FIELD_ORDER[section];if(!order)return items;return [...items].sort((a,b)=>{const ai=order.indexOf(a.key),bi=order.indexOf(b.key);return (ai<0?999:ai)-(bi<0?999:bi)});}
 const CULTURE_RE=/\b(hemocultivos?|urocultivos?|exudados?|esputos?|cultivos? de (?:sangre|orina|herida|liquido|líquido|cateter|catéter)|liquido cefalorraquideo|líquido cefalorraquídeo|liquido pleural|líquido pleural|liquido ascitico|líquido ascítico|lcr)\b/i;
 const DATE_RE=/\b(?:\d{1,2}[\/.\-]\d{1,2}[\/.\-]\d{4}|\d{4}-\d{2}-\d{2})\b/g;
@@ -454,6 +454,18 @@ function parse(source){
    const tail=normalized.line.slice(mapped.alias.length).replace(/^[\s:=–—]+/,'').replace(/^(?:orina|urinari[oa])\s+/i,'');
    let val=explicitPending(tail)?{num:NaN,raw:'PENDIENTE',unit:'',range:null,abnormal:null,qualitative:true}:numericOrQualitative(tail);
    if(!val){unrecognized.push({line,reason:'Determinación reconocida, valor no identificado'});continue;}
+   // «<175 en ayunas» es un umbral de referencia de triglicéridos, NO un resultado.
+   // Si hay una cifra real (ej. 210 mg/dL) mantenemos la medición y retiramos
+   // exclusivamente la anotación de referencia de su campo de unidades.
+   if(mapped.key==='tg'){
+    if(/^\s*[<>≤≥]\s*175\b(?:\s*mg\s*\/\s*dL)?(?:\s*en\s*ayunas)?\s*$/i.test(tail)){
+     skipped.push({line,reason:'Umbral de referencia de triglicéridos, no resultado del paciente'});
+     continue;
+    }
+    val.unit=String(val.unit||'').replace(/\s*(?:\(?\s*(?:ref(?:erencia)?\s*:?\s*)?[<>≤≥]\s*175\s*(?:mg\s*\/\s*dL)?\s*(?:en\s*ayunas)?\s*\)?)\s*$/i,'').trim();
+    // La anotación 'en ayunas' acompaña al umbral del laboratorio, no a la unidad del resultado.
+    val.unit=val.unit.replace(/\s+en\s+ayunas\s*$/i,'').trim();
+   }
    let key=mapped.key,section=mapped.section;
    if(key==='neutro'||key==='linfo'||key==='retic'){
     if(key==='retic'&&/\b(?:abs|absolutos?)\b/i.test(line))key='retic_abs';
@@ -515,7 +527,7 @@ function parse(source){
  return{items,cultures,unrecognized,skipped,dates:[...dates],multipleDates:dates.size>1,gas,seenGas,texts,personal};
 }
 function first(items,key){return items.find(x=>x.key===key)}
-function historicalLabel(e){return e.historical?' ('+(e.historicalDate||'fecha anterior no indicada')+')':'';}
+function historicalLabel(e){return e.historical?' ('+(e.historicalDate||'resultado de analíticas anteriores')+')':'';}
 function textValue(e,showUnits){return e.raw+(showUnits&&e.unit?' '+e.unit:'')+historicalLabel(e);}
 function fullValue(e,opts){if(e.qualitative)return (e.raw?e.short+': '+e.raw:e.short)+historicalLabel(e);if(opts.normal&&opts.profile!=='alterados'&&e.abnormal==='normal'&&!e.historical)return e.short+' normal';return e.short+' '+textValue(e,opts.units);}
 function formattedCell(n,units=true){return displayNum(Math.round(n),0)+(units?'/mm3':'');}
@@ -547,10 +559,23 @@ function makeHemogram(items,opts,profile){
   }else arr.push(fullValue(e,opts));
  };
  for(const k of ['hb','hematocrito','vcm','hcm','chcm','ade'])add(choose(k));
- const white=choose('leucocitos');add(white);
+ // En hemograma completo, el diferencial absoluto forma parte de la línea
+ // de leucocitos y NO se repite como determinaciones independientes.
+ const white=choose('leucocitos');
+ const whiteDiff=[];
  for(const k of ['neutro','linfo','mono','eos','baso']){
-  const e=choose(k);if(e){add(e);if(opts.differentialPct){const pct=items.find(x=>x.key===k&&x.unit.includes('%'));if(pct&&arr.length)arr[arr.length-1]+=' ('+pct.raw+' %)';}}
+  const e=choose(k);if(!e)continue;
+  used.add(e);
+  const n=asCells(e);
+  if(n===null){if(e.unit!=='%')whiteDiff.push(e.short+' '+textValue(e,true));continue;}
+  let label=e.short.toLowerCase()+' '+formattedCell(n,true)+historicalLabel(e);
+  if(opts.differentialPct){const pct=items.find(x=>x.key===k&&x.unit.includes('%'));if(pct)label+=' ('+pct.raw+' %)';}
+  whiteDiff.push(label);
  }
+ if(white){
+  add(white);
+  if(whiteDiff.length&&arr.length)arr[arr.length-1]+=' ('+whiteDiff.join(', ')+')';
+ }else if(whiteDiff.length)arr.push(...whiteDiff);
  const ne=choose('neutro'),li=choose('linfo');const n=ne?asCells(ne):null,l=li?asCells(li):null;
  if(opts.rnl&&n!==null&&l>0&&!ne.historical&&!li.historical)arr.push('Ratio neutrófilo-linfocito (RNL) '+displayNum(n/l,2));
  add(choose('plaquetas'));add(choose('vpm'));add(choose('retic_abs'));add(choose('retic'));
