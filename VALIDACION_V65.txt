@@ -1,0 +1,15 @@
+Portal Clínico — v65 (versión de prueba del área privada)
+
+1. Conservar una copia de la versión publicada v64 y descargar este ZIP.
+2. Descomprimir. Subir TODO el contenido de portal_medicina a la raíz del repositorio existente, preservando las carpetas icons y vendor. index.html y acceso.html deben estar en la raíz.
+3. Confirmar los cambios y comprobar que GitHub Pages ha actualizado la publicación. Recargar con Ctrl+F5 si procede.
+4. Desde la portada, abrir Área privada e iniciar sesión con la cuenta de administrador creada en Supabase. Consultar solo los datos ficticios, incluyendo el subtítulo y los números con ceros iniciales.
+5. Probar edición, invitación con un correo de prueba nuevo, aceptación del enlace, contraseña, recuperación, activación, revocación y perfiles normal/editor/gestor. Verificar que el visitante anónimo y las cuentas inactivas no reciben datos incluso consultando la API directamente. No usar números reales hasta validar la seguridad y disponer de autorización del hospital.
+
+Cambios v65: Área privada con inicio y cierre de sesión, recuperación, invitaciones, directorio y administración según permisos; título libre (service), subtítulo opcional, filtros de área y hospital, búsqueda y copia. Sesión en memoria, caducidad local e inactividad de 15 minutos. El código solo incluye URL y clave pública de Supabase; los datos se consultan en el servidor. Las tablas y funciones de Supabase deben estar configuradas como en los pasos previos. La interfaz admite enlaces de invitación/recuperación con token en el fragmento de URL, no enlaces PKCE con parámetro code. No hay importación masiva en esta versión.
+
+Calculadoras: corregidas reglas CSS que adelantaban el resultado en móvil en 37 páginas; panel semanal de UBE deja de ser sticky. Se conserva el comportamiento de copia clínica existente en v64, incluida la exclusión de las notas genéricas en ACR TI-RADS. No se ha completado una auditoría de todos los textos copiables ni de todos los diseños móviles.
+
+Validación: sintaxis de JavaScript nuevo y scripts inline de HTML modificados comprobada con Node; referencias de IDs de acceso verificadas; archivos originales conservados. Prueba de navegador local bloqueada por el entorno (ERR_BLOCKED_BY_ADMINISTRATOR). No se ha validado la conexión real, los permisos efectivos, ni el envío de invitaciones en esta versión. No se ha publicado nada ni modificado Supabase. No introducir datos de pacientes ni contactos hospitalarios reales antes de completar pruebas y autorización.
+
+SEGURIDAD: interacciones farmacológicas v0.5 todavía documentales/no validadas clínicamente. No utilizar como detector clínico exhaustivo.
