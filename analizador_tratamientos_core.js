@@ -1,4 +1,4 @@
-/* Portal Clínico · Analizador independiente de tratamientos · prototipo v60.
+/* MI Portal Clínico · Analizador independiente de tratamientos · prototipo v60.
    Análisis LOCAL. Catálogo parcial de reconocimiento; NO verificador integral ni base CIMA completa. */
 'use strict';
 (function(root){

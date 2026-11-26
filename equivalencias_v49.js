@@ -1,5 +1,5 @@
 'use strict';
-// Portal Clínico v49: información orientativa de equipotencia y tablas por indicación.
+// MI Portal Clínico v49: información orientativa de equipotencia y tablas por indicación.
 const $ = id => document.getElementById(id);
 const fmt = (n,digits=2) => Number(n).toLocaleString('es-ES',{maximumFractionDigits:digits});
 const num = v=>{if(v===null||v===undefined||String(v).trim()==='')return null;const n=Number(String(v).trim().replace(',','.'));return Number.isFinite(n)&&n>=0?n:null};

@@ -1,4 +1,4 @@
-/* Portal Clínico · Analizador de tratamientos. Interfaz compacta y procesamiento local. */
+/* MI Portal Clínico · Analizador de tratamientos. Interfaz compacta y procesamiento local. */
 'use strict';
 (()=>{
 const A=window.TreatmentAnalyzer;
