@@ -2,7 +2,7 @@
   "id": "./index.html",
   "name": "MI Portal Clínico",
   "short_name": "MI Portal Clínico",
-  "description": "Calculadoras, vademécum y recursos para Medicina Interna",
+  "description": "Calculadoras, farmacología clínica y recursos para profesionales sanitarios",
   "lang": "es",
   "start_url": "./index.html",
   "scope": "./",

@@ -1,0 +1,2392 @@
+{
+  "metadata": {
+    "version": "0.5.0",
+    "fecha": "2026-11-19",
+    "tipo": "catalogo_semilla_editorial",
+    "validacion_nomenclator_CIMA_por_entrada": "PENDIENTE",
+    "advertencia": "No confundir existencia en este diccionario con disponibilidad, comercialización o autorización verificada en CIMA. Los alias conocidos pueden ser parciales.",
+    "nota_v02": "Ampliación manual de catálogo solo para principios activos necesarios; nomenclátor completo no conciliado.",
+    "nota_v03": "Altas editoriales para reglas verificadas documentalmente; nomenclátor CIMA todavía no conciliado por presentación.",
+    "nota_v04": "Ampliación editorial para principios activos explícitos en 6 fichas. No es nomenclátor CIMA conciliado.",
+    "nota_v05": "Antirretrovirales y fármacos relacionados; nuevo diccionario de combinaciones de dosis fija con documentos fuente; no implica comercialización verificada en tiempo real."
+  },
+  "medicamentos": [
+    {
+      "id": "abacavir",
+      "nombre": "abacavir",
+      "familias": [
+        "Antirretrovirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "acenocumarol",
+      "nombre": "acenocumarol",
+      "familias": [
+        "Anticoagulantes y antiagregantes"
+      ],
+      "alias": [
+        "sintrom"
+      ],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "aciclovir",
+      "nombre": "aciclovir",
+      "familias": [
+        "Antifúngicos y antivirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "acido acetilsalicilico",
+      "nombre": "acido acetilsalicilico",
+      "familias": [
+        "Anticoagulantes y antiagregantes"
+      ],
+      "alias": [
+        "aas"
+      ],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "acido bempedoico",
+      "nombre": "acido bempedoico",
+      "familias": [
+        "Hipolipemiantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "acido clavulanico",
+      "nombre": "acido clavulanico",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "aclidinio",
+      "nombre": "aclidinio",
+      "familias": [
+        "Respiratorio"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "adenosina",
+      "nombre": "adenosina",
+      "familias": [
+        "Antiarrítmicos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "alendronato",
+      "nombre": "alendronato",
+      "familias": [
+        "Digestivo y otros"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "alfuzosina",
+      "nombre": "alfuzosina",
+      "familias": [
+        "Nefrourología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "alopurinol",
+      "nombre": "alopurinol",
+      "familias": [
+        "Inmunosupresores y reumatología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "alprazolam",
+      "nombre": "alprazolam",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "amilorida",
+      "nombre": "amilorida",
+      "familias": [
+        "Cardiovascular y diuréticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "amiodarona",
+      "nombre": "amiodarona",
+      "familias": [
+        "Antiarrítmicos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "amitriptilina",
+      "nombre": "amitriptilina",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "amlodipino",
+      "nombre": "amlodipino",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "amoxicilina",
+      "nombre": "amoxicilina",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "apixaban",
+      "nombre": "apixabán",
+      "familias": [
+        "Anticoagulantes y antiagregantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "aripiprazol",
+      "nombre": "aripiprazol",
+      "familias": [
+        "Antipsicóticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "atazanavir",
+      "nombre": "atazanavir",
+      "familias": [
+        "Antirretrovirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "atenolol",
+      "nombre": "atenolol",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "atorvastatina",
+      "nombre": "atorvastatina",
+      "familias": [
+        "Hipolipemiantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "azatioprina",
+      "nombre": "azatioprina",
+      "familias": [
+        "Inmunosupresores y reumatología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "azitromicina",
+      "nombre": "azitromicina",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "beclometasona",
+      "nombre": "beclometasona",
+      "familias": [
+        "Corticoides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "bemiparina",
+      "nombre": "bemiparina",
+      "familias": [
+        "Anticoagulantes y antiagregantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "bictegravir",
+      "nombre": "bictegravir",
+      "familias": [
+        "Antirretrovirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "bisoprolol",
+      "nombre": "bisoprolol",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "budesonida",
+      "nombre": "budesonida",
+      "familias": [
+        "Corticoides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "bumetanida",
+      "nombre": "bumetanida",
+      "familias": [
+        "Insuficiencia cardiaca / diuréticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "buprenorfina",
+      "nombre": "buprenorfina",
+      "familias": [
+        "Analgésicos, AINE y opioides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "bupropion",
+      "nombre": "bupropion",
+      "familias": [
+        "Psicofármacos y neurología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "candesartan",
+      "nombre": "candesartan",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "captopril",
+      "nombre": "captopril",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "carbamazepina",
+      "nombre": "carbamazepina",
+      "familias": [
+        "Neurología y dolor neuropático"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "carvedilol",
+      "nombre": "carvedilol",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "cefazolina",
+      "nombre": "cefazolina",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "cefepima",
+      "nombre": "cefepima",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "cefixima",
+      "nombre": "cefixima",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "cefotaxima",
+      "nombre": "cefotaxima",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "ceftriaxona",
+      "nombre": "ceftriaxona",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "cefuroxima",
+      "nombre": "cefuroxima",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "celecoxib",
+      "nombre": "celecoxib",
+      "familias": [
+        "Analgésicos, AINE y opioides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "ciclosporina",
+      "nombre": "ciclosporina",
+      "familias": [
+        "Inmunosupresores y reumatología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "cilostazol",
+      "nombre": "cilostazol",
+      "familias": [
+        "Anticoagulantes y antiagregantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "ciprofloxacino",
+      "nombre": "ciprofloxacino",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "citalopram",
+      "nombre": "citalopram",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "claritromicina",
+      "nombre": "claritromicina",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "clindamicina",
+      "nombre": "clindamicina",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "clomipramina",
+      "nombre": "clomipramina",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "clonazepam",
+      "nombre": "clonazepam",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "clopidogrel",
+      "nombre": "clopidogrel",
+      "familias": [
+        "Anticoagulantes y antiagregantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "clorpromazina",
+      "nombre": "clorpromazina",
+      "familias": [
+        "Psicofármacos y neurología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "clozapina",
+      "nombre": "clozapina",
+      "familias": [
+        "Antipsicóticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "cobicistat",
+      "nombre": "cobicistat",
+      "familias": [
+        "Potenciadores farmacocinéticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "colchicina",
+      "nombre": "colchicina",
+      "familias": [
+        "Inmunosupresores y reumatología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "colecalciferol",
+      "nombre": "colecalciferol",
+      "familias": [
+        "Digestivo y otros"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "cotrimoxazol",
+      "nombre": "cotrimoxazol",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [
+        "trimetoprima/sulfametoxazol",
+        "sulfametoxazol/trimetoprima"
+      ],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "dabigatran",
+      "nombre": "dabigatrán",
+      "familias": [
+        "Anticoagulantes y antiagregantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "dalteparina",
+      "nombre": "dalteparina",
+      "familias": [
+        "Anticoagulantes y antiagregantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "dapagliflozina",
+      "nombre": "dapagliflozina",
+      "familias": [
+        "Insuficiencia cardiaca / diuréticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "daptomicina",
+      "nombre": "daptomicina",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "darunavir",
+      "nombre": "darunavir",
+      "familias": [
+        "Antirretrovirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "deflazacort",
+      "nombre": "deflazacort",
+      "familias": [
+        "Corticoides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "dexametasona",
+      "nombre": "dexametasona",
+      "familias": [
+        "Corticoides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "dexketoprofeno",
+      "nombre": "dexketoprofeno",
+      "familias": [
+        "Analgésicos, AINE y opioides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "dexlansoprazol",
+      "nombre": "dexlansoprazol",
+      "familias": [
+        "Digestivo"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "diazepam",
+      "nombre": "diazepam",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "diclofenaco",
+      "nombre": "diclofenaco",
+      "familias": [
+        "Analgésicos, AINE y opioides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "digoxina",
+      "nombre": "digoxina",
+      "familias": [
+        "Insuficiencia cardiaca / diuréticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "diltiazem",
+      "nombre": "diltiazem",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "dolutegravir",
+      "nombre": "dolutegravir",
+      "familias": [
+        "Antirretrovirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "domperidona",
+      "nombre": "domperidona",
+      "familias": [
+        "Digestivo y otros"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "doravirina",
+      "nombre": "doravirina",
+      "familias": [
+        "Antirretrovirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "doxazosina",
+      "nombre": "doxazosina",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "doxiciclina",
+      "nombre": "doxiciclina",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "dronedarona",
+      "nombre": "dronedarona",
+      "familias": [
+        "Antiarrítmicos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "dulaglutida",
+      "nombre": "dulaglutida",
+      "familias": [
+        "Diabetes y endocrinología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "duloxetina",
+      "nombre": "duloxetina",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "edoxaban",
+      "nombre": "edoxaban",
+      "familias": [
+        "Anticoagulantes y antiagregantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "efavirenz",
+      "nombre": "efavirenz",
+      "familias": [
+        "Antirretrovirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "elvitegravir",
+      "nombre": "elvitegravir",
+      "familias": [
+        "Antirretrovirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "empagliflozina",
+      "nombre": "empagliflozina",
+      "familias": [
+        "Insuficiencia cardiaca / diuréticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "emtricitabina",
+      "nombre": "emtricitabina",
+      "familias": [
+        "Antirretrovirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "enalapril",
+      "nombre": "enalapril",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "enoxaparina",
+      "nombre": "enoxaparina",
+      "familias": [
+        "Anticoagulantes y antiagregantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "eplerenona",
+      "nombre": "eplerenona",
+      "familias": [
+        "Insuficiencia cardiaca / diuréticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "eritromicina",
+      "nombre": "eritromicina",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "ertapenem",
+      "nombre": "ertapenem",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "escitalopram",
+      "nombre": "escitalopram",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "esomeprazol",
+      "nombre": "esomeprazol",
+      "familias": [
+        "Digestivo y otros"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "espironolactona",
+      "nombre": "espironolactona",
+      "familias": [
+        "Insuficiencia cardiaca / diuréticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "etoricoxib",
+      "nombre": "etoricoxib",
+      "familias": [
+        "Analgésicos, AINE y opioides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "everolimus",
+      "nombre": "everolimus",
+      "familias": [
+        "Inmunosupresores"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "ezetimiba",
+      "nombre": "ezetimiba",
+      "familias": [
+        "Hipolipemiantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "famotidina",
+      "nombre": "famotidina",
+      "familias": [
+        "Digestivo y otros"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "febuxostat",
+      "nombre": "febuxostat",
+      "familias": [
+        "Inmunosupresores y reumatología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "fenitoina",
+      "nombre": "fenitoina",
+      "familias": [
+        "Neurología y dolor neuropático"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "fenobarbital",
+      "nombre": "fenobarbital",
+      "familias": [
+        "Neurología y dolor neuropático"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "fenofibrato",
+      "nombre": "fenofibrato",
+      "familias": [
+        "Hipolipemiantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "fentanilo",
+      "nombre": "fentanilo",
+      "familias": [
+        "Analgésicos, AINE y opioides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "finerenona",
+      "nombre": "finerenona",
+      "familias": [
+        "Insuficiencia cardiaca / diuréticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "flecainida",
+      "nombre": "flecainida",
+      "familias": [
+        "Antiarrítmicos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "fluconazol",
+      "nombre": "fluconazol",
+      "familias": [
+        "Antifúngicos y antivirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "fluoxetina",
+      "nombre": "fluoxetina",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "fluticasona",
+      "nombre": "fluticasona",
+      "familias": [
+        "Corticoides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "fluvoxamina",
+      "nombre": "fluvoxamina",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "fondaparinux",
+      "nombre": "fondaparinux",
+      "familias": [
+        "Anticoagulantes y antiagregantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "formoterol",
+      "nombre": "formoterol",
+      "familias": [
+        "Respiratorio"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "fosfomicina",
+      "nombre": "fosfomicina",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "furosemida",
+      "nombre": "furosemida",
+      "familias": [
+        "Insuficiencia cardiaca / diuréticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "gabapentina",
+      "nombre": "gabapentina",
+      "familias": [
+        "Neurología y dolor neuropático"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "ganciclovir",
+      "nombre": "ganciclovir",
+      "familias": [
+        "Antifúngicos y antivirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "gemfibrozilo",
+      "nombre": "gemfibrozilo",
+      "familias": [
+        "Hipolipemiantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "gentamicina",
+      "nombre": "gentamicina",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "gliclazida",
+      "nombre": "gliclazida",
+      "familias": [
+        "Diabetes y endocrinología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "glicopirronio",
+      "nombre": "glicopirronio",
+      "familias": [
+        "Respiratorio"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "glimepirida",
+      "nombre": "glimepirida",
+      "familias": [
+        "Diabetes y endocrinología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "haloperidol",
+      "nombre": "haloperidol",
+      "familias": [
+        "Antipsicóticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "heparina",
+      "nombre": "heparina",
+      "familias": [
+        "Anticoagulantes y antiagregantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "hidralazina",
+      "nombre": "hidralazina",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "hidroclorotiazida",
+      "nombre": "hidroclorotiazida",
+      "familias": [
+        "Insuficiencia cardiaca / diuréticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "hidrocortisona",
+      "nombre": "hidrocortisona",
+      "familias": [
+        "Corticoides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "hidroxicloroquina",
+      "nombre": "hidroxicloroquina",
+      "familias": [
+        "Inmunosupresores y reumatología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "hierro",
+      "nombre": "hierro",
+      "familias": [
+        "Digestivo y otros"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "ibuprofeno",
+      "nombre": "ibuprofeno",
+      "familias": [
+        "Analgésicos, AINE y opioides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "indacaterol",
+      "nombre": "indacaterol",
+      "familias": [
+        "Respiratorio"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "indapamida",
+      "nombre": "indapamida",
+      "familias": [
+        "Insuficiencia cardiaca / diuréticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "insulina",
+      "nombre": "insulina",
+      "familias": [
+        "Diabetes y endocrinología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "ipratropio",
+      "nombre": "ipratropio",
+      "familias": [
+        "Respiratorio"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "irbesartan",
+      "nombre": "irbesartan",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "itraconazol",
+      "nombre": "itraconazol",
+      "familias": [
+        "Antifúngicos y antivirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "ivabradina",
+      "nombre": "ivabradina",
+      "familias": [
+        "Insuficiencia cardiaca / diuréticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "ketoconazol",
+      "nombre": "ketoconazol",
+      "familias": [
+        "Antifúngicos y antivirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "lamivudina",
+      "nombre": "lamivudina",
+      "familias": [
+        "Antirretrovirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "lamotrigina",
+      "nombre": "lamotrigina",
+      "familias": [
+        "Neurología y dolor neuropático"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "lansoprazol",
+      "nombre": "lansoprazol",
+      "familias": [
+        "Digestivo y otros"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "leflunomida",
+      "nombre": "leflunomida",
+      "familias": [
+        "Inmunosupresores y reumatología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "lercanidipino",
+      "nombre": "lercanidipino",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "levetiracetam",
+      "nombre": "levetiracetam",
+      "familias": [
+        "Neurología y dolor neuropático"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "levodopa",
+      "nombre": "levodopa",
+      "familias": [
+        "Neurología y dolor neuropático"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "levofloxacino",
+      "nombre": "levofloxacino",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "levotiroxina",
+      "nombre": "levotiroxina",
+      "familias": [
+        "Diabetes y endocrinología",
+        "Digestivo y otros"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "linagliptina",
+      "nombre": "linagliptina",
+      "familias": [
+        "Diabetes y endocrinología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "linezolid",
+      "nombre": "linezolid",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "liraglutida",
+      "nombre": "liraglutida",
+      "familias": [
+        "Diabetes y endocrinología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "lisinopril",
+      "nombre": "lisinopril",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "litio",
+      "nombre": "litio",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "loperamida",
+      "nombre": "loperamida",
+      "familias": [
+        "Digestivo y otros"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "lorazepam",
+      "nombre": "lorazepam",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "lormetazepam",
+      "nombre": "lormetazepam",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "losartan",
+      "nombre": "losartan",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "lovastatina",
+      "nombre": "lovastatina",
+      "familias": [
+        "Cardiovascular / hipolipemiantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "lurasidona",
+      "nombre": "lurasidona",
+      "familias": [
+        "Antipsicóticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "meropenem",
+      "nombre": "meropenem",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "mesalazina",
+      "nombre": "mesalazina",
+      "familias": [
+        "Digestivo"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "metamizol",
+      "nombre": "metamizol",
+      "familias": [
+        "Analgésicos, AINE y opioides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "metformina",
+      "nombre": "metformina",
+      "familias": [
+        "Diabetes y endocrinología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "metilprednisolona",
+      "nombre": "metilprednisolona",
+      "familias": [
+        "Corticoides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "metoclopramida",
+      "nombre": "metoclopramida",
+      "familias": [
+        "Digestivo y otros"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "metoprolol",
+      "nombre": "metoprolol",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "metotrexato",
+      "nombre": "metotrexato",
+      "familias": [
+        "Inmunosupresores y reumatología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "metronidazol",
+      "nombre": "metronidazol",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "micofenolato",
+      "nombre": "micofenolato",
+      "familias": [
+        "Inmunosupresores y reumatología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "midazolam",
+      "nombre": "midazolam",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "mirtazapina",
+      "nombre": "mirtazapina",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "mometasona",
+      "nombre": "mometasona",
+      "familias": [
+        "Corticoides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "montelukast",
+      "nombre": "montelukast",
+      "familias": [
+        "Respiratorio"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "morfina",
+      "nombre": "morfina",
+      "familias": [
+        "Analgésicos, AINE y opioides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "moxifloxacino",
+      "nombre": "moxifloxacino",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "naproxeno",
+      "nombre": "naproxeno",
+      "familias": [
+        "Analgésicos, AINE y opioides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "nebivolol",
+      "nombre": "nebivolol",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "nifedipino",
+      "nombre": "nifedipino",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "nimodipino",
+      "nombre": "nimodipino",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "nitrofurantoina",
+      "nombre": "nitrofurantoina",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "nitroglicerina",
+      "nombre": "nitroglicerina",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "olanzapina",
+      "nombre": "olanzapina",
+      "familias": [
+        "Antipsicóticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "olmesartan",
+      "nombre": "olmesartan",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "omeprazol",
+      "nombre": "omeprazol",
+      "familias": [
+        "Digestivo y otros"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "ondansetron",
+      "nombre": "ondansetron",
+      "familias": [
+        "Digestivo y otros"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "oseltamivir",
+      "nombre": "oseltamivir",
+      "familias": [
+        "Antifúngicos y antivirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "oxcarbazepina",
+      "nombre": "oxcarbazepina",
+      "familias": [
+        "Neurología y dolor neuropático"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "oxibutinina",
+      "nombre": "oxibutinina",
+      "familias": [
+        "Digestivo y otros"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "oxicodona",
+      "nombre": "oxicodona",
+      "familias": [
+        "Analgésicos, AINE y opioides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "pantoprazol",
+      "nombre": "pantoprazol",
+      "familias": [
+        "Digestivo y otros"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "paracetamol",
+      "nombre": "paracetamol",
+      "familias": [
+        "Analgésicos, AINE y opioides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "paroxetina",
+      "nombre": "paroxetina",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "perindopril",
+      "nombre": "perindopril",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "pimozida",
+      "nombre": "pimozida",
+      "familias": [
+        "Antipsicóticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "piperacilina",
+      "nombre": "piperacilina",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "posaconazol",
+      "nombre": "posaconazol",
+      "familias": [
+        "Antifúngicos y antivirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "pramipexol",
+      "nombre": "pramipexol",
+      "familias": [
+        "Neurología y dolor neuropático"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "prasugrel",
+      "nombre": "prasugrel",
+      "familias": [
+        "Anticoagulantes y antiagregantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "pravastatina",
+      "nombre": "pravastatina",
+      "familias": [
+        "Hipolipemiantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "prednisolona",
+      "nombre": "prednisolona",
+      "familias": [
+        "Corticoides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "prednisona",
+      "nombre": "prednisona",
+      "familias": [
+        "Corticoides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "pregabalina",
+      "nombre": "pregabalina",
+      "familias": [
+        "Neurología y dolor neuropático"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "primidona",
+      "nombre": "primidona",
+      "familias": [
+        "Neurología y dolor neuropático"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "propafenona",
+      "nombre": "propafenona",
+      "familias": [
+        "Antiarrítmicos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "propranolol",
+      "nombre": "propranolol",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "quetiapina",
+      "nombre": "quetiapina",
+      "familias": [
+        "Antipsicóticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "rabeprazol",
+      "nombre": "rabeprazol",
+      "familias": [
+        "Digestivo"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "ramipril",
+      "nombre": "ramipril",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "ranolazina",
+      "nombre": "ranolazina",
+      "familias": [
+        "Pendiente de clasificación"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "repaglinida",
+      "nombre": "repaglinida",
+      "familias": [
+        "Diabetes y endocrinología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "ribavirina",
+      "nombre": "ribavirina",
+      "familias": [
+        "Antifúngicos y antivirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "rifabutina",
+      "nombre": "rifabutina",
+      "familias": [
+        "Antituberculosos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "rifampicina",
+      "nombre": "rifampicina",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "rifapentina",
+      "nombre": "rifapentina",
+      "familias": [
+        "Antituberculosos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "rilpivirina",
+      "nombre": "rilpivirina",
+      "familias": [
+        "Antirretrovirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "risperidona",
+      "nombre": "risperidona",
+      "familias": [
+        "Antipsicóticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "ritonavir",
+      "nombre": "ritonavir",
+      "familias": [
+        "Antifúngicos y antivirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "rivaroxaban",
+      "nombre": "rivaroxaban",
+      "familias": [
+        "Anticoagulantes y antiagregantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "roflumilast",
+      "nombre": "roflumilast",
+      "familias": [
+        "Respiratorio"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "ropinirol",
+      "nombre": "ropinirol",
+      "familias": [
+        "Neurología y dolor neuropático"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "rosuvastatina",
+      "nombre": "rosuvastatina",
+      "familias": [
+        "Hipolipemiantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "sacubitrilo",
+      "nombre": "sacubitrilo",
+      "familias": [
+        "Insuficiencia cardiaca / diuréticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "salbutamol",
+      "nombre": "salbutamol",
+      "familias": [
+        "Respiratorio"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "salmeterol",
+      "nombre": "salmeterol",
+      "familias": [
+        "Respiratorio"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "semaglutida",
+      "nombre": "semaglutida",
+      "familias": [
+        "Diabetes y endocrinología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "sertindol",
+      "nombre": "sertindol",
+      "familias": [
+        "Antipsicóticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "sertralina",
+      "nombre": "sertralina",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "simvastatina",
+      "nombre": "simvastatina",
+      "familias": [
+        "Hipolipemiantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "sirolimus",
+      "nombre": "sirolimus",
+      "familias": [
+        "Inmunosupresores"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "sitagliptina",
+      "nombre": "sitagliptina",
+      "familias": [
+        "Diabetes y endocrinología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "solifenacina",
+      "nombre": "solifenacina",
+      "familias": [
+        "Digestivo y otros"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "sotalol",
+      "nombre": "sotalol",
+      "familias": [
+        "Antiarrítmicos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "sucralfato",
+      "nombre": "sucralfato",
+      "familias": [
+        "Digestivo y otros"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "sulfasalazina",
+      "nombre": "sulfasalazina",
+      "familias": [
+        "Reumatología y autoinmunidad"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "sulpirida",
+      "nombre": "sulpirida",
+      "familias": [
+        "Antipsicóticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "tacrolimus",
+      "nombre": "tacrolimus",
+      "familias": [
+        "Inmunosupresores y reumatología"
+      ],
+      "alias": [
+        "prograf"
+      ],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "tamsulosina",
+      "nombre": "tamsulosina",
+      "familias": [
+        "Digestivo y otros"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "tapentadol",
+      "nombre": "tapentadol",
+      "familias": [
+        "Analgésicos, AINE y opioides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "tazobactam",
+      "nombre": "tazobactam",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "teicoplanina",
+      "nombre": "teicoplanina",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "telmisartan",
+      "nombre": "telmisartan",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "tenofovir alafenamida",
+      "nombre": "tenofovir alafenamida",
+      "familias": [
+        "Antirretrovirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "tenofovir disoproxilo",
+      "nombre": "tenofovir disoproxilo",
+      "familias": [
+        "Antirretrovirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "teofilina",
+      "nombre": "teofilina",
+      "familias": [
+        "Respiratorio"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "terbutalina",
+      "nombre": "terbutalina",
+      "familias": [
+        "Respiratorio"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "ticagrelor",
+      "nombre": "ticagrelor",
+      "familias": [
+        "Anticoagulantes y antiagregantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "tiotropio",
+      "nombre": "tiotropio",
+      "familias": [
+        "Respiratorio"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "tirzepatida",
+      "nombre": "tirzepatida",
+      "familias": [
+        "Diabetes y endocrinología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "tizanidina",
+      "nombre": "tizanidina",
+      "familias": [
+        "Neurología y dolor neuropático"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "topiramato",
+      "nombre": "topiramato",
+      "familias": [
+        "Neurología y dolor neuropático"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "torasemida",
+      "nombre": "torasemida",
+      "familias": [
+        "Insuficiencia cardiaca / diuréticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "tramadol",
+      "nombre": "tramadol",
+      "familias": [
+        "Analgésicos, AINE y opioides"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "trazodona",
+      "nombre": "trazodona",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "triamtereno",
+      "nombre": "triamtereno",
+      "familias": [
+        "Cardiovascular y diuréticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "umeclidinio",
+      "nombre": "umeclidinio",
+      "familias": [
+        "Respiratorio"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "urapidilo",
+      "nombre": "urapidilo",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "valaciclovir",
+      "nombre": "valaciclovir",
+      "familias": [
+        "Antifúngicos y antivirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "valproato",
+      "nombre": "valproato",
+      "familias": [
+        "Neurología y dolor neuropático"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "valsartan",
+      "nombre": "valsartán",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "vancomicina",
+      "nombre": "vancomicina",
+      "familias": [
+        "Antibióticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "venlafaxina",
+      "nombre": "venlafaxina",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "verapamilo",
+      "nombre": "verapamilo",
+      "familias": [
+        "Cardiovascular / antihipertensivos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "vildagliptina",
+      "nombre": "vildagliptina",
+      "familias": [
+        "Diabetes y endocrinología"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "voriconazol",
+      "nombre": "voriconazol",
+      "familias": [
+        "Antifúngicos y antivirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "vortioxetina",
+      "nombre": "vortioxetina",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "warfarina",
+      "nombre": "warfarina",
+      "familias": [
+        "Anticoagulantes y antiagregantes"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "zidovudina",
+      "nombre": "zidovudina",
+      "familias": [
+        "Antifúngicos y antivirales"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    },
+    {
+      "id": "zolpidem",
+      "nombre": "zolpidem",
+      "familias": [
+        "Antidepresivos y ansiolíticos"
+      ],
+      "alias": [],
+      "verificacion_catalogo": "pendiente_conciliacion_CIMA"
+    }
+  ]
+}

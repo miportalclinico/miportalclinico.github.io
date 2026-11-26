@@ -79,11 +79,11 @@ function renderReview(){
   const top=el('div','medSummary compactSummary');
   const grip=button('☰',()=>{},'reviewGrip','Arrastrar '+A.displayName(m));grip.setAttribute('aria-label','Arrastrar '+A.displayName(m));grip.addEventListener('pointerdown',e=>dragStart(e,m.id,grip));
   const omit=button(m.excluded?'↶':'×',()=>{m.excluded=!m.excluded;renderAll();},'omit'+(m.excluded?' inactive':''),m.excluded?'Incluir en copia':'Excluir solo del texto copiado');
-  const ident=el('div','medIdentity');ident.append(el('strong','',A.displayName(m)+(m.strength?' '+m.strength:'')));
+  const ident=el('div','medIdentity');const explicitDose=!m.strength&&!A.isAvk(m)&&!A.isInhaler(m)&&/^\d+(?:[.,]\d+)?\s*(?:mg|µg|mcg|g|UI)\b/i.test(m.dose||'')?m.dose:'';const displayStrength=m.strength||explicitDose;ident.append(el('strong','',A.displayName(m)+(displayStrength?' '+displayStrength:'')));
   let freq=A.getFrequency(m)||'Pauta no identificada';
   if(m.verified48==='half')freq='0.5 comprimido cada 24 h · confirmado';
   if(m.verified48==='alternate')freq='cada 48 h · confirmado';
-  ident.append(el('div','detail',freq+(!A.isAvk(m)&&m.dose&&!m.strength?' · '+m.dose:'')));
+  ident.append(el('div','detail',freq+(!A.isAvk(m)&&m.dose&&A.normal(m.dose)!==A.normal(displayStrength)?' · Dosis: '+m.dose:'')));
   if(!m.drugKey)ident.append(el('small','smallReview','No reconocido; comprueba el original.'));
   else if(!A.isAvk(m)&&m.interval==='48'&&!m.verified48)ident.append(button('⚠ Confirmar pauta',()=>{m._choose48=!m._choose48;renderReview();},'interval48'));
   else if(!A.isAvk(m)&&m.interval==='48')ident.append(button('Cambiar pauta',()=>{m._choose48=!m._choose48;renderReview();},'miniLinkButton'));

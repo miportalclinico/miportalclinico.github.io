@@ -154,7 +154,7 @@ function literalPauta(item){
 }
 function formatted(item,mode='literal'){
  const base=baseText(item);
- const output=x=>base+': '+x;
+ const output=x=>{const d=normalizedDoseText(item);if(!item.strength&&d&&!isAvk(item)&&!isInhaler(item)&&!item.verified48&&!item.amountEdited&&/^\d+(?:[.,]\d+)?\s*(?:mg|µg|mcg|g|UI)\b/i.test(d)&&(x===d||x.startsWith(d+' ')))return base+' '+d+': '+(x.slice(d.length).trim()||'pauta no disponible');return base+': '+x;};
  if(isAvk(item)){const time=Number.isInteger(item.avkSlot)?TIME_SLOTS[item.avkSlot]:null;const where=time?(time==='antes de dormir'?'antes de dormir':`en ${time==='desayuno'?'el':'la'} ${time}`):'';return output(mode==='patient'&&where?where+', según pauta':'según pauta');}
  const fallback=()=>output(isAvk(item)?(item.avkText?.trim()||'según pauta individual (no disponible)'):(literalPauta(item)||'pauta no disponible'));
  const weekly=weeklyData(item);

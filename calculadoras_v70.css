@@ -1,0 +1,8 @@
+/* v70 · hierarchy and common actions; clinical colors are unchanged */
+body>header p,.hero>p,.head>p,.hero .wrap>p{color:#fff!important;opacity:1!important}
+.field>label,.question-title,.question>h3,.qrow>label,.qrow>div:first-child,.fields>label,fieldset>legend{font-size:17px;font-weight:750;line-height:1.35}
+.question-title{gap:8px}.field>label small,.fields>label small{font-weight:400;font-size:13px}
+.choice,.choice-main,.options label,.choices label{font-size:15px;line-height:1.4}.choice-main{font-weight:500}.choice input{flex-shrink:0}
+button.pc-copy,button.pc-reset{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 15px;border-radius:9px;font:750 13px/1.3 system-ui,sans-serif;cursor:pointer;white-space:normal;box-sizing:border-box}
+button.pc-copy{background:#27465B!important;border:1px solid #27465B!important;color:white!important}button.pc-reset{background:#ebf1f5!important;border:1px solid #d5e0e8!important;color:#365065!important}button.pc-copy:disabled,button.pc-reset:disabled{opacity:.5;cursor:not-allowed}
+@media(max-width:930px){main.layout>*{min-width:0}main.layout aside{grid-row:auto!important;grid-column:auto;order:0!important;position:static!important}main.layout{grid-template-columns:minmax(0,1fr)!important}main.layout .sources{grid-column:auto}input:not([type=checkbox]):not([type=radio]),select,textarea{max-width:100%;min-width:0}.table-scroll,.tablewrap,.eqscroll{max-width:100%;overflow-x:auto}.choice{overflow-wrap:anywhere}.question>*,.field>*{min-width:0}}

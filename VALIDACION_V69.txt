@@ -1,0 +1,11 @@
+MI Portal Clínico v69 — 26/11/2026
+Versión de revisión, no validación clínica definitiva.
+Portada aprobada, enlaces activos, encabezados de páginas recoloreados, pie legal negro ondulado.
+EUCAST: 92 filas; requiere segunda lectura independiente y permiso de reutilización.
+Shorter: 43 comparaciones, tres tablas propias basadas en SEFH noviembre 2025; no se han contrastado individualmente todos los ensayos ni guías actuales.
+Diccionario: 295 entradas; general inicial de 38, no importación íntegra del PDF ministerial por licencia y vigencia pendientes. Revisar definiciones especializadas y desambiguación.
+Metadona: referencia no calculadora; pendiente revisión de protocolo de rotación.
+Textos legales: actualización parcial, faltan identidad, contacto y auditoría jurídica/técnica; no publicar como definitivos.
+No se cambia Supabase. Fase colaborativa pendiente.
+Comprobación estática: 49 scripts inline; errores []; enlaces locales ausentes [].
+No se han realizado pruebas interactivas completas en navegador, validación de todos los cálculos ni comprobación responsive exhaustiva.

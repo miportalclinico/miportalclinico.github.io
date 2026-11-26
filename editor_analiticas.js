@@ -2,8 +2,8 @@
 'use strict';
 (function(global){
 // Orden fijo de presentación acordado. Los apartados vacíos no se imprimen.
-const ORDER=['hemograma','vsg','frotis','coagulacion','bioquimica','tumorales','pcr','cardiacos','gasometria','orina','diabetico','lipidico','ferrico','vitaminas','hormonas','proteinograma','autoinmunidad','cultivos','microbiologia','serologias','otros'];
-const TITLES={hemograma:'Hemograma',vsg:'VSG',frotis:'Frotis de sangre periférica',coagulacion:'Coagulación',bioquimica:'Bioquímica',tumorales:'CEA, CA 19-9 y otros',pcr:'PCR',cardiacos:'Marcadores cardíacos',gasometria:'Gasometría',orina:'Orina',orina_bioq:'Orina',orina_sistema:'Orina',indices_renales:'Orina',diabetico:'Perfil diabético',lipidico:'Perfil lipídico',ferrico:'Perfil férrico',vitaminas:'Vitaminas',hormonas:'Hormonas',proteinograma:'Proteinograma',autoinmunidad:'Autoinmunidad',cultivos:'Cultivos',microbiologia:'Microbiología',serologias:'Serología',otros:'Otros resultados'};
+const ORDER=['hemograma','vsg','frotis','coagulacion','bioquimica','tumorales','pcr','pct','cardiacos','gasometria','orina','diabetico','lipidico','ferrico','vitaminas','hormonas','proteinograma','autoinmunidad','cultivos','microbiologia','serologias','otros'];
+const TITLES={hemograma:'Hemograma',vsg:'VSG',frotis:'Frotis de sangre periférica',coagulacion:'Coagulación',bioquimica:'Bioquímica',tumorales:'CEA, CA 19-9 y otros',pcr:'PCR',pct:'Procalcitonina',cardiacos:'Marcadores cardíacos',gasometria:'Gasometría',orina:'Orina',orina_bioq:'Orina',orina_sistema:'Orina',indices_renales:'Orina',diabetico:'Perfil diabético',lipidico:'Perfil lipídico',ferrico:'Perfil férrico',vitaminas:'Vitaminas',hormonas:'Hormonas',proteinograma:'Proteinograma',autoinmunidad:'Autoinmunidad',cultivos:'Cultivos',microbiologia:'Microbiología',serologias:'Serología',otros:'Otros resultados'};
 const DEF=[
 ['hb','Hemoglobina','Hb','hemograma','hemoglobina|hgb|hb'],
 ['hematocrito','Hematocrito','Hto','hemograma','hematocrito|hct|hto'],
@@ -120,6 +120,7 @@ const DEF=[
 ['be_std','Exceso de bases estándar','EB estándar','gasometria','exceso de bases estandar'],
 ['be','Exceso de bases','EB','gasometria','exceso de bases'],
 ['pcr','Proteína C reactiva','PCR','pcr','proteina c reactiva|pcr|crp'],
+['pct','Procalcitonina','Procalcitonina','pct','procalcitonina serica (pct)|procalcitonina (pct)|procalcitonina serica|procalcitonina'],
 ];
 const ALIASES=[];
 for(const [key,name,short,section,aliasString] of DEF){for(const alias of aliasString.split('|')) ALIASES.push({key,name,short,section,alias:clean(alias)});}
@@ -335,9 +336,9 @@ function parse(source){
  // A copied PDF/table may join the chemistry heading to the end of a previous range.
  .replace(/(\d)\s+OQU[IÍ]MICA EN SANGRE(?:\s+BIOQU[IÍ]MICA EN SANGRE)?/gi,'$1)\nBIOQUÍMICA EN SANGRE')
  .replace(/\b(BIOQU[IÍ]MICA EN SANGRE)\s+\1/gi,'$1');
- const lines=text.split(/\n|;(?=\s*[A-Za-zÁÉÍÓÚáéíóú])/).map(l=>l.trim()).filter(Boolean);
+ const segments=text.split(/(\n|;(?=\s*[A-Za-zÁÉÍÓÚáéíóú]))/),lines=[],lineSeparators=[];for(let i=0;i<segments.length;i+=2){const l=segments[i].trim();if(l){lines.push(l);lineSeparators.push(i?segments[i-1]:'');}}
  const items=[],unrecognized=[],skipped=[],dates=new Set(),cultures=[],texts={};
- const gas={sourceType:'',suppliedType:false};let currentCulture=null,seenGas=false,sectionHint='',pendingAdministrative=false,microGroup='',microTable=false,microPending='',coagAnnulledCount=0;
+ const gas={sourceType:'',suppliedType:false};let currentCulture=null,seenGas=false,sectionHint='',pendingAdministrative=false,microGroup='',microTable=false,microPending='',coagAnnulledCount=0,narrative='',captureNarrative=false;
  const personal=PERSONAL_MARKERS.test(text)||/\b(?:dni|cip|nss|historia\s+cl[ií]nica)\s*:/i.test(text);
  for(let lineIndex=0;lineIndex<lines.length;lineIndex++){
   const line=lines[lineIndex];if(/^[-|:\s]+$/.test(line))continue;
@@ -362,6 +363,56 @@ function parse(source){
   }
   if(LAB_CANCELLED.test(line)){if(sectionHint==='coagulacion'&&/prueba\s+anulada|anulada\s+por\s+regla/i.test(line))coagAnnulledCount++;skipped.push({line:'Incidencia o prueba no realizada',reason:'Excluido por estado del laboratorio'});continue;}
   if(/^\s*[•·.\-]\s*(?:prevenci[oó]n secundaria|rcv|riesgo cardiovascular|muy alto|moderado)/i.test(line)||/^\d+\s*mg\/dL(?:\s+y\s+reducci[oó]n.*)?$/i.test(line)||/^\d+\s*mg\/dL\s+y\s+reducci[oó]n/i.test(line)){continue;}
+  // Text-only reports: maintain a bounded context and never interpret numeric fractions.
+  const narrativeNorm=clean(line);
+  const proteinTitle=/^(?:proteinograma(?:\s+(?:serico|en suero|en sangre))?|electroforesis\s+(?:de\s+)?proteinas(?:\s+sericas|\s+en suero)?)(?=$|\s|[:\-])/i;
+  const smearTitle=/^(?:frotis(?:\s+de\s+sangre(?:\s+periferica)?)?|extension\s+de\s+sangre(?:\s+periferica)?|morfologia\s+(?:de\s+sangre\s+periferica|eritrocitaria|hematologica)|estudio\s+morfologico\s+hematologico)(?=$|\s|[:\-])/i;
+  const proteinInterp=/^(?:interpretacion|conclusion|comentario|informe)(?:\s+(?:del?|de la))?\s+(?:proteinograma|electroforesis(?:\s+de\s+proteinas(?:\s+sericas)?)?)(?=$|\s|[:\-])/i;
+  const smearInterp=/^(?:interpretacion|conclusion|comentario|informe)(?:\s+(?:del?|de la))?\s+(?:frotis(?:\s+de\s+sangre(?:\s+periferica)?)?|extension\s+de\s+sangre(?:\s+periferica)?)(?=$|\s|[:\-])/i;
+  const fraction=/^(?:(?:fraccion|globulinas?)\s+)?(?:albumina|alfa[ -]?[12]|alpha[ -]?[12]|beta(?:[ -]?[12])?|gamma(?:globulinas?)?|globulinas|cociente\s+a\s*\/\s*g|relacion\s+albumina\s*\/\s*globulina|proteinas\s+totales)(?:\s|$|[:\-])/i;
+  const explicit=/^(?:interpretacion|conclusion(?:es)?|comentario(?:s)?|informe|resultado\s+interpretativo|valoracion)(?=$|\s|[:\-])/i;
+  const addNarrative=(kind,part)=>{part=part.trim();if(part)texts[kind]=[texts[kind],part].filter(Boolean).join(lineSeparators[lineIndex]===';'?'; ':'\n');};
+  const headerMatch=narrativeNorm.match(proteinInterp)||narrativeNorm.match(smearInterp)||narrativeNorm.match(proteinTitle)||narrativeNorm.match(smearTitle);
+  if(headerMatch){
+   narrative=proteinInterp.test(narrativeNorm)||proteinTitle.test(narrativeNorm)?'proteinograma':'frotis';
+   currentCulture=null;microGroup='';microTable=false;microPending='';sectionHint=narrative;
+   const desc=line.slice(headerMatch[0].length).replace(/^[\s:=–—-]+/,'').trim();
+   captureNarrative=narrative==='frotis'||proteinInterp.test(narrativeNorm)||!!(desc&&/(?:normal|patron|componente|pico|gammapat|hiper|hipo|sin alteraciones|monoclonal|policlonal|no se observa|no se detecta)/i.test(clean(desc)));
+   if(desc&&captureNarrative&&!/^\d/.test(desc))addNarrative(narrative,desc);continue;
+  }
+  if(narrative){
+   const known=matchEntry(line),hdr=isHeader(narrativeNorm);
+   const boundary=hdr||ADMIN_LINE.test(narrativeNorm)||LAB_NOTES.test(narrativeNorm)||CULTURE_RE.test(line);
+   const knownValue=known&&numericOrQualitative(line.slice(known.alias.length).replace(/^[\s:=–—-]+/,''));
+   const numericKnown=knownValue&&(!knownValue.qualitative||narrative==='proteinograma');
+   if(narrative==='proteinograma'&&fraction.test(narrativeNorm)&&/\d/.test(narrativeNorm)){continue;}
+   if(boundary||numericKnown||/^(?:procalcitonina|pct)\b/i.test(narrativeNorm)){narrative='';captureNarrative=false;if(!hdr)sectionHint='';}
+   else{
+    const ex=narrativeNorm.match(explicit);
+    if(ex){captureNarrative=true;addNarrative(narrative,line.slice(ex[0].length).replace(/^[\s:=–—-]+/,''));continue;}
+    if(narrative==='frotis'&&/^(?:serie\s+(?:roja|blanca|plaquetar(?:ia)?)|morfologia\s+(?:leucocitaria|plaquetaria))\b/.test(narrativeNorm)){addNarrative(narrative,line);captureNarrative=true;continue;}
+    if(captureNarrative){addNarrative(narrative,line);continue;}
+    if(narrative==='proteinograma'&&/(?:normal|patron|componente|pico|gammapat|hiper|hipo|sin alteraciones|monoclonal|policlonal|no se observa|no se detecta)/i.test(narrativeNorm)&&!/^\d/.test(line)){captureNarrative=true;addNarrative(narrative,line);continue;}
+    // Unknown proteinogram rows are not copied as interpretation.
+    if(narrative==='proteinograma'){unrecognized.push({line,reason:'Proteinograma: no se ha identificado una interpretación textual'});continue;}
+   }
+  }
+  // PCT alone is accepted only with a concentration unit or clear serum context;
+  // a percent is plateletcrit, never procalcitonin. Preserve comparator and unit.
+  const pctLabel=/^(?:procalcitonina(?:\s+s[eé]rica)?(?:\s*\(PCT\))?|PCT)(?=$|\s|[:=(])/i;
+  const pctPrefix=line.match(pctLabel);
+  const pctReverse=line.match(/^([<>≤≥]?=?\s*\d+(?:[.,]\d+)*)\s+(?:procalcitonina(?:\s+s[eé]rica)?(?:\s*\(PCT\))?|PCT)\b\s*(.*)$/i);
+  if(pctPrefix||pctReverse){
+   const explicitPCT=/procalcitonina/i.test(line),body=pctPrefix?line.slice(pctPrefix[0].length).replace(/^[\s:=]+/,''):pctReverse[1]+' '+pctReverse[2];
+   const concentration=/(?:ng\s*\/\s*m[lL]|[µμu]g\s*\/\s*[lL]|pg\s*\/\s*m[lL]|mg\s*\/\s*[lL])/i.test(body);
+   if(!explicitPCT&&/%/.test(body)){skipped.push({line,reason:'PCT en porcentaje: plaquetocrito, no procalcitonina'});continue;}
+   if(!explicitPCT&&!concentration&&!['bioquimica','pcr'].includes(sectionHint)){unrecognized.push({line,reason:'PCT ambiguo: confirma si es plaquetocrito o procalcitonina'});continue;}
+   if(!explicitPCT&&sectionHint==='hemograma'&&!concentration){skipped.push({line,reason:'PCT del hemograma: no se interpreta como procalcitonina'});continue;}
+   const original=body.match(/(?:^|\s)([<>≤≥]=?)\s*\d/);
+   const value=explicitPending(body)?{num:NaN,raw:'PENDIENTE',unit:'',range:null,abnormal:null,qualitative:true}:numericOrQualitative(body.replace(/≤\s*/g,'<').replace(/≥\s*/g,'>').replace(/([<>])=\s*/g,'$1'));
+   if(value){if(original&&/^[<>]/.test(value.raw))value.raw=original[1]+value.raw.slice(1).trim();items.push({key:'pct',name:'Procalcitonina',short:'Procalcitonina',section:'pct',...value,line});}
+   else unrecognized.push({line,reason:'Procalcitonina reconocida, valor no identificado'});continue;
+  }
   if(!isHeader(clean(line))&&(ADMIN_LINE.test(clean(line))||LAB_NOTES.test(clean(line)))){continue;}
 
   if(/^\s*cultivo bacteriol[oó]gico\b/i.test(line)){
@@ -425,14 +476,6 @@ function parse(source){
   if(/^gasometria\b/.test(gn)){seenGas=true;sectionHint='gasometria';continue;}
   if(/^\s*pcr\s+(?:sars|influenza|vrs|cmv|ebv|vih|virus|respiratoria|bacteriana|mycoplasma|legionella|chlamydia)/i.test(gn)){
    const matches=line.match(/^(.*?)(?:[:=]\s*)(.*?)$/);items.push({key:'other_'+items.length,name:matches?matches[1]:line,short:matches?matches[1]:line,section:'microbiologia',num:NaN,raw:matches?matches[2]:'',unit:'',range:null,abnormal:null,line,qualitative:true});continue;
-  }
-  if(/^(?:interpretacion(?: del| de)? proteinograma|interpretaci[oó]n electroforesis)\s*[:\-]/i.test(gn)){texts.proteinograma=line.split(/[:\-]/).slice(1).join(':').trim();continue;}
-  if(/^(?:frotis(?:\s+de\s+sangre)?|morfologia\s+eritrocitaria|comentario\s+de\s+frotis)\s*[:\-]?/i.test(gn)){
-   const desc=line.replace(/^(?:frotis(?:\s+de\s+sangre)?|morfolog[ií]a\s+eritrocitaria|comentario\s+de\s+frotis)\s*[:\-]?\s*/i,'').trim();if(desc)texts.frotis=desc;continue;
-  }
-  if(/^(?:proteinograma|electroforesis\s+de\s+proteinas)(?:\s*[:\-])?/i.test(gn)){
-   const desc=line.replace(/^(?:proteinograma|electroforesis\s+de\s+prote[ií]nas)\s*[:\-]?\s*/i,'').trim();if(desc&&!/^\d/.test(desc)&&/(?:normal|patron|patr[oó]n|componente|pico|gammapat|hiper|hipo|sin alteraciones|monoclonal)/i.test(clean(desc)))texts.proteinograma=desc;
-   else if(desc)unrecognized.push({line,reason:'Proteinograma sin interpretación claramente identificada'});continue;
   }
   // Administrative lines, rejected tests and narrative notes are excluded from the formatted report.
   if(/(?:prueba rechazada|no procede|no se realiza la determinaci[oó]n|no se ha realizado|periodicidad de realizaci[oó]n|objetivo terap[eé]utico|indicador erc|resultado no disponible|muestra insuficiente|recomendaciones de gu[ií]as cl[ií]nicas)/i.test(gn)||/^\s*(?:al existir|la periodicidad|en un periodo|moderado rcv|muy alto rcv)/.test(gn)){
@@ -824,7 +867,7 @@ function format(parsed,opts,selected,extras={}){
   const title=sec==='gasometria'?'Gasometría '+opts.gasType:TITLES[sec];
   sections[sec]=sec==='serologias'?'- Serología:\n    '+parts.join('\n    '):
    sec==='tumorales'?'- '+parts.join(', ')+'.':
-   '- '+title+': '+((sec==='pcr'||sec==='vsg')?parts.join(', ').replace(/^(?:PCR|VSG) /,''):parts.join(sec==='cultivos'?'; ':', '))+'.';
+   '- '+title+': '+((sec==='pcr'||sec==='vsg'||sec==='pct')?parts.join(', ').replace(/^(?:PCR|VSG|Procalcitonina)[: ]+/, ''):parts.join(sec==='cultivos'?'; ':', '))+( ['proteinograma','frotis'].includes(sec)&&/[.!?]$/.test(parts[parts.length-1])?'':'.');
  }
  // Incidencias y pruebas no realizadas se descartan sin introducirse en revisión.
  for(const e of parsed.items){if(NEVER.has(e.key))ignored.push({line:e.line,reason:'Omitido por regla fija'});}
