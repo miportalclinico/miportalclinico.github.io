@@ -2,7 +2,7 @@
 // Only the public key belongs in this browser code. RLS and server-side authorization enforce access.
 const API='https://vgshuxqhvyrogjskucnh.supabase.co';
 const KEY='sb_publishable__w3JofN92bZaNwiYB3dW_w_XeEbcTv_';
-const REDIRECT='https://miportalclinico.github.io/miportalclinico/acceso.html';
+const REDIRECT = new URL('acceso.html', window.location.href).href;
 const $=id=>document.getElementById(id);
 let token=null, profile=null, identity=null, expiry=0, idle=0, generation=0, rows=[], editId=null, userOffset=0;
 let pending=false, activeTab='directory';
