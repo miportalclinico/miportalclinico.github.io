@@ -20,11 +20,12 @@ function findCombo(item){const raw=normAlias(item.rawName||item.name||'');const 
  return combos.find(c=>c.aliases.some(a=>a&&startsAs(raw,a))||c.components.join('/')===key)||null;
 }
 function ingredientsFor(item){if(item.kind!=='drug')return {ingredientIds:[],combo:null,uncertain:true};
+ if(item.components?.length>1){const resolved=item.components.map(c=>{const k=normAlias(c);return Array.from(catalogue.keys()).find(id=>normAlias(id)===k)||aliases.find(a=>a.alias===k)?.id;});return {ingredientIds:resolved.filter(Boolean),combo:item.components.join('/'),uncertain:resolved.some(x=>!x)||item.identificationComplete===false};}
  const combo=findCombo(item);
- if(combo)return {ingredientIds:combo.components.filter(id=>catalogue.has(id)),combo:combo.id,uncertain:false};
+ if(combo)return {ingredientIds:combo.components.filter(id=>catalogue.has(id)),combo:combo.id,uncertain:combo.components.some(id=>!catalogue.has(id))};
  const k=normAlias(item.drugKey||'');
  let id=Array.from(catalogue.keys()).find(i=>normAlias(i)===k);
- if(!id){const raw=normAlias(item.rawName||'');const found=aliases.find(x=>startsAs(raw,x.alias));if(found)id=found.id;}
+ if(!id){const raw=normAlias(item.rawName||'');const found=aliases.find(x=>startsAs(raw.replace(/^(?:cronico|agudo) /,''),x.alias));if(found)id=found.id;}
  // Las combinaciones no verificadas no se expanden por coincidencia de palabras.
  return {ingredientIds:id?[id]:[],combo:null,uncertain:!id};
 }
@@ -89,7 +90,7 @@ function analyze(items){
   }
  }
  matched.sort((x,y)=>(priority[x.rule.categoria]??10)-(priority[y.rule.categoria]??10)||x.rule.id.localeCompare(y.rule.id));
- const unknown=entries.filter(x=>!x.ingredientIds.length).map(x=>x.item);
+ const unknown=entries.filter(x=>!x.ingredientIds.length||x.uncertain).map(x=>x.item);
  const combosIdentified=entries.filter(x=>x.combo).map(x=>({name:x.item.rawName,combo:x.combo,components:x.ingredientIds}));
  return {matched,withheld,unknown,combosIdentified,recognized:entries.length-unknown.length,total:entries.length,baseRules:seed.reglas.length,baseDrugs:seed.medicamentos.length};
 }

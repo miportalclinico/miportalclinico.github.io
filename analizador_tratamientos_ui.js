@@ -24,10 +24,10 @@ function toggleSlot(id,j){
  if(A.isAvk(m)){m.avkSlot=m.avkSlot===j?null:j;renderAll();$('reviewStatus').textContent='Antivitamina K: se indica el momento, siempre según pauta de INR, sin asignar dosis.';return;}
  if(m.interval==='48'&&!m.verified48){m._choose48=true;renderReview();$('reviewStatus').textContent='Confirma primero cómo se administra la pauta de 48 horas.';return;}
  const counts=activeAmounts(m);
- counts[j]=counts[j]>0?0:(m.verified48==='half'?0.5:1);
+ counts[j]=counts[j]>0?0:(m.verified48==='half'?0.5:(normalUnitCount(m)||1));
  m.slotAmounts=counts;
- if(counts[j]===0&&m.editSlot===j)m.editSlot=null;
- renderAll();$('reviewStatus').textContent=counts[j]?'Toma seleccionada: 1 unidad por defecto (o 0.5 si se confirmó media unidad diaria).':'Toma desactivada.';
+ if(counts[j]>0)m.editSlot=j;else if(m.editSlot===j)m.editSlot=null;
+ renderAll();$('reviewStatus').textContent=counts[j]?'Toma seleccionada: comprueba la cantidad antes de copiar.':'Toma desactivada.';
 }
 function editSlot(id,j){const m=getItem(id);if(!m||A.isAvk(m))return;
  if(m.interval==='48'&&!m.verified48){m._choose48=true;renderReview();return;}
@@ -278,8 +278,8 @@ function renderDocumental(dest){
  const intro=el('div','docNotice');intro.append(el('strong','','BASE v0.5 · SOLO PRUEBAS'),el('p','','342 reglas documentales pendientes de validación clínica. Las coincidencias no son alertas asistenciales y pueden contener errores de clasificación, contexto o cobertura. No tomar decisiones terapéuticas a partir de este prototipo.'));
  dest.append(intro);
  const totals=el('div','docStats');totals.append(el('strong','',`${result.matched.length} ${result.matched.length===1?'coincidencia documental':'coincidencias documentales'}`),el('span','',`${result.recognized}/${result.total} medicamentos identificados en la base · ${result.baseRules} reglas disponibles`));dest.append(totals);
- if(result.combosIdentified.length){const comboPane=el('details','clinicalTool docExpand');comboPane.append(el('summary','','Combinaciones antirretrovirales reconocidas ('+result.combosIdentified.length+')'));
-  for(const c of result.combosIdentified)comboPane.append(el('p','docComponents',c.combo.toUpperCase()+': '+c.components.join(' + ')));dest.append(comboPane);
+ if(result.combosIdentified.length){const comboPane=el('details','clinicalTool docExpand');comboPane.append(el('summary','','Combinaciones reconocidas ('+result.combosIdentified.length+')'));
+  for(const c of result.combosIdentified)comboPane.append(el('p','docComponents',c.combo+': '+c.components.join(' + ')));dest.append(comboPane);
  }
  if(result.unknown.length){const pane=el('details','clinicalTool docExpand');pane.append(el('summary','','Medicamentos fuera de cobertura ('+result.unknown.length+')'));
    pane.append(el('p','caution','Su ausencia del diccionario no significa que carezcan de interacciones.'));
@@ -330,7 +330,7 @@ function renderClinical(){
 function addAlert(target,title,text){const row=el('div','alertLine');row.append(el('strong','',title),el('span','',text));target.append(row);}
 function renderAll(){renderReview();renderOrder();renderFractionWarnings();}
 function parse(){const raw=$('rawInput').value;if(!raw.trim()){$('parseStatus').textContent='Introduce un tratamiento.';return;}const result=A.parse(raw);if(result.blocked){reset();$('parseStatus').classList.add('bad');$('parseStatus').textContent='Posible dato identificativo detectado: anonimiza el texto antes de procesarlo.';return;}
- $('parseStatus').classList.remove('bad');items=result.items;ppiDecisions=new Map();for(const m of medicines()){m.verified48='';m.slotAmounts=[0,0,0,0,0];m._choose48=false;m._confirmHalfPending=false;m.avkSlot=null;m.irregularOpen=false;m.editSlot=null;m.amountEdited=false;}
+ $('parseStatus').classList.remove('bad');items=result.items;ppiDecisions=new Map();for(const m of medicines()){m.verified48='';m.slotAmounts=A.suggestedSchedule(m)||[0,0,0,0,0];m._choose48=false;m._confirmHalfPending=false;m.avkSlot=null;m.irregularOpen=false;m.editSlot=null;m.amountEdited=false;}
  const meds=medicines(),others=items.filter(x=>x.kind!=='drug');$('parseStatus').textContent=`Formato ${result.format}: ${meds.length} medicamentos y ${others.length} productos no farmacológicos. Revisa el texto antes de copiar.`;
  $('otherList').replaceChildren();$('additionalProducts').hidden=!others.length;$('otherCount').textContent=String(others.length);for(const other of others)$('otherList').append(el('span','other-chip',other.name));$('reviewStatus').textContent='';$('copyStatus').textContent='';chooseSort();renderClinical();}
 function reset(){items=[];order=[];ppiDecisions=new Map();$('medList').replaceChildren(el('p','muted','Introduce un tratamiento para empezar.'));$('medCount').replaceChildren();$('otherList').replaceChildren();$('additionalProducts').hidden=true;$('outputText').value='';generatedOutput='';$('manualEditWarning').hidden=true;$('clinicalReview').replaceChildren(el('p','muted','Reconoce un tratamiento para consultar las comprobaciones disponibles.'));$('optimizationReview').replaceChildren();$('copyStatus').textContent='';$('reviewStatus').textContent='';$('parseStatus').textContent='';}

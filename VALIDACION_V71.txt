@@ -1,0 +1,7 @@
+MI Portal Clínico v71 — versión de desarrollo, base v70 real.
+Comprobación de sintaxis Node: 72 scripts externos/inline, errores: [].
+Referencias locales HTML inexistentes: 0 [].
+Pruebas Node: prefijos SES, atorvastatina C24H, Trelegy triple, pitavastatina, sales rehidratación, cefditoreno C12 incompleto. La base documental no es completa ni validada.
+Chromium: navegación HTTP local, file y URL externa bloqueadas por política de entorno (ERR_BLOCKED_BY_ADMINISTRATOR). No se acredita prueba funcional integral, instalación PWA, sesiones reales ni Supabase.
+Cambios: accesos portada estilo minimalista y diálogos, URL raíz QR, Web Share condicional, caché limitada a estáticos versionados, extracción símbolo del logo (extremo inferior separado de onda), mejoras analizador, panel usuarios y diccionario dinámico, formulario Turnstile, página intermedia invitación.
+Pendientes: pruebas reales, recuperación/reenvío robustos y 24 h independiente, marcador servidor de registro completo, edición/retirada de entradas originales locales, limitación persistente de propuestas, cobertura de interacciones y dosis, diccionario ministerial/licencia, revisión legal y clínica, backup real Supabase, medición SES. No se ha modificado Supabase.

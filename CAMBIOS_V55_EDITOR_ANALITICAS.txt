@@ -1,6 +1,0 @@
-Portal Clínico v55 — Editor de analíticas
-
-- Marcadores analíticos como CEA, CA 19-9, CA 125, CA 15-3, AFP, PSA, β-hCG, NSE, CYFRA 21-1, cromogranina A, calcitonina y SCC se agrupan en línea propia inmediatamente después de Bioquímica, sin título en el informe.
-- Las preferencias generales se presentan en el siguiente orden: conservar unidades, completar unidades ausentes, sustituir valores en rango por normal y omitir resultados pendientes.
-- Nueva preferencia opcional, desactivada por defecto: omitir estados PENDIENTE del informe final, incluso serologías y cultivos. No modifica ni elimina las determinaciones en el análisis o en la revisión.
-- Mantiene correcciones de v54: agrupación de serologías, IgG antes de IgM, negativos de referencia, coagulación anulada, resultados históricos con fecha original y protección de información personal.
